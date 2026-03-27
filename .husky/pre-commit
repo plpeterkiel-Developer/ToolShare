@@ -1,0 +1,2 @@
+npx lint-staged
+detect-secrets-hook --baseline .secrets.baseline $(git diff --cached --name-only)
