@@ -1,0 +1,67 @@
+{
+  "name": "toolshare",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write .",
+    "prepare": "husky",
+    "test:e2e": "TS_NODE_PROJECT=tsconfig.test.json cucumber-js",
+    "test:e2e:smoke": "TS_NODE_PROJECT=tsconfig.test.json cucumber-js --profile smoke",
+    "test:e2e:headed": "HEADLESS=false TS_NODE_PROJECT=tsconfig.test.json cucumber-js",
+    "test:e2e:wip": "TS_NODE_PROJECT=tsconfig.test.json cucumber-js --tags @wip",
+    "test:e2e:auth": "TS_NODE_PROJECT=tsconfig.test.json cucumber-js --profile auth",
+    "test:e2e:tools": "TS_NODE_PROJECT=tsconfig.test.json cucumber-js --profile tools"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.9.0",
+    "@supabase/supabase-js": "^2.100.1",
+    "next": "16.2.1",
+    "next-intl": "^4.8.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "resend": "^6.9.4"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@cucumber/cucumber": "^12.7.0",
+    "@playwright/test": "^1.58.2",
+    "@sentry/nextjs": "^10.46.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
+    "dotenv": "^17.3.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "playwright": "^1.58.2",
+    "prettier": "^3.8.1",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5",
+    "uuid": "^13.0.0"
+  }
+}

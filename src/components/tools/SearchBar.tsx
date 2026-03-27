@@ -1,0 +1,97 @@
+'use client'
+
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useTransition } from 'react'
+
+interface SearchBarProps {
+  defaultValue?: string
+  placeholder?: string
+}
+
+export function SearchBar({
+  defaultValue = '',
+  placeholder = 'Search for tools...',
+}: SearchBarProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [, startTransition] = useTransition()
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const form = e.currentTarget
+    const q = (form.elements.namedItem('q') as HTMLInputElement).value.trim()
+    const params = new URLSearchParams(searchParams.toString())
+    if (q) {
+      params.set('q', q)
+    } else {
+      params.delete('q')
+    }
+    params.delete('page')
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`)
+    })
+  }
+
+  function handleClear() {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('q')
+    params.delete('page')
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`)
+    })
+  }
+
+  return (
+    <form role="search" onSubmit={handleSubmit} className="relative flex items-center gap-2">
+      <div className="relative flex-1">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </span>
+        <input
+          type="search"
+          name="q"
+          id="tool-search"
+          data-testid="search-input"
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          autoComplete="off"
+          className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+        />
+      </div>
+      <button
+        type="submit"
+        data-testid="search-submit"
+        className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+      >
+        Search
+      </button>
+      {defaultValue && (
+        <button
+          type="button"
+          onClick={handleClear}
+          data-testid="search-clear"
+          className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+        >
+          Clear
+        </button>
+      )}
+    </form>
+  )
+}

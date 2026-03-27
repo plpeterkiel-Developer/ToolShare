@@ -1,0 +1,176 @@
+{
+  "nav": {
+    "browse": "Gennemse værktøjer",
+    "myProfile": "Min profil",
+    "requests": "Låneforespørgsler",
+    "login": "Log ind",
+    "signup": "Opret konto",
+    "logout": "Log ud",
+    "listTool": "Tilføj værktøj"
+  },
+  "home": {
+    "hero": {
+      "title": "Del dine haveværktøjer med naboskabet",
+      "subtitle": "Lån det du mangler. Lej det du ikke bruger. Gratis fællesskab.",
+      "cta": "Gennemse værktøjer",
+      "ctaSecondary": "Tilføj et værktøj"
+    },
+    "recentTools": "Seneste tilgængelige værktøjer"
+  },
+  "tools": {
+    "browse": "Gennemse værktøjer",
+    "search": "Søg efter værktøjer...",
+    "filterByCategory": "Filtrer efter kategori",
+    "allCategories": "Alle kategorier",
+    "noTools": "Ingen værktøjer fundet",
+    "noToolsHint": "Prøv en anden søgning eller kategori",
+    "addTool": "Tilføj et værktøj",
+    "available": "Tilgængeligt",
+    "onLoan": "Udlånt",
+    "unavailable": "Ikke tilgængeligt",
+    "condition": {
+      "good": "God stand",
+      "fair": "Brugbar stand",
+      "worn": "Slidte"
+    },
+    "categories": {
+      "powerTools": "El-værktøj",
+      "handTools": "Håndværktøj",
+      "gardening": "Haveredskaber",
+      "measuring": "Måleudstyr",
+      "cleaning": "Rengøringsudstyr",
+      "automotive": "Bil og garage",
+      "other": "Andet"
+    },
+    "form": {
+      "name": "Navn",
+      "namePlaceholder": "f.eks. Boremaskine",
+      "description": "Beskrivelse",
+      "descriptionPlaceholder": "Beskriv værktøjet, dets stand og eventuelle begrænsninger",
+      "category": "Kategori",
+      "condition": "Stand",
+      "image": "Billede",
+      "availability": "Tilgængelighed",
+      "submit": "Gem",
+      "submitCreate": "Tilføj værktøj",
+      "submitEdit": "Gem ændringer",
+      "cancel": "Annuller"
+    },
+    "detail": {
+      "ownedBy": "Ejet af",
+      "requestBorrow": "Anmod om at låne",
+      "editListing": "Rediger",
+      "deleteListing": "Slet",
+      "confirmDelete": "Er du sikker på, at du vil slette dette værktøj?",
+      "deleteBlocked": "Kan ikke slettes — der er en aktiv låneforespørgsel",
+      "reportListing": "Anmeld"
+    }
+  },
+  "requests": {
+    "title": "Låneforespørgsler",
+    "incoming": "Indgående",
+    "outgoing": "Udgående",
+    "noIncoming": "Ingen indgående forespørgsler",
+    "noOutgoing": "Ingen udgående forespørgsler",
+    "status": {
+      "pending": "Afventer",
+      "approved": "Godkendt",
+      "denied": "Afvist",
+      "cancelled": "Annulleret",
+      "returned": "Returneret",
+      "overdue": "Forsinket"
+    },
+    "approve": "Godkend",
+    "deny": "Afvis",
+    "cancel": "Annuller",
+    "denyReason": "Angiv en årsag (valgfrit)",
+    "confirmCancel": "Er du sikker på, at du vil annullere forespørgslen?",
+    "form": {
+      "startDate": "Startdato",
+      "endDate": "Slutdato",
+      "message": "Besked (valgfri)",
+      "messagePlaceholder": "Fortæl ejeren, hvad du skal bruge det til",
+      "submit": "Send forespørgsel"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Log ind",
+      "email": "E-mail",
+      "password": "Adgangskode",
+      "submit": "Log ind",
+      "noAccount": "Har du ikke en konto?",
+      "signupLink": "Opret konto",
+      "orContinueWith": "Eller fortsæt med",
+      "google": "Google",
+      "facebook": "Facebook"
+    },
+    "signup": {
+      "title": "Opret konto",
+      "displayName": "Navn",
+      "email": "E-mail",
+      "password": "Adgangskode",
+      "confirmPassword": "Bekræft adgangskode",
+      "location": "By/kvarter (valgfrit)",
+      "submit": "Opret konto",
+      "hasAccount": "Har du allerede en konto?",
+      "loginLink": "Log ind",
+      "orContinueWith": "Eller fortsæt med"
+    },
+    "errors": {
+      "invalidCredentials": "Ugyldig e-mail eller adgangskode",
+      "emailAlreadyRegistered": "E-mailadressen er allerede registreret",
+      "passwordMismatch": "Adgangskoderne stemmer ikke overens",
+      "weakPassword": "Adgangskoden skal være mindst 8 tegn"
+    }
+  },
+  "profile": {
+    "editProfile": "Rediger profil",
+    "myTools": "Mine værktøjer",
+    "myRequests": "Mine forespørgsler",
+    "ratings": "Bedømmelser",
+    "noRatings": "Ingen bedømmelser endnu",
+    "averageRating": "Gennemsnitlig bedømmelse",
+    "form": {
+      "displayName": "Navn",
+      "location": "By/kvarter",
+      "pickupAddress": "Afhentningsadresse (privat)",
+      "pickupAddressHint": "Vises kun for godkendte lånere via e-mail",
+      "bio": "Om mig",
+      "save": "Gem profil"
+    },
+    "memberSince": "Medlem siden"
+  },
+  "ratings": {
+    "rateUser": "Bedøm",
+    "yourExperience": "Hvordan var din oplevelse?",
+    "comment": "Kommentar (valgfri)",
+    "submit": "Indsend bedømmelse",
+    "alreadyRated": "Du har allerede bedømt denne låner"
+  },
+  "gdpr": {
+    "title": "Dine data",
+    "downloadData": "Download mine data",
+    "downloadDataDesc": "Modtag en kopi af alle dine data som JSON via e-mail",
+    "requestErasure": "Anmod om sletning",
+    "requestErasureDesc": "Anmod om sletning af din konto og alle dine data inden for 30 dage",
+    "rectifyData": "Ret mine data",
+    "rectifyDataDesc": "Opdater dine personlige oplysninger",
+    "erasureRequested": "Sletningsanmodning modtaget. Din konto vil blive anonymiseret inden for 30 dage.",
+    "confirmErasure": "Er du sikker? Denne handling kan ikke fortrydes."
+  },
+  "common": {
+    "loading": "Indlæser...",
+    "error": "Der opstod en fejl",
+    "success": "Gemt",
+    "save": "Gem",
+    "cancel": "Annuller",
+    "delete": "Slet",
+    "edit": "Rediger",
+    "confirm": "Bekræft",
+    "close": "Luk",
+    "back": "Tilbage",
+    "noResults": "Ingen resultater",
+    "required": "Påkrævet"
+  }
+}
