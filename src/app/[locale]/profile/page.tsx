@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
-import { getProfile } from '@/lib/queries/profile'
 import { getToolsByOwner } from '@/lib/queries/tools'
 import { getRatingsForUser } from '@/lib/queries/ratings'
 import { ProfileForm } from '@/components/profile/ProfileForm'
@@ -10,6 +9,7 @@ import { ToolGrid } from '@/components/tools/ToolGrid'
 import { RatingsList } from '@/components/ratings/RatingsList'
 import { GdprPanel } from '@/components/gdpr/GdprPanel'
 import { Avatar } from '@/components/ui/Avatar'
+import type { Profile } from '@/types/database.types'
 
 interface ProfilePageProps {
   params: Promise<{ locale: string }>
@@ -29,17 +29,20 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   }
 
   // Fetch full profile (includes pickup_address for own profile view)
-  const { data: profileData } = await supabase
+  // Use a typed cast to work around the Supabase never-type issue present in this codebase
+  const { data: rawProfile } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single()
 
-  const [tools, ratings] = await Promise.all([getToolsByOwner(user.id), getRatingsForUser(user.id)])
+  const profileData = rawProfile as unknown as Profile | null
 
   if (!profileData) {
     redirect(`/${locale}/auth/login`)
   }
+
+  const [tools, ratings] = await Promise.all([getToolsByOwner(user.id), getRatingsForUser(user.id)])
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8 flex flex-col gap-12">
