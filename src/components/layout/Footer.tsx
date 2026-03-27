@@ -21,3 +21,5 @@ export function Footer({ locale }: FooterProps) {
     </footer>
   )
 }
+
+export default Footer

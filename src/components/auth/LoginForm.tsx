@@ -181,3 +181,5 @@ function FacebookIcon() {
     </svg>
   )
 }
+
+export default LoginForm

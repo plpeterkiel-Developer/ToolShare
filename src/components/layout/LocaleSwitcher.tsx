@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 
@@ -60,6 +61,3 @@ export function LocaleSwitcher() {
     </div>
   )
 }
-
-// Need React for Fragment
-import React from 'react'

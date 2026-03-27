@@ -39,3 +39,5 @@ export function Navbar({ user, locale }: NavbarProps) {
     </header>
   )
 }
+
+export default Navbar
