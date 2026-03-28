@@ -290,7 +290,13 @@
       "unsuspend": "Ophæv suspension",
       "warn": "Advar",
       "suspended": "Suspenderet",
-      "active": "Aktiv"
+      "active": "Aktiv",
+      "searchPlaceholder": "Søg efter navn eller e-mail...",
+      "noResults": "Ingen brugere fundet",
+      "addToCommunity": "Tilføj til fællesskab",
+      "selectCommunity": "Vælg et fællesskab...",
+      "addedToCommunity": "Bruger tilføjet til fællesskab",
+      "alreadyMember": "Brugeren er allerede medlem"
     },
     "tools": {
       "title": "Værktøjsstyring",

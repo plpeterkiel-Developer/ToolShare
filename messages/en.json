@@ -290,7 +290,13 @@
       "unsuspend": "Unsuspend",
       "warn": "Warn",
       "suspended": "Suspended",
-      "active": "Active"
+      "active": "Active",
+      "searchPlaceholder": "Search by name or email...",
+      "noResults": "No users found",
+      "addToCommunity": "Add to Community",
+      "selectCommunity": "Select a community...",
+      "addedToCommunity": "User added to community",
+      "alreadyMember": "User is already a member"
     },
     "tools": {
       "title": "Tool Management",

@@ -168,6 +168,7 @@ export async function addCommunityMember(communityId: string, profileId: string)
   }
 
   revalidatePath(`/admin/communities/${communityId}`)
+  revalidatePath('/admin/users')
   return { success: true }
 }
 
