@@ -8,13 +8,14 @@ import { Select } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 import { ToolImageUpload } from '@/components/tools/ToolImageUpload'
 import { createTool, updateTool } from '@/lib/actions/tools'
-import type { Tool } from '@/types/database.types'
+import type { Tool, Community } from '@/types/database.types'
 
 export interface ToolFormProps {
   initialData?: Partial<Tool>
   locale: string
   mode: 'create' | 'edit'
   toolId?: string
+  communities?: Community[]
 }
 
 const CATEGORIES = [
@@ -29,7 +30,7 @@ const CATEGORIES = [
   'Other',
 ]
 
-export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
+export function ToolForm({ initialData, mode, toolId, communities = [] }: ToolFormProps) {
   const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(initialData?.image_url ?? '')
@@ -49,6 +50,20 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
     { value: 'unavailable', label: t('unavailable') },
   ]
 
+  // Community options: "no restriction" + user's communities
+  const communityOptions = [
+    { value: '', label: t('form.noRestriction') },
+    ...communities.map((c) => ({ value: c.id, label: c.name })),
+  ]
+
+  // Default community: in edit mode use existing value; in create mode default to first community
+  const defaultCommunityId =
+    mode === 'edit'
+      ? (initialData?.community_id ?? '')
+      : communities.length > 0
+        ? communities[0].id
+        : ''
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(undefined)
@@ -57,6 +72,12 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
     const formData = new FormData(e.currentTarget)
     if (imageUrl) {
       formData.set('image_url', imageUrl)
+    }
+
+    // Ensure empty community_id is sent as empty string (server treats as null)
+    const communityVal = formData.get('community_id')
+    if (!communityVal) {
+      formData.delete('community_id')
     }
 
     let result: { error?: string } | undefined
@@ -132,6 +153,20 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
           defaultValue={initialData?.availability ?? 'available'}
           data-testid="availability-toggle"
         />
+      )}
+
+      {communities.length > 0 && (
+        <div>
+          <Select
+            id="tool-community"
+            name="community_id"
+            label={t('form.community')}
+            options={communityOptions}
+            defaultValue={defaultCommunityId}
+            data-testid="tool-community"
+          />
+          <p className="mt-1 text-xs text-gray-500">{t('form.communityHint')}</p>
+        </div>
       )}
 
       <ToolImageUpload currentUrl={initialData?.image_url} onUpload={(url) => setImageUrl(url)} />

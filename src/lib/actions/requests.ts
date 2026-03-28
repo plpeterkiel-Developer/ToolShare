@@ -24,13 +24,24 @@ export async function createBorrowRequest(formData: FormData) {
   // Get tool to find owner
   const { data: tool } = await supabase
     .from('tools')
-    .select('id, name, owner_id, availability')
+    .select('id, name, owner_id, availability, community_id')
     .eq('id', toolId)
     .single()
 
   if (!tool) return { error: 'Tool not found' }
   if (tool.owner_id === user.id) return { error: 'Cannot request your own tool' }
   if (tool.availability !== 'available') return { error: 'Tool is not available' }
+
+  // Verify community membership if tool is restricted
+  if (tool.community_id) {
+    const { data: membership } = await supabase
+      .from('community_members')
+      .select('community_id')
+      .eq('community_id', tool.community_id)
+      .eq('profile_id', user.id)
+      .single()
+    if (!membership) return { error: 'This tool is restricted to community members' }
+  }
 
   const { data: request, error } = await supabase
     .from('borrow_requests')

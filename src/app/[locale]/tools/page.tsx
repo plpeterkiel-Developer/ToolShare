@@ -10,7 +10,13 @@ import { createClient } from '@/lib/supabase/server'
 
 interface ToolsPageProps {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ q?: string; category?: string; lat?: string; lng?: string; radius?: string }>
+  searchParams: Promise<{
+    q?: string
+    category?: string
+    lat?: string
+    lng?: string
+    radius?: string
+  }>
 }
 
 export default async function ToolsPage({ params, searchParams }: ToolsPageProps) {
@@ -49,6 +55,7 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
     lat: hasLocation ? lat : undefined,
     lng: hasLocation ? lng : undefined,
     radiusKm: hasLocation ? radiusKm : undefined,
+    userId: user?.id,
   })
 
   return (

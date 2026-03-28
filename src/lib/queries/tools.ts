@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import type { ToolWithOwner } from '@/types/database.types'
+import type { ToolWithOwner, ToolWithOwnerAndCommunity } from '@/types/database.types'
 
 interface GetToolsParams {
   search?: string
@@ -9,6 +9,7 @@ interface GetToolsParams {
   radiusKm?: number
   limit?: number
   offset?: number
+  userId?: string
 }
 
 export async function getTools({
@@ -19,12 +20,23 @@ export async function getTools({
   radiusKm,
   limit = 24,
   offset = 0,
+  userId,
 }: GetToolsParams = {}) {
   const supabase = await createClient()
 
   // When location filter is active, use the RPC for distance-based search
   if (lat != null && lng != null && radiusKm != null) {
-    return getToolsWithinRadius({ lat, lng, radiusKm, search, category, limit, offset })
+    return getToolsWithinRadius({ lat, lng, radiusKm, search, category, limit, offset, userId })
+  }
+
+  // Fetch user's community IDs for filtering
+  let userCommunityIds: string[] = []
+  if (userId) {
+    const { data: memberships } = await supabase
+      .from('community_members')
+      .select('community_id')
+      .eq('profile_id', userId)
+    userCommunityIds = (memberships ?? []).map((m: { community_id: string }) => m.community_id)
   }
 
   let query = supabase
@@ -35,6 +47,13 @@ export async function getTools({
     .eq('availability', 'available')
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1)
+
+  // Community filtering: show public tools + tools from user's communities
+  if (userCommunityIds.length > 0) {
+    query = query.or(`community_id.is.null,community_id.in.(${userCommunityIds.join(',')})`)
+  } else {
+    query = query.is('community_id', null)
+  }
 
   if (search) {
     query = query.textSearch('search_vector', search, { type: 'plain', config: 'english' })
@@ -58,6 +77,7 @@ async function getToolsWithinRadius({
   category,
   limit,
   offset,
+  userId,
 }: {
   lat: number
   lng: number
@@ -66,11 +86,12 @@ async function getToolsWithinRadius({
   category?: string
   limit: number
   offset: number
+  userId?: string
 }) {
   const supabase = await createClient()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: rpcRows, error: rpcError } = await (supabase.rpc as any)('tools_within_radius', {
+  const { data: rpcRows, error: rpcError } = (await (supabase.rpc as any)('tools_within_radius', {
     p_lat: lat,
     p_lng: lng,
     p_radius_km: radiusKm,
@@ -78,7 +99,8 @@ async function getToolsWithinRadius({
     p_category: category ?? null,
     p_limit: limit,
     p_offset: offset,
-  }) as { data: Record<string, unknown>[] | null; error: { message: string } | null }
+    p_user_id: userId ?? null,
+  })) as { data: Record<string, unknown>[] | null; error: { message: string } | null }
 
   if (rpcError) throw new Error(rpcError.message)
   if (!rpcRows || rpcRows.length === 0) return [] as ToolWithOwner[]
@@ -94,7 +116,7 @@ async function getToolsWithinRadius({
 
   if (ownerError) throw new Error(ownerError.message)
 
-  const ownerMap = new Map((owners as { id: string }[] ?? []).map((o) => [o.id, o]))
+  const ownerMap = new Map(((owners as { id: string }[]) ?? []).map((o) => [o.id, o]))
 
   return rpcRows.map((row) => ({
     id: row.id,
@@ -105,6 +127,7 @@ async function getToolsWithinRadius({
     condition: row.condition,
     image_url: row.image_url,
     availability: row.availability,
+    community_id: row.community_id,
     created_at: row.created_at,
     updated_at: row.updated_at,
     test_run_id: row.test_run_id,
@@ -118,13 +141,13 @@ export async function getToolById(id: string) {
   const { data, error } = await supabase
     .from('tools')
     .select(
-      '*, owner:profiles!owner_id(id, display_name, location, latitude, longitude, avatar_url, is_suspended, warning_count, last_active_at, created_at, updated_at, test_run_id, gdpr_erasure_requested_at, bio)'
+      '*, owner:profiles!owner_id(id, display_name, location, latitude, longitude, avatar_url, is_suspended, warning_count, last_active_at, created_at, updated_at, test_run_id, gdpr_erasure_requested_at, bio), community:communities(id, name)'
     )
     .eq('id', id)
     .single()
 
   if (error) return null
-  return data as ToolWithOwner
+  return data as unknown as ToolWithOwnerAndCommunity
 }
 
 export async function getToolsByOwner(ownerId: string) {
@@ -151,6 +174,7 @@ export async function getRecentAvailableTools(limit = 6) {
       '*, owner:profiles!owner_id(id, display_name, location, latitude, longitude, avatar_url, is_suspended, warning_count, last_active_at, created_at, updated_at, test_run_id, gdpr_erasure_requested_at, bio)'
     )
     .eq('availability', 'available')
+    .is('community_id', null)
     .order('created_at', { ascending: false })
     .limit(limit)
 

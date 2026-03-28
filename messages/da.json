@@ -80,7 +80,10 @@
       "submit": "Gem",
       "submitCreate": "Opret værktøj",
       "submitEdit": "Gem ændringer",
-      "cancel": "Annuller"
+      "cancel": "Annuller",
+      "community": "Begræns til fællesskab",
+      "communityHint": "Kun medlemmer af dette fællesskab kan se dette værktøj",
+      "noRestriction": "Alle (ingen begrænsning)"
     },
     "detail": {
       "ownedBy": "Ejet af",
@@ -92,7 +95,9 @@
       "reportListing": "Anmeld",
       "deleteModalTitle": "Slet værktøj",
       "deleteModalMessage": "Er du sikker på, at du vil slette dette værktøj? Denne handling kan ikke fortrydes.",
-      "deleteModalConfirm": "Ja, slet"
+      "deleteModalConfirm": "Ja, slet",
+      "communityOnly": "Kun for fællesskabsmedlemmer",
+      "communityRestricted": "Dette værktøj er kun tilgængeligt for medlemmer af dets fællesskab"
     },
     "image": {
       "label": "Værktøjsbillede",
@@ -261,6 +266,7 @@
     "nav": {
       "dashboard": "Oversigt",
       "users": "Brugere",
+      "communities": "Fællesskaber",
       "tools": "Værktøjer",
       "reports": "Anmeldelser",
       "requests": "Forespørgsler"
@@ -318,6 +324,25 @@
       "status": "Status",
       "period": "Periode",
       "created": "Oprettet"
+    },
+    "communities": {
+      "title": "Fællesskabsstyring",
+      "name": "Navn",
+      "description": "Beskrivelse",
+      "members": "Medlemmer",
+      "created": "Oprettet",
+      "actions": "Handlinger",
+      "create": "Opret fællesskab",
+      "delete": "Slet",
+      "confirmDelete": "Er du sikker på, at du vil slette dette fællesskab? Værktøjer begrænset til det bliver offentlige.",
+      "noCommunities": "Ingen fællesskaber oprettet endnu",
+      "addMember": "Tilføj medlem",
+      "removeMember": "Fjern",
+      "noMembers": "Ingen medlemmer endnu",
+      "selectUser": "Vælg en bruger…",
+      "memberName": "Navn",
+      "joinedAt": "Tilsluttet",
+      "backToList": "Tilbage til fællesskaber"
     }
   },
   "common": {
