@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher'
 import { NavbarClient } from '@/components/layout/NavbarClient'
+import { isCurrentUserAdmin } from '@/lib/admin'
 
 export interface NavbarProps {
   user: User | null
@@ -11,6 +12,7 @@ export interface NavbarProps {
 
 export async function Navbar({ user, locale }: NavbarProps) {
   const t = await getTranslations('nav')
+  const admin = user ? await isCurrentUserAdmin() : false
 
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white">
@@ -32,7 +34,7 @@ export async function Navbar({ user, locale }: NavbarProps) {
         </Link>
 
         {/* Desktop nav — rendered by the server, interactive parts delegated to client */}
-        <NavbarClient user={user} locale={locale} />
+        <NavbarClient user={user} locale={locale} isAdmin={admin} />
 
         {/* Locale switcher (always visible on desktop) */}
         <div className="hidden md:block">

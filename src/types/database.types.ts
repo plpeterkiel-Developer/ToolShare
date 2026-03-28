@@ -12,6 +12,21 @@ export type ReportReason = 'inappropriate' | 'spam' | 'broken_item' | 'no_show' 
 export interface Database {
   public: {
     Tables: {
+      admins: {
+        Row: {
+          id: string
+          email: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          created_at?: string
+        }
+        Update: {
+          email?: string
+        }
+      }
       profiles: {
         Row: {
           id: string
