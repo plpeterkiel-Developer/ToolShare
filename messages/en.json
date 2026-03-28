@@ -9,7 +9,8 @@
     "listTool": "Add a Tool",
     "skipToContent": "Skip to content",
     "tools": "Tools",
-    "profile": "Profile"
+    "profile": "Profile",
+    "admin": "Admin"
   },
   "home": {
     "hero": {
@@ -248,6 +249,69 @@
     "rectifyData": "Rectify your data",
     "rectifyDataDesc": "You can update your personal information at any time from your profile page.",
     "rectifyLink": "Go to my profile"
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "tools": "Tools",
+      "reports": "Reports",
+      "requests": "Requests"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "totalUsers": "Total Users",
+      "totalTools": "Total Tools",
+      "activeLoans": "Active Loans",
+      "openReports": "Open Reports"
+    },
+    "users": {
+      "title": "User Management",
+      "name": "Name",
+      "email": "Email",
+      "status": "Status",
+      "warnings": "Warnings",
+      "joined": "Joined",
+      "actions": "Actions",
+      "suspend": "Suspend",
+      "unsuspend": "Unsuspend",
+      "warn": "Warn",
+      "suspended": "Suspended",
+      "active": "Active"
+    },
+    "tools": {
+      "title": "Tool Management",
+      "name": "Name",
+      "owner": "Owner",
+      "category": "Category",
+      "availability": "Availability",
+      "created": "Created",
+      "actions": "Actions",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this tool? This action cannot be undone."
+    },
+    "reports": {
+      "title": "Report Management",
+      "reason": "Reason",
+      "reporter": "Reporter",
+      "reported": "Reported",
+      "details": "Details",
+      "status": "Status",
+      "date": "Date",
+      "actions": "Actions",
+      "resolve": "Resolve",
+      "resolved": "Resolved",
+      "open": "Open"
+    },
+    "requests": {
+      "title": "Request Oversight",
+      "tool": "Tool",
+      "borrower": "Borrower",
+      "owner": "Owner",
+      "status": "Status",
+      "period": "Period",
+      "created": "Created"
+    }
   },
   "common": {
     "loading": "Loading...",

@@ -10,9 +10,10 @@ import { LogoutButton } from '@/components/layout/LogoutButton'
 interface NavbarClientProps {
   user: User | null
   locale: string
+  isAdmin?: boolean
 }
 
-export function NavbarClient({ user, locale }: NavbarClientProps) {
+export function NavbarClient({ user, locale, isAdmin }: NavbarClientProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const t = useTranslations('nav')
 
@@ -21,6 +22,7 @@ export function NavbarClient({ user, locale }: NavbarClientProps) {
         { href: `/${locale}/tools`, label: t('tools') },
         { href: `/${locale}/requests`, label: t('requests') },
         { href: `/${locale}/profile`, label: t('profile') },
+        ...(isAdmin ? [{ href: `/${locale}/admin`, label: t('admin') }] : []),
       ]
     : [
         { href: `/${locale}/auth/login`, label: t('login') },
