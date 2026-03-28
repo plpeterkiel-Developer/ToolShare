@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background rounded square -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="#16a34a"/>
+  <!-- Garden spade silhouette -->
+  <g transform="translate(256,256)">
+    <!-- Spade blade -->
+    <path d="M0,-140 C-50,-140 -80,-100 -80,-50 C-80,10 -40,60 0,80 C40,60 80,10 80,-50 C80,-100 50,-140 0,-140Z" fill="white" opacity="0.95"/>
+    <!-- Spade shaft -->
+    <rect x="-10" y="60" width="20" height="100" rx="4" fill="white" opacity="0.9"/>
+    <!-- Spade handle (T-grip) -->
+    <rect x="-36" y="152" width="72" height="20" rx="10" fill="white" opacity="0.9"/>
+  </g>
+  <!-- Small leaf accent -->
+  <path d="M340 100 Q380 80 390 120 Q370 130 340 100Z" fill="#bbf7d0" opacity="0.8"/>
+  <path d="M342 102 Q375 115" stroke="#bbf7d0" stroke-width="2" fill="none" opacity="0.6"/>
+  <!-- Recycling/sharing dots -->
+  <circle cx="120" cy="400" r="16" fill="white" opacity="0.5"/>
+  <circle cx="160" cy="420" r="12" fill="white" opacity="0.4"/>
+  <circle cx="200" cy="432" r="8" fill="white" opacity="0.3"/>
+</svg>
