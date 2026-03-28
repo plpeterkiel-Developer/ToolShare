@@ -55,7 +55,7 @@ export function CategoryFilter({ categories, selectedCategory }: CategoryFilterP
         data-testid="category-all"
         onClick={() => selectCategory(null)}
         className={[
-          'rounded-xl px-3 py-1 text-sm font-medium transition-all duration-200',
+          'rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
           allActive
             ? 'bg-green-800 text-white'
@@ -75,7 +75,7 @@ export function CategoryFilter({ categories, selectedCategory }: CategoryFilterP
             data-testid={`category-${category}`}
             onClick={() => selectCategory(category)}
             className={[
-              'rounded-full px-3 py-1 text-sm font-medium transition-colors',
+              'rounded-full px-3 py-2 text-sm font-medium transition-colors',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2',
               isActive
                 ? 'bg-green-600 text-white'
