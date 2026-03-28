@@ -3,9 +3,11 @@
 import { logout } from '@/lib/actions/auth'
 import { Button } from '@/components/ui/Button'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export function LogoutButton() {
   const [loading, setLoading] = useState(false)
+  const t = useTranslations('nav')
 
   async function handleLogout() {
     setLoading(true)
@@ -20,9 +22,9 @@ export function LogoutButton() {
         size="sm"
         loading={loading}
         data-testid="logout-button"
-        aria-label="Log out"
+        aria-label={t('logout')}
       >
-        Log out
+        {t('logout')}
       </Button>
     </form>
   )

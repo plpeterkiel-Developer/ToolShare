@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { ToolForm } from '@/components/tools/ToolForm'
 
@@ -10,6 +10,8 @@ interface NewToolPageProps {
 export default async function NewToolPage({ params }: NewToolPageProps) {
   const { locale } = await params
   setRequestLocale(locale)
+
+  const t = await getTranslations('tools')
 
   const supabase = await createClient()
   const {
@@ -23,7 +25,7 @@ export default async function NewToolPage({ params }: NewToolPageProps) {
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
       <h1 data-testid="new-tool-heading" className="mb-8 text-2xl font-bold text-gray-900">
-        Add a Tool
+        {t('addTool')}
       </h1>
       <ToolForm mode="create" locale={locale} />
     </div>

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getToolById } from '@/lib/queries/tools'
 import { getPendingRequestsForTool } from '@/lib/queries/requests'
 import { createClient } from '@/lib/supabase/server'
@@ -15,37 +15,11 @@ interface ToolDetailPageProps {
   params: Promise<{ locale: string; id: string }>
 }
 
-function availabilityLabel(availability: ToolAvailability): {
-  variant: 'green' | 'yellow' | 'gray'
-  label: string
-} {
-  switch (availability) {
-    case 'available':
-      return { variant: 'green', label: 'Available' }
-    case 'on_loan':
-      return { variant: 'yellow', label: 'On Loan' }
-    case 'unavailable':
-    default:
-      return { variant: 'gray', label: 'Unavailable' }
-  }
-}
-
-function conditionLabel(condition: ToolCondition): string {
-  switch (condition) {
-    case 'good':
-      return 'Good condition'
-    case 'fair':
-      return 'Fair condition'
-    case 'worn':
-      return 'Worn'
-    default:
-      return condition
-  }
-}
-
 export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   const { locale, id } = await params
   setRequestLocale(locale)
+
+  const t = await getTranslations('tools')
 
   const tool = await getToolById(id)
   if (!tool) notFound()
@@ -56,7 +30,26 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   } = await supabase.auth.getUser()
 
   const isOwner = user?.id === tool.owner_id
-  const badge = availabilityLabel(tool.availability)
+
+  const availabilityConfig: Record<
+    ToolAvailability,
+    { variant: 'green' | 'yellow' | 'gray'; key: string }
+  > = {
+    available: { variant: 'green', key: 'available' },
+    on_loan: { variant: 'yellow', key: 'onLoan' },
+    unavailable: { variant: 'gray', key: 'unavailable' },
+  }
+
+  const conditionKeys: Record<ToolCondition, string> = {
+    good: 'condition.good',
+    fair: 'condition.fair',
+    worn: 'condition.worn',
+  }
+
+  const badge = availabilityConfig[tool.availability] ?? {
+    variant: 'gray' as const,
+    key: 'unavailable',
+  }
 
   // Count active requests for the owner view
   let activeRequestCount = 0
@@ -107,7 +100,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               <h1 data-testid="tool-detail-name" className="text-2xl font-bold text-gray-900">
                 {tool.name}
               </h1>
-              <Badge variant={badge.variant}>{badge.label}</Badge>
+              <Badge variant={badge.variant}>{t(badge.key)}</Badge>
             </div>
             <p data-testid="tool-detail-category" className="mt-1 text-sm text-gray-500">
               {tool.category}
@@ -116,7 +109,8 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
 
           <div className="flex gap-4 text-sm text-gray-600">
             <span data-testid="tool-detail-condition">
-              <span className="font-medium">Condition:</span> {conditionLabel(tool.condition)}
+              <span className="font-medium">{t('conditionLabel')}</span>{' '}
+              {t(conditionKeys[tool.condition] ?? 'condition.good')}
             </span>
           </div>
 
@@ -134,7 +128,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3">
               <Avatar name={tool.owner.display_name} avatarUrl={tool.owner.avatar_url} size="md" />
               <div className="min-w-0">
-                <p className="text-xs text-gray-500">Owned by</p>
+                <p className="text-xs text-gray-500">{t('detail.ownedBy')}</p>
                 <Link
                   href={`/${locale}/profile/${tool.owner.id}`}
                   data-testid="tool-owner-link"
@@ -160,7 +154,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             >
               {activeRequestCount > 0 && (
                 <p className="w-full text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
-                  {activeRequestCount} active request{activeRequestCount !== 1 ? 's' : ''}
+                  {t('activeRequests', { count: activeRequestCount })}
                 </p>
               )}
               <Link
@@ -168,7 +162,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 data-testid="edit-tool-link"
                 className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors"
               >
-                Edit
+                {t('detail.editListing')}
               </Link>
               <DeleteToolButton toolId={tool.id} locale={locale} />
             </div>

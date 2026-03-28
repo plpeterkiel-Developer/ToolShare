@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { RatingStars } from '@/components/ratings/RatingStars'
 import { Avatar } from '@/components/ui/Avatar'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -19,9 +20,11 @@ export interface RatingsListProps {
   emptyTitle?: string
 }
 
-export function RatingsList({ ratings, emptyTitle = 'No ratings yet' }: RatingsListProps) {
+export async function RatingsList({ ratings, emptyTitle }: RatingsListProps) {
+  const t = await getTranslations('ratings')
+
   if (ratings.length === 0) {
-    return <EmptyState title={emptyTitle} />
+    return <EmptyState title={emptyTitle ?? t('alreadyRated')} />
   }
 
   return (
@@ -34,13 +37,13 @@ export function RatingsList({ ratings, emptyTitle = 'No ratings yet' }: RatingsL
         >
           <div className="flex items-center gap-3">
             <Avatar
-              name={rating.rater?.display_name ?? 'User'}
+              name={rating.rater?.display_name ?? t('anonymous')}
               avatarUrl={rating.rater?.avatar_url}
               size="sm"
             />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">
-                {rating.rater?.display_name ?? 'Anonymous'}
+                {rating.rater?.display_name ?? t('anonymous')}
               </p>
               <p className="text-xs text-gray-400">
                 {new Date(rating.created_at).toLocaleDateString(undefined, {

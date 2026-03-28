@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { getTranslations } from 'next-intl/server'
 import { Badge } from '@/components/ui/Badge'
 import type { ToolWithOwner, ToolAvailability } from '@/types/database.types'
 
@@ -8,23 +9,21 @@ interface ToolCardProps {
   locale: string
 }
 
-function availabilityBadge(availability: ToolAvailability): {
-  variant: 'green' | 'yellow' | 'gray'
-  label: string
-} {
-  switch (availability) {
-    case 'available':
-      return { variant: 'green', label: 'Available' }
-    case 'on_loan':
-      return { variant: 'yellow', label: 'On Loan' }
-    case 'unavailable':
-    default:
-      return { variant: 'gray', label: 'Unavailable' }
-  }
+const availabilityConfig: Record<
+  ToolAvailability,
+  { variant: 'green' | 'yellow' | 'gray'; key: string }
+> = {
+  available: { variant: 'green', key: 'available' },
+  on_loan: { variant: 'yellow', key: 'onLoan' },
+  unavailable: { variant: 'gray', key: 'unavailable' },
 }
 
-export function ToolCard({ tool, locale }: ToolCardProps) {
-  const badge = availabilityBadge(tool.availability)
+export async function ToolCard({ tool, locale }: ToolCardProps) {
+  const t = await getTranslations('tools')
+  const config = availabilityConfig[tool.availability] ?? {
+    variant: 'gray' as const,
+    key: 'unavailable',
+  }
 
   return (
     <Link
@@ -71,7 +70,7 @@ export function ToolCard({ tool, locale }: ToolCardProps) {
           >
             {tool.name}
           </h3>
-          <Badge variant={badge.variant}>{badge.label}</Badge>
+          <Badge variant={config.variant}>{t(config.key)}</Badge>
         </div>
         <p className="text-xs text-gray-500">{tool.category}</p>
         {tool.owner && (

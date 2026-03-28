@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useTransition } from 'react'
+import { useTranslations } from 'next-intl'
 
 export interface CategoryFilterProps {
   categories: string[]
@@ -13,6 +14,7 @@ export function CategoryFilter({ categories, selectedCategory }: CategoryFilterP
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [, startTransition] = useTransition()
+  const t = useTranslations('common')
 
   function selectCategory(category: string | null) {
     const params = new URLSearchParams(searchParams.toString())
@@ -49,7 +51,7 @@ export function CategoryFilter({ categories, selectedCategory }: CategoryFilterP
             : 'border border-gray-300 bg-white text-gray-600 hover:bg-gray-50',
         ].join(' ')}
       >
-        All
+        {t('all')}
       </button>
 
       {categories.map((category) => {

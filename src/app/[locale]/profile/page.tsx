@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { getToolsByOwner } from '@/lib/queries/tools'
 import { getRatingsForUser } from '@/lib/queries/ratings'
@@ -18,6 +18,8 @@ interface ProfilePageProps {
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { locale } = await params
   setRequestLocale(locale)
+
+  const t = await getTranslations('profile')
 
   const supabase = await createClient()
   const {
@@ -55,8 +57,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           </h1>
           {profileData.location && <p className="text-sm text-gray-500">{profileData.location}</p>}
           <p className="text-xs text-gray-400 mt-1">
-            Member since{' '}
-            {new Date(profileData.created_at).toLocaleDateString(undefined, {
+            {t('memberSince')}{' '}
+            {new Date(profileData.created_at).toLocaleDateString(locale, {
               year: 'numeric',
               month: 'long',
             })}
@@ -67,45 +69,47 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           className="ml-auto inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors"
           data-testid="my-requests-link"
         >
-          My Requests
+          {t('myRequests')}
         </Link>
       </section>
 
       {/* Edit profile */}
       <section>
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Edit Profile</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">{t('editProfile')}</h2>
         <ProfileForm profile={profileData} />
       </section>
 
       {/* My tools */}
       <section data-testid="my-tools-section">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">My Tools</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{t('myTools')}</h2>
           <Link
             href={`/${locale}/tools/new`}
             className="inline-flex items-center justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors"
             data-testid="add-tool-link"
           >
-            + Add Tool
+            {t('addTool')}
           </Link>
         </div>
         <ToolGrid
           tools={tools}
           locale={locale}
-          emptyTitle="No tools listed yet"
-          emptyDescription="Add your first tool to start sharing with the community"
+          emptyTitle={t('noToolsYet')}
+          emptyDescription={t('noToolsYetHint')}
         />
       </section>
 
       {/* Ratings received */}
       <section data-testid="ratings-section">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Ratings ({ratings.length})</h2>
-        <RatingsList ratings={ratings} emptyTitle="No ratings yet" />
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          {t('ratings')} ({ratings.length})
+        </h2>
+        <RatingsList ratings={ratings} emptyTitle={t('noRatings')} />
       </section>
 
       {/* GDPR */}
       <section data-testid="gdpr-section">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Privacy &amp; Data</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">{t('privacyData')}</h2>
         <GdprPanel />
       </section>
     </div>

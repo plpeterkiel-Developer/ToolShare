@@ -6,7 +6,10 @@
     "login": "Log ind",
     "signup": "Opret konto",
     "logout": "Log ud",
-    "listTool": "Tilføj værktøj"
+    "listTool": "Tilføj værktøj",
+    "skipToContent": "Spring til indhold",
+    "tools": "Værktøjer",
+    "profile": "Profil"
   },
   "home": {
     "hero": {
@@ -15,7 +18,10 @@
       "cta": "Gennemse værktøjer",
       "ctaSecondary": "Tilføj et værktøj"
     },
-    "recentTools": "Seneste tilgængelige værktøjer"
+    "recentTools": "Seneste tilgængelige værktøjer",
+    "noToolsYet": "Ingen værktøjer tilgængelige endnu",
+    "noToolsYetHint": "Vær den første til at tilføje et værktøj til fællesskabet",
+    "viewAll": "Se alle værktøjer"
   },
   "tools": {
     "browse": "Gennemse værktøjer",
@@ -28,6 +34,12 @@
     "available": "Tilgængeligt",
     "onLoan": "Udlånt",
     "unavailable": "Ikke tilgængeligt",
+    "editTool": "Rediger værktøj",
+    "conditionLabel": "Stand:",
+    "activeRequests": "{count, plural, one {# aktiv forespørgsel} other {# aktive forespørgsler}}",
+    "resultsCount": "{count, plural, one {# resultat} other {# resultater}}",
+    "resultsFor": "for \"{query}\"",
+    "resultsIn": "i {category}",
     "condition": {
       "good": "God stand",
       "fair": "Brugbar stand",
@@ -43,7 +55,7 @@
       "other": "Andet"
     },
     "form": {
-      "name": "Navn",
+      "name": "Værktøjsnavn",
       "namePlaceholder": "f.eks. Boremaskine",
       "description": "Beskrivelse",
       "descriptionPlaceholder": "Beskriv værktøjet, dets stand og eventuelle begrænsninger",
@@ -52,7 +64,7 @@
       "image": "Billede",
       "availability": "Tilgængelighed",
       "submit": "Gem",
-      "submitCreate": "Tilføj værktøj",
+      "submitCreate": "Opret værktøj",
       "submitEdit": "Gem ændringer",
       "cancel": "Annuller"
     },
@@ -63,7 +75,21 @@
       "deleteListing": "Slet",
       "confirmDelete": "Er du sikker på, at du vil slette dette værktøj?",
       "deleteBlocked": "Kan ikke slettes — der er en aktiv låneforespørgsel",
-      "reportListing": "Anmeld"
+      "reportListing": "Anmeld",
+      "deleteModalTitle": "Slet værktøj",
+      "deleteModalMessage": "Er du sikker på, at du vil slette dette værktøj? Denne handling kan ikke fortrydes.",
+      "deleteModalConfirm": "Ja, slet"
+    },
+    "image": {
+      "label": "Værktøjsbillede",
+      "noImage": "Intet billede valgt",
+      "uploading": "Uploader…",
+      "changeImage": "Skift billede",
+      "chooseImage": "Vælg billede",
+      "tooLarge": "Billedet skal være mindre end 5 MB",
+      "unsupported": "Kun JPEG, PNG, WebP og GIF-billeder understøttes",
+      "loginRequired": "Du skal være logget ind for at uploade billeder",
+      "uploadFailed": "Upload mislykkedes"
     }
   },
   "requests": {
@@ -72,6 +98,8 @@
     "outgoing": "Udgående",
     "noIncoming": "Ingen indgående forespørgsler",
     "noOutgoing": "Ingen udgående forespørgsler",
+    "noIncomingHint": "Når nogen anmoder om at låne dine værktøjer, vises de her",
+    "noOutgoingHint": "Dine låneforespørgsler vises her",
     "status": {
       "pending": "Afventer",
       "approved": "Godkendt",
@@ -83,12 +111,22 @@
     "approve": "Godkend",
     "deny": "Afvis",
     "cancel": "Annuller",
+    "cancelRequest": "Annuller forespørgsel",
+    "markReturned": "Markér som returneret",
+    "tool": "Værktøj",
+    "borrower": "Låner",
+    "owner": "Ejer",
+    "startDate": "Startdato",
+    "endDate": "Slutdato",
+    "message": "Besked",
     "denyReason": "Angiv en årsag (valgfrit)",
     "confirmCancel": "Er du sikker på, at du vil annullere forespørgslen?",
+    "borrowTitle": "Lån \"{name}\"",
+    "requestSent": "Forespørgsel sendt!",
     "form": {
       "startDate": "Startdato",
       "endDate": "Slutdato",
-      "message": "Besked (valgfri)",
+      "message": "Besked til ejeren (valgfri)",
       "messagePlaceholder": "Fortæl ejeren, hvad du skal bruge det til",
       "submit": "Send forespørgsel"
     }
@@ -96,26 +134,37 @@
   "auth": {
     "login": {
       "title": "Log ind",
+      "heading": "Log ind på ToolShare",
       "email": "E-mail",
+      "emailLabel": "E-mailadresse",
       "password": "Adgangskode",
       "submit": "Log ind",
       "noAccount": "Har du ikke en konto?",
       "signupLink": "Opret konto",
       "orContinueWith": "Eller fortsæt med",
       "google": "Google",
-      "facebook": "Facebook"
+      "facebook": "Facebook",
+      "continueGoogle": "Fortsæt med Google",
+      "continueFacebook": "Fortsæt med Facebook"
     },
     "signup": {
       "title": "Opret konto",
-      "displayName": "Navn",
+      "heading": "Opret en konto",
+      "displayName": "Visningsnavn",
       "email": "E-mail",
+      "emailLabel": "E-mailadresse",
       "password": "Adgangskode",
       "confirmPassword": "Bekræft adgangskode",
-      "location": "By/kvarter (valgfrit)",
+      "location": "Placering (valgfrit)",
       "submit": "Opret konto",
       "hasAccount": "Har du allerede en konto?",
       "loginLink": "Log ind",
       "orContinueWith": "Eller fortsæt med"
+    },
+    "confirm": {
+      "title": "Bekræft din e-mail",
+      "message": "Vi har sendt dig et bekræftelseslink. Klik på linket i e-mailen for at aktivere din konto.",
+      "goToLogin": "Gå til log ind"
     },
     "errors": {
       "invalidCredentials": "Ugyldig e-mail eller adgangskode",
@@ -131,33 +180,63 @@
     "ratings": "Bedømmelser",
     "noRatings": "Ingen bedømmelser endnu",
     "averageRating": "Gennemsnitlig bedømmelse",
+    "memberSince": "Medlem siden",
+    "noToolsYet": "Ingen værktøjer endnu",
+    "noToolsYetHint": "Tilføj dit første værktøj for at begynde at dele med fællesskabet",
+    "addTool": "+ Tilføj værktøj",
+    "privacyData": "Privatliv og data",
+    "saved": "Profil gemt!",
+    "tools": "Værktøjer",
+    "ratingCount": "{count, plural, one {# bedømmelse} other {# bedømmelser}}",
+    "noToolsListed": "Ingen værktøjer oprettet",
+    "noToolsListedHint": "Denne bruger har endnu ikke tilføjet nogen værktøjer",
     "form": {
-      "displayName": "Navn",
+      "displayName": "Visningsnavn",
       "location": "By/kvarter",
       "pickupAddress": "Afhentningsadresse (privat)",
       "pickupAddressHint": "Vises kun for godkendte lånere via e-mail",
       "bio": "Om mig",
       "save": "Gem profil"
-    },
-    "memberSince": "Medlem siden"
+    }
   },
   "ratings": {
     "rateUser": "Bedøm",
     "yourExperience": "Hvordan var din oplevelse?",
     "comment": "Kommentar (valgfri)",
     "submit": "Indsend bedømmelse",
-    "alreadyRated": "Du har allerede bedømt denne låner"
+    "alreadyRated": "Du har allerede bedømt denne låner",
+    "thankYou": "Tak for din bedømmelse af {name}!",
+    "rateExperience": "Bedøm din oplevelse med",
+    "selectRating": "Vælg venligst en stjernebedømmelse",
+    "commentPlaceholder": "Del din oplevelse…",
+    "anonymous": "Anonym"
   },
   "gdpr": {
     "title": "Dine data",
-    "downloadData": "Download mine data",
-    "downloadDataDesc": "Modtag en kopi af alle dine data som JSON via e-mail",
-    "requestErasure": "Anmod om sletning",
-    "requestErasureDesc": "Anmod om sletning af din konto og alle dine data inden for 30 dage",
-    "rectifyData": "Ret mine data",
-    "rectifyDataDesc": "Opdater dine personlige oplysninger",
-    "erasureRequested": "Sletningsanmodning modtaget. Din konto vil blive anonymiseret inden for 30 dage.",
-    "confirmErasure": "Er du sikker? Denne handling kan ikke fortrydes."
+    "pageTitle": "Dine data og privatlivsrettigheder",
+    "pageDescription": "I henhold til den generelle forordning om databeskyttelse (GDPR) har du flere rettigheder vedrørende dine persondata. Brug værktøjerne nedenfor til at udøve disse rettigheder.",
+    "rightsTitle": "Dine rettigheder under GDPR",
+    "rightAccess": "<bold>Ret til indsigt</bold> — Du kan anmode om en kopi af alle persondata, vi opbevarer om dig.",
+    "rightRectification": "<bold>Ret til berigtigelse</bold> — Du kan rette unøjagtige eller ufuldstændige persondata.",
+    "rightErasure": "<bold>Ret til sletning</bold> — Du kan anmode om sletning af dine persondata (\u201cretten til at blive glemt\u201d).",
+    "rightPortability": "<bold>Ret til dataportabilitet</bold> — Du kan modtage dine data i et maskinlæsbart format.",
+    "rightObject": "<bold>Ret til indsigelse</bold> — Du kan gøre indsigelse mod behandling af dine persondata under visse omstændigheder.",
+    "contactInfo": "For anmodninger, der ikke er dækket af værktøjerne nedenfor, kontakt os på",
+    "downloadData": "Download dine data",
+    "downloadDataDesc": "Anmod om en kopi af alle data, ToolShare opbevarer om dig. Vi sender en JSON-eksport til din registrerede e-mailadresse.",
+    "downloadButton": "Download mine data",
+    "downloadSuccess": "Data-eksport sendt via e-mail — tjek din indbakke.",
+    "requestErasure": "Anmod om kontosletning",
+    "requestErasureDesc": "Du kan anmode om, at ToolShare sletter dine persondata. Din konto vil blive anonymiseret inden for 30 dage efter anmodningen.",
+    "erasureRequested": "Din sletningsanmodning er registreret. Dine data vil blive fjernet inden for 30 dage.",
+    "erasureButton": "Anmod om sletning",
+    "erasureModalTitle": "Bekræft kontosletning",
+    "erasureModalMessage": "Er du sikker på, at du vil anmode om kontosletning? Denne handling kan ikke fortrydes. Dine persondata vil blive permanent slettet inden for 30 dage.",
+    "erasureConfirm": "Ja, slet mine data",
+    "confirmErasure": "Er du sikker? Denne handling kan ikke fortrydes.",
+    "rectifyData": "Ret dine data",
+    "rectifyDataDesc": "Du kan opdatere dine personlige oplysninger når som helst fra din profilside.",
+    "rectifyLink": "Gå til min profil"
   },
   "common": {
     "loading": "Indlæser...",
@@ -171,6 +250,13 @@
     "close": "Luk",
     "back": "Tilbage",
     "noResults": "Ingen resultater",
-    "required": "Påkrævet"
+    "required": "Påkrævet",
+    "search": "Søg",
+    "clear": "Ryd",
+    "all": "Alle"
+  },
+  "footer": {
+    "copyright": "ToolShare © 2026",
+    "gdprLink": "GDPR og privatliv"
   }
 }

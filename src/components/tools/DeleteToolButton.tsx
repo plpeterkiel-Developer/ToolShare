@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { deleteTool } from '@/lib/actions/tools'
@@ -14,6 +15,8 @@ export function DeleteToolButton({ toolId, locale }: DeleteToolButtonProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
+  const t = useTranslations('tools.detail')
+  const tCommon = useTranslations('common')
 
   async function handleDelete() {
     setError(undefined)
@@ -38,14 +41,12 @@ export function DeleteToolButton({ toolId, locale }: DeleteToolButtonProps) {
         }}
         data-testid="delete-tool-button"
       >
-        Delete
+        {t('deleteListing')}
       </Button>
 
-      <Modal open={open} onClose={() => !loading && setOpen(false)} title="Delete tool">
+      <Modal open={open} onClose={() => !loading && setOpen(false)} title={t('deleteModalTitle')}>
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-gray-700">
-            Are you sure you want to delete this tool? This action cannot be undone.
-          </p>
+          <p className="text-sm text-gray-700">{t('deleteModalMessage')}</p>
           {error && (
             <p
               role="alert"
@@ -62,7 +63,7 @@ export function DeleteToolButton({ toolId, locale }: DeleteToolButtonProps) {
               disabled={loading}
               onClick={() => setOpen(false)}
             >
-              Cancel
+              {tCommon('cancel')}
             </Button>
             <Button
               type="button"
@@ -71,7 +72,7 @@ export function DeleteToolButton({ toolId, locale }: DeleteToolButtonProps) {
               onClick={handleDelete}
               data-testid="confirm-delete-button"
             >
-              Yes, delete
+              {t('deleteModalConfirm')}
             </Button>
           </div>
         </div>

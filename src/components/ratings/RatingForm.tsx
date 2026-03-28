@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
 import { submitRating } from '@/lib/actions/ratings'
@@ -17,13 +18,14 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
   const [error, setError] = useState<string | undefined>()
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const t = useTranslations('ratings')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(undefined)
 
     if (score === 0) {
-      setError('Please select a star rating')
+      setError(t('selectRating'))
       return
     }
 
@@ -52,7 +54,7 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
         data-testid="rating-success"
         className="rounded-md bg-green-50 px-4 py-3 text-sm text-green-700"
       >
-        Thank you for rating {rateeName}!
+        {t('thankYou', { name: rateeName })}
       </div>
     )
   }
@@ -67,7 +69,7 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
       className="flex flex-col gap-4"
     >
       <p className="text-sm font-medium text-gray-700">
-        Rate your experience with <strong>{rateeName}</strong>
+        {t('rateExperience')} <strong>{rateeName}</strong>
       </p>
 
       {/* Star selector */}
@@ -116,9 +118,9 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
       <Textarea
         id="rating-comment"
         name="comment"
-        label="Comment (optional)"
+        label={t('comment')}
         rows={3}
-        placeholder="Share your experience…"
+        placeholder={t('commentPlaceholder')}
         data-testid="rating-comment"
       />
 
@@ -135,7 +137,7 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
         data-testid="rating-submit"
         className="w-full sm:w-auto"
       >
-        Submit rating
+        {t('submit')}
       </Button>
     </form>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { RequestCard } from '@/components/requests/RequestCard'
 import { EmptyState } from '@/components/ui/EmptyState'
 import type { RequestWithDetails } from '@/types/database.types'
@@ -14,10 +15,11 @@ export interface RequestTabsProps {
 
 export function RequestTabs({ incoming, outgoing, currentUserId, locale }: RequestTabsProps) {
   const [activeTab, setActiveTab] = useState<'incoming' | 'outgoing'>('incoming')
+  const t = useTranslations('requests')
 
   const tabs = [
-    { id: 'incoming' as const, label: 'Incoming', count: incoming.length },
-    { id: 'outgoing' as const, label: 'Outgoing', count: outgoing.length },
+    { id: 'incoming' as const, label: t('incoming'), count: incoming.length },
+    { id: 'outgoing' as const, label: t('outgoing'), count: outgoing.length },
   ]
 
   const items = activeTab === 'incoming' ? incoming : outgoing
@@ -61,12 +63,8 @@ export function RequestTabs({ incoming, outgoing, currentUserId, locale }: Reque
       <div role="tabpanel" id={`panel-${activeTab}`} aria-labelledby={`tab-${activeTab}`}>
         {items.length === 0 ? (
           <EmptyState
-            title={activeTab === 'incoming' ? 'No incoming requests' : 'No outgoing requests'}
-            description={
-              activeTab === 'incoming'
-                ? 'When someone requests to borrow your tools, they will appear here'
-                : 'Your borrow requests will appear here'
-            }
+            title={activeTab === 'incoming' ? t('noIncoming') : t('noOutgoing')}
+            description={activeTab === 'incoming' ? t('noIncomingHint') : t('noOutgoingHint')}
           />
         ) : (
           <div className="flex flex-col gap-4" data-testid={`${activeTab}-requests`}>
