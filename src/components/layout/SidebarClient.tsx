@@ -402,7 +402,7 @@ export function SidebarClient({
         ].join(' ')}
       >
         {/* Desktop toggle */}
-        <div className="flex items-center justify-center py-3">
+        <div className="flex items-center justify-end pr-3 py-3">
           <button
             type="button"
             data-testid="sidebar-toggle-desktop"
