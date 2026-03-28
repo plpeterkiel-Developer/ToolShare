@@ -10,7 +10,14 @@
     "skipToContent": "Skip to content",
     "tools": "Tools",
     "profile": "Profile",
-    "admin": "Admin"
+    "admin": "Admin",
+    "home": "Home",
+    "expandSidebar": "Expand menu",
+    "collapseSidebar": "Collapse menu",
+    "closeSidebar": "Close menu",
+    "navigation": "Main navigation",
+    "pendingRequests": "{count, plural, one {# pending request} other {# pending requests}}",
+    "activeBorrows": "{count, plural, one {# active borrow} other {# active borrows}}"
   },
   "home": {
     "hero": {

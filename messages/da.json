@@ -10,7 +10,14 @@
     "skipToContent": "Spring til indhold",
     "tools": "Værktøjer",
     "profile": "Profil",
-    "admin": "Admin"
+    "admin": "Admin",
+    "home": "Hjem",
+    "expandSidebar": "Udvid menu",
+    "collapseSidebar": "Skjul menu",
+    "closeSidebar": "Luk menu",
+    "navigation": "Hovednavigation",
+    "pendingRequests": "{count, plural, one {# ventende forespørgsel} other {# ventende forespørgsler}}",
+    "activeBorrows": "{count, plural, one {# aktivt lån} other {# aktive lån}}"
   },
   "home": {
     "hero": {
