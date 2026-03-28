@@ -7,6 +7,7 @@ import type { User } from '@supabase/supabase-js'
 import { useTranslations } from 'next-intl'
 import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher'
 import { LogoutButton } from '@/components/layout/LogoutButton'
+import { ToolShareIcon } from '@/components/ui/ToolShareIcon'
 
 interface SidebarClientProps {
   user: User | null
@@ -463,9 +464,10 @@ function SidebarContent({
         <Link
           href={`/${locale}`}
           onClick={onNavClick}
-          className="text-lg font-bold text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded shrink-0"
+          className="flex items-center gap-2 text-lg font-bold text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded shrink-0"
         >
-          {expanded ? 'ToolShare' : 'TS'}
+          <ToolShareIcon size={28} />
+          {expanded && <span>ToolShare</span>}
         </Link>
       </div>
 
