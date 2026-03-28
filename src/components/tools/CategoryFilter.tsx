@@ -9,12 +9,23 @@ export interface CategoryFilterProps {
   selectedCategory?: string
 }
 
+const CATEGORY_KEY_MAP: Record<string, string> = {
+  'Power Tools': 'powerTools',
+  'Hand Tools': 'handTools',
+  Gardening: 'gardening',
+  Measuring: 'measuring',
+  Cleaning: 'cleaning',
+  Automotive: 'automotive',
+  Other: 'other',
+}
+
 export function CategoryFilter({ categories, selectedCategory }: CategoryFilterProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [, startTransition] = useTransition()
   const t = useTranslations('common')
+  const tCat = useTranslations('tools.categories')
 
   function selectCategory(category: string | null) {
     const params = new URLSearchParams(searchParams.toString())
@@ -71,7 +82,7 @@ export function CategoryFilter({ categories, selectedCategory }: CategoryFilterP
                 : 'border border-gray-300 bg-white text-gray-600 hover:bg-gray-50',
             ].join(' ')}
           >
-            {category}
+            {CATEGORY_KEY_MAP[category] ? tCat(CATEGORY_KEY_MAP[category]) : category}
           </button>
         )
       })}
