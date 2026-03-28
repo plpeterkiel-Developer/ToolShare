@@ -255,7 +255,7 @@ function NavItem({
         onClick={onClick}
         title={expanded ? undefined : label}
         className={[
-          'relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150',
+          'relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-150',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
           isActive
             ? 'bg-green-100 text-green-800 font-medium'
@@ -263,13 +263,22 @@ function NavItem({
         ].join(' ')}
         aria-current={isActive ? 'page' : undefined}
       >
-        {icon}
-        {expanded && <span className="whitespace-nowrap">{label}</span>}
+        <span className="flex w-10 shrink-0 items-center justify-center">{icon}</span>
+        <span
+          className={[
+            'whitespace-nowrap transition-all duration-300 overflow-hidden',
+            expanded ? 'opacity-100 max-w-48 ml-1' : 'opacity-0 max-w-0 ml-0',
+          ].join(' ')}
+        >
+          {label}
+        </span>
         {badge !== undefined && badge > 0 && (
           <span
             className={[
               'inline-flex items-center justify-center rounded-full text-xs font-bold',
-              expanded ? 'ml-auto px-2 py-0.5 min-w-[1.25rem]' : 'absolute -top-1 -right-1 h-5 w-5',
+              expanded
+                ? 'ml-auto mr-3 px-2 py-0.5 min-w-[1.25rem]'
+                : 'absolute -top-1 -right-1 h-5 w-5',
               badgeClasses,
             ].join(' ')}
             data-testid={badgeColor === 'red' ? 'sidebar-pending-badge' : 'sidebar-active-badge'}
@@ -461,22 +470,23 @@ function SidebarContent({
   return (
     <>
       {/* Logo */}
-      <div
-        className={[
-          'flex border-b border-stone-200 px-3 py-4',
-          expanded ? 'items-center justify-start' : 'items-center justify-center',
-        ].join(' ')}
-      >
+      <div className="flex items-center border-b border-stone-200 py-4">
         <Link
           href={`/${locale}`}
           onClick={onNavClick}
-          className={[
-            'flex items-center font-bold text-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded-xl shrink-0',
-            expanded ? 'flex-row gap-2 text-lg' : 'flex-col gap-1 text-[10px]',
-          ].join(' ')}
+          className="flex items-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
         >
-          <ToolShareIcon size={expanded ? 28 : 32} />
-          <span className={expanded ? '' : 'leading-tight'}>ToolShare</span>
+          <span className="flex w-10 shrink-0 items-center justify-center">
+            <ToolShareIcon size={28} />
+          </span>
+          <span
+            className={[
+              'font-bold text-green-800 whitespace-nowrap transition-all duration-300 overflow-hidden',
+              expanded ? 'opacity-100 max-w-40 text-lg ml-1' : 'opacity-0 max-w-0 ml-0',
+            ].join(' ')}
+          >
+            ToolShare
+          </span>
         </Link>
       </div>
 
