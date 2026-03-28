@@ -16,14 +16,21 @@ export async function updateProfile(formData: FormData) {
   const pickupAddress = formData.get('pickup_address') as string | null
   const bio = formData.get('bio') as string | null
   const avatarUrl = formData.get('avatar_url') as string | null
+  const latStr = formData.get('latitude') as string | null
+  const lngStr = formData.get('longitude') as string | null
 
   if (!displayName?.trim()) return { error: 'Display name is required' }
+
+  const latitude = latStr ? parseFloat(latStr) : null
+  const longitude = lngStr ? parseFloat(lngStr) : null
 
   const { error } = await supabase
     .from('profiles')
     .update({
       display_name: displayName.trim(),
       location: location?.trim() || null,
+      latitude: latitude != null && !isNaN(latitude) ? latitude : null,
+      longitude: longitude != null && !isNaN(longitude) ? longitude : null,
       pickup_address: pickupAddress?.trim() || null,
       bio: bio?.trim() || null,
       avatar_url: avatarUrl || null,

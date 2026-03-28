@@ -3,20 +3,21 @@ import { getTools } from '@/lib/queries/tools'
 import { ToolGrid } from '@/components/tools/ToolGrid'
 import { SearchBar } from '@/components/tools/SearchBar'
 import { CategoryFilter } from '@/components/tools/CategoryFilter'
+import { LocationFilter } from '@/components/tools/LocationFilter'
 import { TOOL_CATEGORIES } from '@/lib/utils/constants'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
 interface ToolsPageProps {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ q?: string; category?: string }>
+  searchParams: Promise<{ q?: string; category?: string; lat?: string; lng?: string; radius?: string }>
 }
 
 export default async function ToolsPage({ params, searchParams }: ToolsPageProps) {
   const { locale } = await params
   setRequestLocale(locale)
 
-  const { q, category } = await searchParams
+  const { q, category, lat: latStr, lng: lngStr, radius: radiusStr } = await searchParams
 
   const t = await getTranslations('tools')
 
@@ -25,7 +26,19 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
     data: { user },
   } = await supabase.auth.getUser()
 
-  const tools = await getTools({ search: q, category })
+  // Parse location filter params
+  const lat = latStr ? parseFloat(latStr) : undefined
+  const lng = lngStr ? parseFloat(lngStr) : undefined
+  const radiusKm = radiusStr ? parseFloat(radiusStr) : undefined
+  const hasLocation = lat != null && !isNaN(lat) && lng != null && !isNaN(lng) && radiusKm != null && !isNaN(radiusKm)
+
+  const tools = await getTools({
+    search: q,
+    category,
+    lat: hasLocation ? lat : undefined,
+    lng: hasLocation ? lng : undefined,
+    radiusKm: hasLocation ? radiusKm : undefined,
+  })
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -53,12 +66,22 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
         <CategoryFilter categories={[...TOOL_CATEGORIES]} selectedCategory={category} />
       </div>
 
+      {/* Location filter */}
+      <div className="mb-8">
+        <LocationFilter
+          defaultLat={hasLocation ? lat : undefined}
+          defaultLng={hasLocation ? lng : undefined}
+          defaultRadius={hasLocation ? radiusKm : undefined}
+        />
+      </div>
+
       {/* Active filters summary */}
-      {(q || category) && (
+      {(q || category || hasLocation) && (
         <p className="mb-4 text-sm text-gray-500" data-testid="active-filters">
           {t('resultsCount', { count: tools.length })}
           {q ? ` ${t('resultsFor', { query: q })}` : ''}
           {category ? ` ${t('resultsIn', { category })}` : ''}
+          {hasLocation ? ` ${t('location.withinRadius', { radius: radiusKm })}` : ''}
         </p>
       )}
 
