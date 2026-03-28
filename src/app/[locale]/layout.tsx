@@ -38,7 +38,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <div className="flex min-h-screen">
           <Sidebar user={user} locale={locale} />
           <div className="flex flex-1 flex-col min-w-0 bg-[#fafaf5]">
-            <main id="main-content" className="flex-1">
+            <main id="main-content" className="flex-1 pt-14 md:pt-0">
               {children}
             </main>
             <Footer locale={locale} />

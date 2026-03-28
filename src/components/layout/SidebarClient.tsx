@@ -340,19 +340,25 @@ export function SidebarClient({
 
   return (
     <>
-      {/* Mobile toggle button — fixed top-left */}
-      <button
-        ref={toggleRef}
-        type="button"
-        data-testid="sidebar-toggle"
-        aria-label={expanded ? t('closeSidebar') : t('expandSidebar')}
-        aria-expanded={expanded}
-        aria-controls="sidebar-nav"
-        onClick={() => setExpanded((prev) => !prev)}
-        className="fixed left-3 top-3 z-50 rounded-xl bg-white p-2 text-stone-600 shadow-md hover:bg-stone-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 md:hidden"
-      >
-        {expanded ? <CloseIcon /> : <MenuIcon />}
-      </button>
+      {/* Mobile top bar — logo + hamburger */}
+      <div className="fixed top-0 left-0 right-0 z-50 flex items-center gap-3 bg-white/95 backdrop-blur-sm border-b border-stone-200 px-3 py-2.5 shadow-sm md:hidden">
+        <button
+          ref={toggleRef}
+          type="button"
+          data-testid="sidebar-toggle"
+          aria-label={expanded ? t('closeSidebar') : t('expandSidebar')}
+          aria-expanded={expanded}
+          aria-controls="sidebar-nav"
+          onClick={() => setExpanded((prev) => !prev)}
+          className="rounded-xl p-2 text-stone-600 hover:bg-stone-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
+        >
+          {expanded ? <CloseIcon /> : <MenuIcon />}
+        </button>
+        <Link href={`/${locale}`} className="flex items-center gap-2">
+          <ToolShareIcon size={28} />
+          <span className="text-lg font-bold text-green-800">ToolShare</span>
+        </Link>
+      </div>
 
       {/* Mobile backdrop */}
       {expanded && (
@@ -457,17 +463,20 @@ function SidebarContent({
       {/* Logo */}
       <div
         className={[
-          'flex items-center border-b border-stone-200 px-3 py-4',
-          expanded ? 'justify-start gap-3' : 'justify-center',
+          'flex border-b border-stone-200 px-3 py-4',
+          expanded ? 'items-center justify-start' : 'items-center justify-center',
         ].join(' ')}
       >
         <Link
           href={`/${locale}`}
           onClick={onNavClick}
-          className="flex items-center gap-2 text-lg font-bold text-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded-xl shrink-0"
+          className={[
+            'flex items-center font-bold text-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded-xl shrink-0',
+            expanded ? 'flex-row gap-2 text-lg' : 'flex-col gap-1 text-[10px]',
+          ].join(' ')}
         >
-          <ToolShareIcon size={28} />
-          {expanded && <span>ToolShare</span>}
+          <ToolShareIcon size={expanded ? 28 : 32} />
+          <span className={expanded ? '' : 'leading-tight'}>ToolShare</span>
         </Link>
       </div>
 
