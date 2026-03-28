@@ -40,6 +40,12 @@
     "resultsCount": "{count, plural, one {# resultat} other {# resultater}}",
     "resultsFor": "for \"{query}\"",
     "resultsIn": "i {category}",
+    "location": {
+      "filterByLocation": "Filtrer efter placering",
+      "clickToDropPin": "Klik på kortet for at sætte en nål og filtrere efter placering.",
+      "clearLocation": "Ryd",
+      "withinRadius": "inden for {radius} km"
+    },
     "condition": {
       "good": "God stand",
       "fair": "Brugbar stand",
@@ -195,6 +201,11 @@
       "location": "By/kvarter",
       "pickupAddress": "Afhentningsadresse (privat)",
       "pickupAddressHint": "Vises kun for godkendte lånere via e-mail",
+      "mapLocation": "Nål på kort",
+      "mapLocationHint": "Klik på kortet for at angive din omtrentlige placering. Det hjælper folk med at finde værktøj i nærheden.",
+      "clearPin": "Fjern nål",
+      "searchRadius": "Søgeradius",
+      "searchRadiusHint": "Værktøjer inden for denne afstand vises, når du søger efter placering.",
       "bio": "Om mig",
       "save": "Gem profil"
     }

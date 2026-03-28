@@ -17,6 +17,9 @@ export interface Database {
           id: string
           display_name: string
           location: string | null
+          latitude: number | null
+          longitude: number | null
+          search_radius: number
           pickup_address: string | null
           bio: string | null
           avatar_url: string | null
@@ -32,6 +35,9 @@ export interface Database {
           id: string
           display_name: string
           location?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          search_radius?: number
           pickup_address?: string | null
           bio?: string | null
           avatar_url?: string | null
@@ -46,6 +52,9 @@ export interface Database {
         Update: {
           display_name?: string
           location?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          search_radius?: number
           pickup_address?: string | null
           bio?: string | null
           avatar_url?: string | null

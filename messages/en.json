@@ -40,6 +40,12 @@
     "resultsCount": "{count, plural, one {# result} other {# results}}",
     "resultsFor": "for \"{query}\"",
     "resultsIn": "in {category}",
+    "location": {
+      "filterByLocation": "Filter by location",
+      "clickToDropPin": "Click the map to drop a pin to filter by location.",
+      "clearLocation": "Clear",
+      "withinRadius": "within {radius} km"
+    },
     "condition": {
       "good": "Good condition",
       "fair": "Fair condition",
@@ -195,6 +201,11 @@
       "location": "City / Neighbourhood",
       "pickupAddress": "Pick-up Address (private)",
       "pickupAddressHint": "Only shown to approved borrowers via email",
+      "mapLocation": "Pin on map",
+      "mapLocationHint": "Click the map to set your approximate location. This helps people find nearby tools.",
+      "clearPin": "Remove pin",
+      "searchRadius": "Search Radius",
+      "searchRadiusHint": "Tools within this distance will appear when you search by location.",
       "bio": "About Me",
       "save": "Save Profile"
     }
