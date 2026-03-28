@@ -1,4 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin'
+import type { Community, Profile } from '@/types/database.types'
 
 export async function getAdminDashboardStats() {
   const supabase = createAdminClient()
@@ -81,6 +82,77 @@ export async function getAllRequests() {
       '*, tool:tools(id, name), borrower:profiles!borrower_id(id, display_name), owner:profiles!owner_id(id, display_name)'
     )
     .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return data ?? []
+}
+
+// ── Community queries ────────────────────────────────────────────
+
+export async function getAllCommunities() {
+  const supabase = createAdminClient()
+
+  const { data: communities, error } = await supabase
+    .from('communities')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+
+  // Get member counts per community
+  const communityIds = (communities ?? []).map((c: Community) => c.id)
+  if (communityIds.length === 0) return []
+
+  const { data: memberships } = await supabase
+    .from('community_members')
+    .select('community_id')
+    .in('community_id', communityIds)
+
+  const countMap = new Map<string, number>()
+  for (const m of (memberships ?? []) as { community_id: string }[]) {
+    countMap.set(m.community_id, (countMap.get(m.community_id) ?? 0) + 1)
+  }
+
+  return (communities ?? []).map((c: Community) => ({
+    ...c,
+    member_count: countMap.get(c.id) ?? 0,
+  }))
+}
+
+export async function getCommunityById(id: string) {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase.from('communities').select('*').eq('id', id).single()
+
+  if (error) return null
+  return data as Community
+}
+
+export async function getCommunityMembers(communityId: string) {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('community_members')
+    .select('profile_id, joined_at, profile:profiles!profile_id(id, display_name)')
+    .eq('community_id', communityId)
+    .order('joined_at', { ascending: false })
+
+  if (error) throw error
+
+  return (data ?? []).map((row) => ({
+    profile_id: row.profile_id,
+    joined_at: row.joined_at,
+    profile: row.profile as unknown as Pick<Profile, 'id' | 'display_name'>,
+  }))
+}
+
+export async function getAllUsersForMemberSelect() {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, display_name')
+    .order('display_name', { ascending: true })
 
   if (error) throw error
   return data ?? []

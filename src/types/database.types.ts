@@ -12,6 +12,37 @@ export type ReportReason = 'inappropriate' | 'spam' | 'broken_item' | 'no_show' 
 export interface Database {
   public: {
     Tables: {
+      communities: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          created_at?: string
+        }
+        Update: {
+          name?: string
+          description?: string | null
+        }
+      }
+      community_members: {
+        Row: {
+          community_id: string
+          profile_id: string
+          joined_at: string
+        }
+        Insert: {
+          community_id: string
+          profile_id: string
+          joined_at?: string
+        }
+        Update: never
+      }
       admins: {
         Row: {
           id: string
@@ -91,6 +122,7 @@ export interface Database {
           condition: ToolCondition
           image_url: string | null
           availability: ToolAvailability
+          community_id: string | null
           created_at: string
           updated_at: string
           test_run_id: string | null
@@ -104,6 +136,7 @@ export interface Database {
           condition?: ToolCondition
           image_url?: string | null
           availability?: ToolAvailability
+          community_id?: string | null
           created_at?: string
           updated_at?: string
           test_run_id?: string | null
@@ -115,6 +148,7 @@ export interface Database {
           condition?: ToolCondition
           image_url?: string | null
           availability?: ToolAvailability
+          community_id?: string | null
           updated_at?: string
           test_run_id?: string | null
         }
@@ -211,12 +245,23 @@ export type Tool = Database['public']['Tables']['tools']['Row']
 export type BorrowRequest = Database['public']['Tables']['borrow_requests']['Row']
 export type Rating = Database['public']['Tables']['ratings']['Row']
 export type Report = Database['public']['Tables']['reports']['Row']
+export type Community = Database['public']['Tables']['communities']['Row']
+export type CommunityMember = Database['public']['Tables']['community_members']['Row']
 
 // Profile without pickup_address (safe to use in client components)
 export type PublicProfile = Omit<Profile, 'pickup_address'>
 
+// Community with member count (used in admin lists)
+export type CommunityWithMemberCount = Community & { member_count: number }
+
 // Tool with owner profile joined
 export type ToolWithOwner = Tool & { owner: PublicProfile }
+
+// Tool with owner and community joined
+export type ToolWithOwnerAndCommunity = Tool & {
+  owner: PublicProfile
+  community: { id: string; name: string } | null
+}
 
 // Request with tool and participants joined
 export type RequestWithDetails = BorrowRequest & {

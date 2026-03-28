@@ -95,3 +95,95 @@ export async function adminDeleteTool(toolId: string) {
   revalidatePath('/admin/tools')
   return { success: true }
 }
+
+// ── Community actions ────────────────────────────────────────────
+
+export async function createCommunity(formData: FormData) {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
+  const name = formData.get('name') as string
+  const description = formData.get('description') as string | null
+
+  if (!name?.trim()) return { error: 'Name is required' }
+
+  const supabase = createAdminClient()
+  const { error } = await supabase
+    .from('communities')
+    .insert({ name: name.trim(), description: description?.trim() || null })
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/communities')
+  return { success: true }
+}
+
+export async function updateCommunity(communityId: string, formData: FormData) {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
+  const name = formData.get('name') as string
+  const description = formData.get('description') as string | null
+
+  if (!name?.trim()) return { error: 'Name is required' }
+
+  const supabase = createAdminClient()
+  const { error } = await supabase
+    .from('communities')
+    .update({ name: name.trim(), description: description?.trim() || null })
+    .eq('id', communityId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/communities')
+  return { success: true }
+}
+
+export async function deleteCommunity(communityId: string) {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
+  const supabase = createAdminClient()
+  const { error } = await supabase.from('communities').delete().eq('id', communityId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/communities')
+  revalidatePath('/tools')
+  return { success: true }
+}
+
+export async function addCommunityMember(communityId: string, profileId: string) {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
+  const supabase = createAdminClient()
+  const { error } = await supabase
+    .from('community_members')
+    .insert({ community_id: communityId, profile_id: profileId })
+
+  if (error) {
+    if (error.code === '23505') return { error: 'User is already a member' }
+    return { error: error.message }
+  }
+
+  revalidatePath(`/admin/communities/${communityId}`)
+  return { success: true }
+}
+
+export async function removeCommunityMember(communityId: string, profileId: string) {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
+  const supabase = createAdminClient()
+  const { error } = await supabase
+    .from('community_members')
+    .delete()
+    .eq('community_id', communityId)
+    .eq('profile_id', profileId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/admin/communities/${communityId}`)
+  return { success: true }
+}

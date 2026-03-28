@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
+import { getUserCommunities } from '@/lib/queries/communities'
 import { ToolForm } from '@/components/tools/ToolForm'
 
 interface NewToolPageProps {
@@ -22,12 +23,14 @@ export default async function NewToolPage({ params }: NewToolPageProps) {
     redirect(`/${locale}/auth/login?next=/${locale}/tools/new`)
   }
 
+  const communities = await getUserCommunities(user.id)
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
       <h1 data-testid="new-tool-heading" className="mb-8 text-2xl font-bold text-gray-900">
         {t('addTool')}
       </h1>
-      <ToolForm mode="create" locale={locale} />
+      <ToolForm mode="create" locale={locale} communities={communities} />
     </div>
   )
 }

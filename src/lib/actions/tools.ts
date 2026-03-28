@@ -18,9 +18,21 @@ export async function createTool(formData: FormData) {
   const category = formData.get('category') as string
   const condition = (formData.get('condition') as ToolCondition) ?? 'good'
   const imageUrl = formData.get('image_url') as string | null
+  const communityId = formData.get('community_id') as string | null
 
   if (!name?.trim()) return { error: 'Name is required' }
   if (!category?.trim()) return { error: 'Category is required' }
+
+  // Validate community membership if a community is specified
+  if (communityId) {
+    const { data: membership } = await supabase
+      .from('community_members')
+      .select('community_id')
+      .eq('community_id', communityId)
+      .eq('profile_id', user.id)
+      .single()
+    if (!membership) return { error: 'You are not a member of this community' }
+  }
 
   const { data, error } = await supabase
     .from('tools')
@@ -31,6 +43,7 @@ export async function createTool(formData: FormData) {
       category,
       condition,
       image_url: imageUrl || null,
+      community_id: communityId || null,
     })
     .select('id')
     .single()
@@ -55,8 +68,20 @@ export async function updateTool(toolId: string, formData: FormData) {
   const condition = formData.get('condition') as ToolCondition
   const imageUrl = formData.get('image_url') as string | null
   const availability = formData.get('availability') as ToolAvailability
+  const communityId = formData.get('community_id') as string | null
 
   if (!name?.trim()) return { error: 'Name is required' }
+
+  // Validate community membership if a community is specified
+  if (communityId) {
+    const { data: membership } = await supabase
+      .from('community_members')
+      .select('community_id')
+      .eq('community_id', communityId)
+      .eq('profile_id', user.id)
+      .single()
+    if (!membership) return { error: 'You are not a member of this community' }
+  }
 
   const { error } = await supabase
     .from('tools')
@@ -67,6 +92,7 @@ export async function updateTool(toolId: string, formData: FormData) {
       condition,
       image_url: imageUrl || null,
       availability: availability ?? 'available',
+      community_id: communityId || null,
     })
     .eq('id', toolId)
     .eq('owner_id', user.id)

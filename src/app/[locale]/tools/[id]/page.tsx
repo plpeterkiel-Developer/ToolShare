@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getToolById } from '@/lib/queries/tools'
 import { getPendingRequestsForTool } from '@/lib/queries/requests'
+import { getUserCommunityIds } from '@/lib/queries/communities'
 import { createClient } from '@/lib/supabase/server'
 import { BorrowRequestButton } from '@/components/requests/BorrowRequestButton'
 import { DeleteToolButton } from '@/components/tools/DeleteToolButton'
@@ -30,6 +31,13 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   } = await supabase.auth.getUser()
 
   const isOwner = user?.id === tool.owner_id
+
+  // Check if user is a member of the tool's community (for borrow restriction)
+  let isCommunityMember = true
+  if (tool.community_id && user && !isOwner) {
+    const userCommunityIds = await getUserCommunityIds(user.id)
+    isCommunityMember = userCommunityIds.includes(tool.community_id)
+  }
 
   const availabilityConfig: Record<
     ToolAvailability,
@@ -114,6 +122,14 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             </span>
           </div>
 
+          {/* Community badge */}
+          {tool.community && (
+            <div className="flex items-center gap-2" data-testid="tool-community-badge">
+              <Badge variant="blue">{tool.community.name}</Badge>
+              <span className="text-xs text-gray-500">{t('detail.communityOnly')}</span>
+            </div>
+          )}
+
           {tool.description && (
             <p
               data-testid="tool-detail-description"
@@ -143,8 +159,14 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             </div>
           )}
 
-          {/* Borrow action */}
-          <BorrowRequestButton tool={tool} currentUserId={user?.id ?? null} />
+          {/* Borrow action - restricted if not community member */}
+          {tool.community_id && !isCommunityMember && !isOwner ? (
+            <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+              {t('detail.communityRestricted')}
+            </p>
+          ) : (
+            <BorrowRequestButton tool={tool} currentUserId={user?.id ?? null} />
+          )}
 
           {/* Owner controls */}
           {isOwner && (
