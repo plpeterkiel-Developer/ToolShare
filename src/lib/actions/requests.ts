@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { resend, EMAIL_FROM } from '@/lib/email/resend'
+import { getResend, EMAIL_FROM } from '@/lib/email/resend'
 import RequestReceived from '@/lib/email/templates/request-received'
 import RequestApproved from '@/lib/email/templates/request-approved'
 import RequestDenied from '@/lib/email/templates/request-denied'
@@ -62,7 +62,7 @@ export async function createBorrowRequest(formData: FormData) {
     const { data: ownerAuthUser } = await supabase.auth.admin.getUserById(tool.owner_id)
 
     if (ownerAuthUser?.user?.email) {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: EMAIL_FROM,
         to: ownerAuthUser.user.email,
         subject: `New borrow request for "${tool.name}"`,
@@ -118,7 +118,7 @@ export async function approveRequest(requestId: string) {
   try {
     const { data: borrowerAuthUser } = await supabase.auth.admin.getUserById(req.borrower_id)
     if (borrowerAuthUser?.user?.email) {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: EMAIL_FROM,
         to: borrowerAuthUser.user.email,
         subject: `Your request for "${(req.tool as { name: string })?.name}" has been approved`,
@@ -172,7 +172,7 @@ export async function denyRequest(requestId: string, reason?: string) {
   try {
     const { data: borrowerAuthUser } = await supabase.auth.admin.getUserById(req.borrower_id)
     if (borrowerAuthUser?.user?.email) {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: EMAIL_FROM,
         to: borrowerAuthUser.user.email,
         subject: `Your request for "${(req.tool as { name: string })?.name}" was not approved`,
@@ -226,7 +226,7 @@ export async function cancelRequest(requestId: string) {
       .single()
     const { data: ownerAuthUser } = await supabase.auth.admin.getUserById(req.owner_id)
     if (ownerAuthUser?.user?.email) {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: EMAIL_FROM,
         to: ownerAuthUser.user.email,
         subject: `Borrow request for "${(req.tool as { name: string })?.name}" was cancelled`,

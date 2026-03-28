@@ -18,6 +18,11 @@ function isProtectedPath(pathname: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
+  // Skip intl middleware for API routes
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
   // 1. Run next-intl routing first
   const intlResponse = intlMiddleware(request)
 

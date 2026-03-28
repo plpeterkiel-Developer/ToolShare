@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useLocale } from 'next-intl'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { signup } from '@/lib/actions/auth'
 
 export function SignUpForm() {
+  const locale = useLocale()
   const [error, setError] = useState<string | undefined>()
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
@@ -31,6 +33,7 @@ export function SignUpForm() {
 
     // Pass display_name via the expected field name
     formData.set('displayName', formData.get('display_name') as string)
+    formData.set('locale', locale)
 
     const result = await signup(formData)
     if (result?.error) {

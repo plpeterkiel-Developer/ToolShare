@@ -24,6 +24,7 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
   const displayName = formData.get('displayName') as string
+  const locale = (formData.get('locale') as string) || 'da'
 
   const { error } = await supabase.auth.signUp({
     email,
@@ -37,7 +38,7 @@ export async function signup(formData: FormData) {
     return { error: error.message }
   }
 
-  redirect('/da')
+  redirect(`/${locale}/auth/confirm`)
 }
 
 export async function logout() {

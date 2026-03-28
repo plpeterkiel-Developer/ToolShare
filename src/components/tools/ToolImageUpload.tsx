@@ -49,10 +49,10 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
       }
 
       const ext = file.name.split('.').pop() ?? 'jpg'
-      const path = `tool-images/${userData.user.id}/${crypto.randomUUID()}.${ext}`
+      const path = `${userData.user.id}/${crypto.randomUUID()}.${ext}`
 
       const { error: uploadError } = await supabase.storage
-        .from('tools')
+        .from('tool-images')
         .upload(path, file, { upsert: false })
 
       if (uploadError) {
@@ -61,7 +61,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
         return
       }
 
-      const { data: urlData } = supabase.storage.from('tools').getPublicUrl(path)
+      const { data: urlData } = supabase.storage.from('tool-images').getPublicUrl(path)
       onUpload(urlData.publicUrl)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed')

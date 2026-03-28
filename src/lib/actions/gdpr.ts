@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { resend, EMAIL_FROM } from '@/lib/email/resend'
+import { getResend, EMAIL_FROM } from '@/lib/email/resend'
 import GdprExport from '@/lib/email/templates/gdpr-export'
 
 export async function downloadMyData() {
@@ -39,7 +39,7 @@ export async function downloadMyData() {
   const exportJson = JSON.stringify(exportData, null, 2)
 
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: EMAIL_FROM,
       to: user.email!,
       subject: 'Your ToolShare data export',
