@@ -26,11 +26,22 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
     data: { user },
   } = await supabase.auth.getUser()
 
+  // Get the user's preferred search radius from their profile (default 2 km)
+  let userRadius = 2
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('search_radius')
+      .eq('id', user.id)
+      .single()
+    if (profile) userRadius = (profile as { search_radius: number }).search_radius
+  }
+
   // Parse location filter params
   const lat = latStr ? parseFloat(latStr) : undefined
   const lng = lngStr ? parseFloat(lngStr) : undefined
-  const radiusKm = radiusStr ? parseFloat(radiusStr) : undefined
-  const hasLocation = lat != null && !isNaN(lat) && lng != null && !isNaN(lng) && radiusKm != null && !isNaN(radiusKm)
+  const radiusKm = radiusStr ? parseFloat(radiusStr) : userRadius
+  const hasLocation = lat != null && !isNaN(lat) && lng != null && !isNaN(lng)
 
   const tools = await getTools({
     search: q,
@@ -71,7 +82,7 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
         <LocationFilter
           defaultLat={hasLocation ? lat : undefined}
           defaultLng={hasLocation ? lng : undefined}
-          defaultRadius={hasLocation ? radiusKm : undefined}
+          userRadius={userRadius}
         />
       </div>
 

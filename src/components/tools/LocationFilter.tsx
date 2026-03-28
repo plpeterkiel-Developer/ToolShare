@@ -13,15 +13,14 @@ const LocationPicker = dynamic(
   { ssr: false }
 )
 
-const RADIUS_OPTIONS = [1, 2, 5, 10, 25, 50] as const
-
 interface LocationFilterProps {
   defaultLat?: number
   defaultLng?: number
-  defaultRadius?: number
+  /** The user's saved search radius from their profile (default 2 km) */
+  userRadius: number
 }
 
-export function LocationFilter({ defaultLat, defaultLng, defaultRadius }: LocationFilterProps) {
+export function LocationFilter({ defaultLat, defaultLng, userRadius }: LocationFilterProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -32,15 +31,14 @@ export function LocationFilter({ defaultLat, defaultLng, defaultRadius }: Locati
   const [pin, setPin] = useState<LatLng | null>(
     defaultLat != null && defaultLng != null ? { lat: defaultLat, lng: defaultLng } : null
   )
-  const [radius, setRadius] = useState(defaultRadius ?? 10)
 
   const applyFilter = useCallback(
-    (newPin: LatLng | null, newRadius: number) => {
+    (newPin: LatLng | null) => {
       const params = new URLSearchParams(searchParams.toString())
       if (newPin) {
         params.set('lat', newPin.lat.toFixed(6))
         params.set('lng', newPin.lng.toFixed(6))
-        params.set('radius', String(newRadius))
+        params.set('radius', String(userRadius))
       } else {
         params.delete('lat')
         params.delete('lng')
@@ -51,25 +49,17 @@ export function LocationFilter({ defaultLat, defaultLng, defaultRadius }: Locati
         router.push(`${pathname}?${params.toString()}`)
       })
     },
-    [searchParams, pathname, router, startTransition]
+    [searchParams, pathname, router, startTransition, userRadius]
   )
 
   function handlePinChange(latlng: LatLng) {
     setPin(latlng)
-    applyFilter(latlng, radius)
-  }
-
-  function handleRadiusChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const newRadius = Number(e.target.value)
-    setRadius(newRadius)
-    if (pin) {
-      applyFilter(pin, newRadius)
-    }
+    applyFilter(latlng)
   }
 
   function handleClear() {
     setPin(null)
-    applyFilter(null, radius)
+    applyFilter(null)
   }
 
   return (
@@ -113,27 +103,10 @@ export function LocationFilter({ defaultLat, defaultLng, defaultRadius }: Locati
         <div className="flex flex-col gap-3">
           <p className="text-xs text-gray-500">{t('clickToDropPin')}</p>
 
-          <LocationPicker value={pin} onChange={handlePinChange} radiusKm={radius} height="250px" />
+          <LocationPicker value={pin} onChange={handlePinChange} radiusKm={userRadius} height="250px" />
 
-          <div className="flex items-center gap-3">
-            <label htmlFor="radius-select" className="text-sm font-medium text-gray-700 whitespace-nowrap">
-              {t('radius')}
-            </label>
-            <select
-              id="radius-select"
-              value={radius}
-              onChange={handleRadiusChange}
-              data-testid="radius-select"
-              className="rounded-md border border-gray-300 bg-white py-1.5 pl-3 pr-8 text-sm text-gray-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-            >
-              {RADIUS_OPTIONS.map((r) => (
-                <option key={r} value={r}>
-                  {r} km
-                </option>
-              ))}
-            </select>
-
-            {pin && (
+          {pin && (
+            <div>
               <button
                 type="button"
                 onClick={handleClear}
@@ -142,8 +115,8 @@ export function LocationFilter({ defaultLat, defaultLng, defaultRadius }: Locati
               >
                 {t('clearLocation')}
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>

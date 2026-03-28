@@ -42,8 +42,7 @@
     "resultsIn": "in {category}",
     "location": {
       "filterByLocation": "Filter by location",
-      "clickToDropPin": "Click the map to drop a pin, then choose a search radius.",
-      "radius": "Radius",
+      "clickToDropPin": "Click the map to drop a pin to filter by location.",
       "clearLocation": "Clear",
       "withinRadius": "within {radius} km"
     },
@@ -205,6 +204,8 @@
       "mapLocation": "Pin on map",
       "mapLocationHint": "Click the map to set your approximate location. This helps people find nearby tools.",
       "clearPin": "Remove pin",
+      "searchRadius": "Search Radius",
+      "searchRadiusHint": "Tools within this distance will appear when you search by location.",
       "bio": "About Me",
       "save": "Save Profile"
     }

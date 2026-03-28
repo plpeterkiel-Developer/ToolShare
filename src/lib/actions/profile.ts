@@ -18,11 +18,13 @@ export async function updateProfile(formData: FormData) {
   const avatarUrl = formData.get('avatar_url') as string | null
   const latStr = formData.get('latitude') as string | null
   const lngStr = formData.get('longitude') as string | null
+  const searchRadiusStr = formData.get('search_radius') as string | null
 
   if (!displayName?.trim()) return { error: 'Display name is required' }
 
   const latitude = latStr ? parseFloat(latStr) : null
   const longitude = lngStr ? parseFloat(lngStr) : null
+  const searchRadius = searchRadiusStr ? parseFloat(searchRadiusStr) : null
 
   const { error } = await supabase
     .from('profiles')
@@ -31,6 +33,7 @@ export async function updateProfile(formData: FormData) {
       location: location?.trim() || null,
       latitude: latitude != null && !isNaN(latitude) ? latitude : null,
       longitude: longitude != null && !isNaN(longitude) ? longitude : null,
+      search_radius: searchRadius != null && !isNaN(searchRadius) ? searchRadius : 2,
       pickup_address: pickupAddress?.trim() || null,
       bio: bio?.trim() || null,
       avatar_url: avatarUrl || null,

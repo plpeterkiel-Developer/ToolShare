@@ -19,6 +19,7 @@ export interface Database {
           location: string | null
           latitude: number | null
           longitude: number | null
+          search_radius: number
           pickup_address: string | null
           bio: string | null
           avatar_url: string | null
@@ -36,6 +37,7 @@ export interface Database {
           location?: string | null
           latitude?: number | null
           longitude?: number | null
+          search_radius?: number
           pickup_address?: string | null
           bio?: string | null
           avatar_url?: string | null
@@ -52,6 +54,7 @@ export interface Database {
           location?: string | null
           latitude?: number | null
           longitude?: number | null
+          search_radius?: number
           pickup_address?: string | null
           bio?: string | null
           avatar_url?: string | null
