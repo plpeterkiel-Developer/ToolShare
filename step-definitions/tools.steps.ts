@@ -1,6 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
-import { CustomWorld } from '../features/support/world'
+import { CustomWorld, DEFAULT_TIMEOUT } from '../features/support/world'
 import { ToolsPage } from '../features/support/page-objects/tools.page'
 import { createTestUser, seedTools } from '../features/support/db-helpers'
 
@@ -192,7 +192,7 @@ When('I confirm the deletion', async function (this: CustomWorld) {
 // ─── Thens ───────────────────────────────────────────────────────────────────
 
 Then('I should see the tools listing page', async function (this: CustomWorld) {
-  await expect(this.page.locator('[data-testid="tools-heading"]')).toBeVisible({ timeout: 10_000 })
+  await expect(this.page.locator('[data-testid="tools-heading"]')).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })
 
 Then('I should see at least one tool card', async function (this: CustomWorld) {
@@ -220,7 +220,7 @@ Then("I should see the owner's name", async function (this: CustomWorld) {
 })
 
 Then('I should see the edit button', async function (this: CustomWorld) {
-  await expect(this.page.locator('[data-testid="edit-tool-link"]')).toBeVisible({ timeout: 8_000 })
+  await expect(this.page.locator('[data-testid="edit-tool-link"]')).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })
 
 Then('I should see the delete button', async function (this: CustomWorld) {
@@ -249,11 +249,11 @@ Then('I should see the request to borrow button', async function (this: CustomWo
 })
 
 Then('I should be redirected to the tool detail page', async function (this: CustomWorld) {
-  await this.page.waitForURL(/\/da\/tools\/[^/]+$/, { timeout: 15_000 })
+  await this.page.waitForURL(/\/da\/tools\/[^/]+$/, { timeout: DEFAULT_TIMEOUT * 1.5 })
 })
 
 Then('I should be redirected to the tools listing page', async function (this: CustomWorld) {
-  await this.page.waitForURL(/\/da\/tools$/, { timeout: 15_000 })
+  await this.page.waitForURL(/\/da\/tools$/, { timeout: DEFAULT_TIMEOUT * 1.5 })
 })
 
 Then('I should see a validation error for the name field', async function (this: CustomWorld) {
@@ -263,14 +263,14 @@ Then('I should see a validation error for the name field', async function (this:
   if (!isInvalid) {
     // Check for our server-side error message
     const errEl = this.page.locator('[data-testid="tool-form-error"]')
-    await expect(errEl).toBeVisible({ timeout: 5_000 })
+    await expect(errEl).toBeVisible({ timeout: DEFAULT_TIMEOUT })
   } else {
     expect(isInvalid).toBe(true)
   }
 })
 
 Then('I should see the unavailable badge', async function (this: CustomWorld) {
-  await expect(this.page.locator('text=Unavailable').first()).toBeVisible({ timeout: 8_000 })
+  await expect(this.page.locator('text=Unavailable').first()).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })
 
 Then('the tool should still exist', async function (this: CustomWorld) {

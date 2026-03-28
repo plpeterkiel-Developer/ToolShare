@@ -20,5 +20,9 @@ const statusVariants: Record<RequestStatus, 'green' | 'yellow' | 'red' | 'gray' 
 export function RequestStatusBadge({ status }: RequestStatusBadgeProps) {
   const t = useTranslations('requests.status')
   const variant = statusVariants[status] ?? 'gray'
-  return <Badge variant={variant}>{t(status)}</Badge>
+  return (
+    <Badge variant={variant} data-testid="request-status">
+      {t(status)}
+    </Badge>
+  )
 }

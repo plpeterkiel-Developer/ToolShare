@@ -130,11 +130,10 @@ export class ToolsPage {
   }
 
   async getAvailabilityBadge(): Promise<string | null> {
-    // Badge is inside the detail heading area
-    const badge = this.page.locator('[data-testid="tool-detail-name"] ~ * .rounded-full').first()
+    const badge = this.page.locator('[data-testid="availability-badge"]').first()
     if (await badge.isVisible()) return badge.textContent()
     // Fallback: find any badge on the detail page
-    const anyBadge = this.page.locator('.rounded-full').first()
+    const anyBadge = this.page.locator('[data-testid="tool-detail-name"] ~ * .rounded-full').first()
     if (await anyBadge.isVisible()) return anyBadge.textContent()
     return null
   }

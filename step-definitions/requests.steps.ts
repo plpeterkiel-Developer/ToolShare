@@ -4,33 +4,32 @@ import { CustomWorld } from '../features/support/world'
 import { RequestsPage } from '../features/support/page-objects/requests.page'
 import { createTestUser, seedTools, seedBorrowRequest } from '../features/support/db-helpers'
 
-// ─── Shared state ────────────────────────────────────────────────────────────
-
-let borrowerEmail = ''
-const borrowerPassword = 'TestPass123!' // pragma: allowlist secret
-let ownerEmail = ''
-let sharedToolId = ''
-let sharedRequestId = ''
-
 // ─── Givens ──────────────────────────────────────────────────────────────────
 
 Given('I am logged in as a borrower', async function (this: CustomWorld) {
-  borrowerEmail = `borrower-${this.testRunId.slice(0, 8)}@test.toolshare.app`
-  await createTestUser(this.supabaseAdmin, borrowerEmail, borrowerPassword, this.testRunId)
+  const borrowerEmail = `borrower-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  this.sharedEmail = borrowerEmail
+  const { id } = await createTestUser(
+    this.supabaseAdmin,
+    borrowerEmail,
+    this.sharedPassword,
+    this.testRunId
+  )
   this.currentUserEmail = borrowerEmail
-  await this.loginAs(borrowerEmail, borrowerPassword)
+  this.currentUserId = id
+  await this.loginAs(borrowerEmail, this.sharedPassword)
 })
 
 Given('there is an available tool owned by a different user', async function (this: CustomWorld) {
-  ownerEmail = `toolowner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  this.ownerEmail = `toolowner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
   const seeded = await seedTools(
     this.supabaseAdmin,
     [{ name: 'Borrowable Hammer', category: 'Hand Tools', availability: 'available' }],
     this.testRunId,
-    ownerEmail
+    this.ownerEmail
   )
-  sharedToolId = seeded[0].id
-  this.registerSeededTool('Borrowable Hammer', sharedToolId)
+  this.sharedToolId = seeded[0].id
+  this.registerSeededTool('Borrowable Hammer', this.sharedToolId)
 })
 
 Given('there is a pending borrow request for my tool', async function (this: CustomWorld) {
@@ -47,7 +46,7 @@ Given('there is a pending borrow request for my tool', async function (this: Cus
   )
   const toolId = seeded[0].id
   const ownerId = seeded[0].ownerId
-  sharedToolId = toolId
+  this.sharedToolId = toolId
   this.registerSeededTool('Requested Tool', toolId)
 
   // Create borrower
@@ -55,11 +54,11 @@ Given('there is a pending borrow request for my tool', async function (this: Cus
   const { id: borrowerId } = await createTestUser(
     this.supabaseAdmin,
     bEmail,
-    borrowerPassword,
+    this.sharedPassword,
     this.testRunId
   )
 
-  sharedRequestId = await seedBorrowRequest({
+  this.sharedRequestId = await seedBorrowRequest({
     supabaseAdmin: this.supabaseAdmin,
     toolId,
     borrowerId,
@@ -71,7 +70,8 @@ Given('there is a pending borrow request for my tool', async function (this: Cus
 })
 
 Given('I have submitted a borrow request', async function (this: CustomWorld) {
-  // Ensure we have a tool from another user and a pending request from current user
+  if (!this.currentUserId) throw new Error('No currentUserId — log in as borrower first')
+
   const toolOwnerEmail = `reqowner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
   const seeded = await seedTools(
     this.supabaseAdmin,
@@ -79,70 +79,42 @@ Given('I have submitted a borrow request', async function (this: CustomWorld) {
     this.testRunId,
     toolOwnerEmail
   )
-  sharedToolId = seeded[0].id
-  this.registerSeededTool('My Requested Tool', sharedToolId)
+  this.sharedToolId = seeded[0].id
+  this.registerSeededTool('My Requested Tool', this.sharedToolId)
 
-  // Get borrower user id
-  const { data: borrowerProfile } = await this.supabaseAdmin
-    .from('profiles')
-    .select('id')
-    .eq('test_run_id', this.testRunId)
-    .eq('display_name', borrowerEmail.split('@')[0])
-    .maybeSingle()
-
-  if (!borrowerProfile) {
-    // Fallback: look up by email prefix
-    const { data: authUsers } = await this.supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 100,
-    })
-    const borrower = authUsers.users.find(
-      (u) => u.email === borrowerEmail && u.user_metadata?.test_run_id === this.testRunId
-    )
-    if (!borrower) throw new Error('Could not find borrower user')
-    sharedRequestId = await seedBorrowRequest({
-      supabaseAdmin: this.supabaseAdmin,
-      toolId: sharedToolId,
-      borrowerId: borrower.id,
-      ownerId: seeded[0].ownerId,
-      testRunId: this.testRunId,
-      status: 'pending',
-    })
-  } else {
-    sharedRequestId = await seedBorrowRequest({
-      supabaseAdmin: this.supabaseAdmin,
-      toolId: sharedToolId,
-      borrowerId: borrowerProfile.id,
-      ownerId: seeded[0].ownerId,
-      testRunId: this.testRunId,
-      status: 'pending',
-    })
-  }
+  this.sharedRequestId = await seedBorrowRequest({
+    supabaseAdmin: this.supabaseAdmin,
+    toolId: this.sharedToolId,
+    borrowerId: this.currentUserId,
+    ownerId: seeded[0].ownerId,
+    testRunId: this.testRunId,
+    status: 'pending',
+  })
 })
 
 Given('a borrow request has been approved for a tool', async function (this: CustomWorld) {
-  const ownerEmail2 = `approved-owner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
-  const borrowerEmail2 = `approved-borrower-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const approvedOwnerEmail = `approved-owner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const approvedBorrowerEmail = `approved-borrower-${this.testRunId.slice(0, 8)}@test.toolshare.app`
 
   const seeded = await seedTools(
     this.supabaseAdmin,
     [{ name: 'Approved Tool', category: 'Hand Tools', availability: 'on_loan' }],
     this.testRunId,
-    ownerEmail2
+    approvedOwnerEmail
   )
-  sharedToolId = seeded[0].id
-  this.registerSeededTool('Approved Tool', sharedToolId)
+  this.sharedToolId = seeded[0].id
+  this.registerSeededTool('Approved Tool', this.sharedToolId)
 
   const { id: borrowerId } = await createTestUser(
     this.supabaseAdmin,
-    borrowerEmail2,
+    approvedBorrowerEmail,
     'TestPass123!',
     this.testRunId
   )
 
   await seedBorrowRequest({
     supabaseAdmin: this.supabaseAdmin,
-    toolId: sharedToolId,
+    toolId: this.sharedToolId,
     borrowerId,
     ownerId: seeded[0].ownerId,
     testRunId: this.testRunId,
@@ -151,7 +123,8 @@ Given('a borrow request has been approved for a tool', async function (this: Cus
 })
 
 Given('I have a pending outgoing borrow request', async function (this: CustomWorld) {
-  // Reuse the "I have submitted a borrow request" setup
+  if (!this.currentUserId) throw new Error('No currentUserId — log in as borrower first')
+
   const toolOwnerEmail = `pendingowner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
   const seeded = await seedTools(
     this.supabaseAdmin,
@@ -159,21 +132,12 @@ Given('I have a pending outgoing borrow request', async function (this: CustomWo
     this.testRunId,
     toolOwnerEmail
   )
-  sharedToolId = seeded[0].id
+  this.sharedToolId = seeded[0].id
 
-  const { data: authUsers } = await this.supabaseAdmin.auth.admin.listUsers({
-    page: 1,
-    perPage: 100,
-  })
-  const borrower = authUsers.users.find(
-    (u) => u.email === borrowerEmail && u.user_metadata?.test_run_id === this.testRunId
-  )
-  if (!borrower) throw new Error('Could not find borrower user for pending request')
-
-  sharedRequestId = await seedBorrowRequest({
+  this.sharedRequestId = await seedBorrowRequest({
     supabaseAdmin: this.supabaseAdmin,
-    toolId: sharedToolId,
-    borrowerId: borrower.id,
+    toolId: this.sharedToolId,
+    borrowerId: this.currentUserId,
     ownerId: seeded[0].ownerId,
     testRunId: this.testRunId,
     status: 'pending',
@@ -183,8 +147,8 @@ Given('I have a pending outgoing borrow request', async function (this: CustomWo
 // ─── Whens ───────────────────────────────────────────────────────────────────
 
 When('I navigate to the tool detail page', async function (this: CustomWorld) {
-  if (!sharedToolId) throw new Error('No sharedToolId set')
-  await this.page.goto(`${this.baseUrl}/da/tools/${sharedToolId}`)
+  if (!this.sharedToolId) throw new Error('No sharedToolId set')
+  await this.page.goto(`${this.baseUrl}/da/tools/${this.sharedToolId}`)
 })
 
 When('I click the request to borrow button', async function (this: CustomWorld) {

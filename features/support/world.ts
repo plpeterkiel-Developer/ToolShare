@@ -4,7 +4,11 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import * as dotenv from 'dotenv'
 import { v4 as uuidv4 } from 'uuid'
 
-dotenv.config({ path: '.env.local' })
+dotenv.config({ path: '.env.test' })
+dotenv.config({ path: '.env.local' }) // fallback if .env.test doesn't exist
+
+/** Default timeout (ms) used across step definitions for UI assertions. */
+export const DEFAULT_TIMEOUT = 10_000
 
 export class CustomWorld extends World {
   browser!: Browser
@@ -14,7 +18,15 @@ export class CustomWorld extends World {
   baseUrl: string
   testRunId: string
   currentUserEmail: string = ''
+  currentUserId: string = ''
   private seededToolIds: Map<string, string> = new Map()
+
+  // Scenario-scoped shared state (replaces former module-level variables)
+  sharedEmail: string = ''
+  sharedPassword: string = 'TestPass123!' // pragma: allowlist secret
+  ownerEmail: string = ''
+  sharedToolId: string = ''
+  sharedRequestId: string = ''
 
   constructor(options: IWorldOptions) {
     super(options)

@@ -1,21 +1,16 @@
 import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
-import { CustomWorld } from '../features/support/world'
+import { CustomWorld, DEFAULT_TIMEOUT } from '../features/support/world'
 import { AuthPage } from '../features/support/page-objects/auth.page'
 import { createTestUser } from '../features/support/db-helpers'
-
-// ─── State shared within a scenario via world ────────────────────────────────
-
-let sharedEmail = ''
-let sharedPassword = 'TestPass123!' // pragma: allowlist secret
 
 // ─── Givens ──────────────────────────────────────────────────────────────────
 
 Given('a registered user exists', async function (this: CustomWorld) {
   const email = `user-${this.testRunId.slice(0, 8)}@test.toolshare.app`
-  sharedEmail = email
-  sharedPassword = 'TestPass123!'
-  await createTestUser(this.supabaseAdmin, email, sharedPassword, this.testRunId)
+  this.sharedEmail = email
+  this.sharedPassword = 'TestPass123!'
+  await createTestUser(this.supabaseAdmin, email, this.sharedPassword, this.testRunId)
   this.currentUserEmail = email
 })
 
@@ -32,11 +27,11 @@ Given(
 
 Given('I am logged in as a registered user', async function (this: CustomWorld) {
   const email = `user-${this.testRunId.slice(0, 8)}@test.toolshare.app`
-  sharedEmail = email
-  sharedPassword = 'TestPass123!'
-  await createTestUser(this.supabaseAdmin, email, sharedPassword, this.testRunId)
+  this.sharedEmail = email
+  this.sharedPassword = 'TestPass123!'
+  await createTestUser(this.supabaseAdmin, email, this.sharedPassword, this.testRunId)
   this.currentUserEmail = email
-  await this.loginAs(email, sharedPassword)
+  await this.loginAs(email, this.sharedPassword)
 })
 
 Given('I am not logged in', async function (this: CustomWorld) {
@@ -49,12 +44,12 @@ Given('I am not logged in', async function (this: CustomWorld) {
 When('I fill in the signup form with a new user', async function (this: CustomWorld) {
   const authPage = new AuthPage(this.page, this.baseUrl)
   const email = `signup-${this.testRunId.slice(0, 8)}@test.toolshare.app`
-  sharedEmail = email
+  this.sharedEmail = email
   this.currentUserEmail = email
   await authPage.fillSignupForm({
     displayName: 'Test User',
     email,
-    password: sharedPassword,
+    password: this.sharedPassword,
   })
 })
 
@@ -80,12 +75,12 @@ When('I submit the signup form', async function (this: CustomWorld) {
 
 When('I fill in the login form with valid credentials', async function (this: CustomWorld) {
   const authPage = new AuthPage(this.page, this.baseUrl)
-  await authPage.fillLoginForm(sharedEmail, sharedPassword)
+  await authPage.fillLoginForm(this.sharedEmail, this.sharedPassword)
 })
 
 When('I fill in the login form with the wrong password', async function (this: CustomWorld) {
   const authPage = new AuthPage(this.page, this.baseUrl)
-  await authPage.fillLoginForm(sharedEmail, 'wrongpassword999')
+  await authPage.fillLoginForm(this.sharedEmail, 'wrongpassword999')
 })
 
 When('I submit the login form', async function (this: CustomWorld) {
@@ -104,7 +99,7 @@ Then('I should be redirected to a dashboard or home page', async function (this:
   // After login/signup, the user should land somewhere under /da/ (not on /auth/)
   await this.page.waitForURL(
     (url) => url.pathname.startsWith('/da') && !url.pathname.includes('/auth'),
-    { timeout: 15_000 }
+    { timeout: DEFAULT_TIMEOUT * 1.5 }
   )
 })
 
@@ -116,12 +111,12 @@ Then('I should see my display name in the navigation', async function (this: Cus
 })
 
 Then('I should be redirected to the home page', async function (this: CustomWorld) {
-  await this.page.waitForURL(/\/da$|\/da\//, { timeout: 10_000 })
+  await this.page.waitForURL(/\/da$|\/da\//, { timeout: DEFAULT_TIMEOUT })
 })
 
 Then('I should see the login link in the navigation', async function (this: CustomWorld) {
   const loginLink = this.page
     .locator('header a[href*="/auth/login"], header [data-testid="nav-login"]')
     .first()
-  await expect(loginLink).toBeVisible({ timeout: 8_000 })
+  await expect(loginLink).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })

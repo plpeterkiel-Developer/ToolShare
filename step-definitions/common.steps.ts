@@ -1,11 +1,11 @@
 import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
-import { CustomWorld } from '../features/support/world'
+import { CustomWorld, DEFAULT_TIMEOUT } from '../features/support/world'
 
 Given('the application is running', async function (this: CustomWorld) {
   // Verify the app responds — navigate to home as a health check
   await this.page.goto(`${this.baseUrl}/da`)
-  await expect(this.page).toHaveURL(/\/da/, { timeout: 20_000 })
+  await expect(this.page).toHaveURL(/\/da/, { timeout: DEFAULT_TIMEOUT * 2 })
 })
 
 When('I navigate to {string}', async function (this: CustomWorld, path: string) {
@@ -13,7 +13,7 @@ When('I navigate to {string}', async function (this: CustomWorld, path: string) 
 })
 
 Then('I should see {string}', async function (this: CustomWorld, text: string) {
-  await expect(this.page.locator(`text=${text}`).first()).toBeVisible({ timeout: 10_000 })
+  await expect(this.page.locator(`text=${text}`).first()).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })
 
 Then('I should not see {string}', async function (this: CustomWorld, text: string) {
@@ -31,7 +31,7 @@ Then('I should not see {string}', async function (this: CustomWorld, text: strin
 })
 
 Then('I should be redirected to the login page', async function (this: CustomWorld) {
-  await this.page.waitForURL(/\/auth\/login/, { timeout: 10_000 })
+  await this.page.waitForURL(/\/auth\/login/, { timeout: DEFAULT_TIMEOUT })
   await expect(this.page.locator('[data-testid="login-submit"]')).toBeVisible()
 })
 
@@ -44,7 +44,7 @@ Then(
       )
       .first()
 
-    await expect(errorLocator).toBeVisible({ timeout: 8_000 })
+    await expect(errorLocator).toBeVisible({ timeout: DEFAULT_TIMEOUT })
     const errorText = await errorLocator.textContent()
     expect(errorText?.toLowerCase()).toContain(text.toLowerCase())
   }
@@ -53,5 +53,5 @@ Then(
 Then('I should see a success notification', async function (this: CustomWorld) {
   await expect(
     this.page.locator('[data-testid="toast-success"], [role="status"]').first()
-  ).toBeVisible({ timeout: 8_000 })
+  ).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })

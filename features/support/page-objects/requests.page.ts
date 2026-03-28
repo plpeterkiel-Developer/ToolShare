@@ -26,7 +26,7 @@ export class RequestsPage {
     const statusEl = this.page
       .locator('[data-testid="request-card"]')
       .first()
-      .locator('.rounded-full')
+      .locator('[data-testid="request-status"]')
       .first()
     if (await statusEl.isVisible()) return statusEl.textContent()
     return null
@@ -34,7 +34,7 @@ export class RequestsPage {
 
   async getRequestStatusById(requestId: string): Promise<string | null> {
     const card = this.page.locator(`[data-request-id="${requestId}"]`)
-    const statusEl = card.locator('.rounded-full').first()
+    const statusEl = card.locator('[data-testid="request-status"]').first()
     if (await statusEl.isVisible()) return statusEl.textContent()
     return null
   }
@@ -93,7 +93,7 @@ export class RequestsPage {
 
   async waitForStatusChange(expectedStatus: string): Promise<void> {
     await this.page
-      .locator(`[data-testid="request-card"] .rounded-full:has-text("${expectedStatus}")`)
+      .locator(`[data-testid="request-card"] [data-testid="request-status"]:has-text("${expectedStatus}")`)
       .waitFor({ state: 'visible', timeout: 10_000 })
   }
 }

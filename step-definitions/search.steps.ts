@@ -1,6 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
-import { CustomWorld } from '../features/support/world'
+import { CustomWorld, DEFAULT_TIMEOUT } from '../features/support/world'
 import { seedTools } from '../features/support/db-helpers'
 
 // ─── Givens ──────────────────────────────────────────────────────────────────
@@ -101,8 +101,11 @@ Then(
 Then('I should see the empty state message', async function (this: CustomWorld) {
   await expect(this.page.locator('[data-testid="tool-grid"]')).toHaveCount(0)
   // EmptyState should be visible
-  const emptyState = this.page.locator('text=No tools found, text=no results').first()
-  await expect(emptyState).toBeVisible({ timeout: 8_000 })
+  const emptyState = this.page
+    .locator('text=No tools found')
+    .or(this.page.locator('text=no results'))
+    .first()
+  await expect(emptyState).toBeVisible({ timeout: 10_000 })
 })
 
 Then(
@@ -134,7 +137,7 @@ Then('I should not see tools in other categories', async function (this: CustomW
   // This is implicitly verified by the previous step; if categories match
   // then no tools from other categories are shown
   const toolGrid = this.page.locator('[data-testid="tool-grid"]')
-  await expect(toolGrid).toBeVisible({ timeout: 5_000 })
+  await expect(toolGrid).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })
 
 Then('I should see only tools matching both criteria', async function (this: CustomWorld) {
@@ -155,9 +158,8 @@ Then('I should not see the unavailable tool in the results', async function (thi
 
 Then('I should see all available tools again', async function (this: CustomWorld) {
   const cards = await this.page.locator('[data-testid="tool-card"]').count()
-  // After clearing the search, at least some tools should be visible
-  // (the seeded available tools from the Background step)
-  expect(cards).toBeGreaterThanOrEqual(0)
+  // After clearing the search, the seeded available tools from the Background step should be visible
+  expect(cards).toBeGreaterThan(0)
   // Importantly, the URL should not have a q parameter
   const url = new URL(this.page.url())
   expect(url.searchParams.has('q')).toBe(false)
@@ -169,7 +171,7 @@ Then('the search input should be empty', async function (this: CustomWorld) {
 })
 
 Then('I should see category filter buttons', async function (this: CustomWorld) {
-  await expect(this.page.locator('[data-testid="category-filter"]')).toBeVisible({ timeout: 8_000 })
+  await expect(this.page.locator('[data-testid="category-filter"]')).toBeVisible({ timeout: DEFAULT_TIMEOUT })
   const buttons = await this.page.locator('[data-testid="category-filter"] button').count()
   expect(buttons).toBeGreaterThan(1)
 })
@@ -179,5 +181,5 @@ Then('I should see an "All" category option', async function (this: CustomWorld)
     this.page.locator(
       '[data-testid="category-filter"] [data-testid="category-all"], [data-testid="category-filter"] button:has-text("All")'
     )
-  ).toBeVisible({ timeout: 8_000 })
+  ).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })
