@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getProfile } from '@/lib/queries/profile'
 import { getToolsByOwner } from '@/lib/queries/tools'
 import { getRatingsForUser, getAverageRating } from '@/lib/queries/ratings'
@@ -15,6 +15,8 @@ interface PublicProfilePageProps {
 export default async function PublicProfilePage({ params }: PublicProfilePageProps) {
   const { locale, id } = await params
   setRequestLocale(locale)
+
+  const t = await getTranslations('profile')
 
   const [profile, tools, ratings, averageRating] = await Promise.all([
     getProfile(id),
@@ -46,15 +48,14 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
             <div className="flex items-center gap-2 mt-2" data-testid="profile-average-rating">
               <RatingStars score={averageRating} size="sm" />
               <span className="text-sm text-gray-600">
-                {averageRating.toFixed(1)} ({ratings.length} rating{ratings.length !== 1 ? 's' : ''}
-                )
+                {averageRating.toFixed(1)} ({t('ratingCount', { count: ratings.length })})
               </span>
             </div>
           )}
 
           <p className="text-xs text-gray-400 mt-2">
-            Member since{' '}
-            {new Date(profile.created_at).toLocaleDateString(undefined, {
+            {t('memberSince')}{' '}
+            {new Date(profile.created_at).toLocaleDateString(locale, {
               year: 'numeric',
               month: 'long',
             })}
@@ -74,19 +75,23 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
 
       {/* Tools */}
       <section data-testid="profile-tools-section">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Tools ({tools.length})</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          {t('tools')} ({tools.length})
+        </h2>
         <ToolGrid
           tools={tools}
           locale={locale}
-          emptyTitle="No tools listed"
-          emptyDescription="This user hasn't added any tools yet"
+          emptyTitle={t('noToolsListed')}
+          emptyDescription={t('noToolsListedHint')}
         />
       </section>
 
       {/* Ratings */}
       <section data-testid="profile-ratings-section">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Ratings ({ratings.length})</h2>
-        <RatingsList ratings={ratings} emptyTitle="No ratings yet" />
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          {t('ratings')} ({ratings.length})
+        </h2>
+        <RatingsList ratings={ratings} emptyTitle={t('noRatings')} />
       </section>
     </div>
   )

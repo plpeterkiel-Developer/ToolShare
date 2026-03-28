@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getToolById } from '@/lib/queries/tools'
 import { createClient } from '@/lib/supabase/server'
 import { ToolForm } from '@/components/tools/ToolForm'
@@ -11,6 +11,8 @@ interface EditToolPageProps {
 export default async function EditToolPage({ params }: EditToolPageProps) {
   const { locale, id } = await params
   setRequestLocale(locale)
+
+  const t = await getTranslations('tools')
 
   const supabase = await createClient()
   const {
@@ -32,7 +34,7 @@ export default async function EditToolPage({ params }: EditToolPageProps) {
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
       <h1 data-testid="edit-tool-heading" className="mb-8 text-2xl font-bold text-gray-900">
-        Edit Tool
+        {t('editTool')}
       </h1>
       <ToolForm mode="edit" locale={locale} toolId={tool.id} initialData={tool} />
     </div>

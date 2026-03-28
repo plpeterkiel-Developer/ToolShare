@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { login, loginWithGoogle, loginWithFacebook } from '@/lib/actions/auth'
@@ -15,6 +16,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
   const [error, setError] = useState<string | undefined>(initialError)
   const [loading, setLoading] = useState(false)
   const [oauthLoading, setOauthLoading] = useState<'google' | 'facebook' | null>(null)
+  const t = useTranslations('auth.login')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -48,7 +50,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
 
   return (
     <div className="mx-auto w-full max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Log in to ToolShare</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t('heading')}</h1>
 
       {error && (
         <div
@@ -65,7 +67,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
           id="email"
           name="email"
           type="email"
-          label="Email address"
+          label={t('emailLabel')}
           autoComplete="email"
           required
           data-testid="email-input"
@@ -74,7 +76,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
           id="password"
           name="password"
           type="password"
-          label="Password"
+          label={t('password')}
           autoComplete="current-password"
           required
           data-testid="password-input"
@@ -86,13 +88,15 @@ export function LoginForm({ initialError }: LoginFormProps) {
           data-testid="login-submit"
           className="w-full"
         >
-          Log in
+          {t('submit')}
         </Button>
       </form>
 
       <div className="my-6 flex items-center gap-3">
         <hr className="flex-1 border-gray-200" />
-        <span className="text-xs text-gray-400 uppercase tracking-wider">Or continue with</span>
+        <span className="text-xs text-gray-400 uppercase tracking-wider">
+          {t('orContinueWith')}
+        </span>
         <hr className="flex-1 border-gray-200" />
       </div>
 
@@ -105,10 +109,10 @@ export function LoginForm({ initialError }: LoginFormProps) {
           onClick={handleGoogle}
           data-testid="google-login-button"
           className="w-full"
-          aria-label="Continue with Google"
+          aria-label={t('continueGoogle')}
         >
           <GoogleIcon />
-          Continue with Google
+          {t('continueGoogle')}
         </Button>
         <Button
           type="button"
@@ -118,20 +122,20 @@ export function LoginForm({ initialError }: LoginFormProps) {
           onClick={handleFacebook}
           data-testid="facebook-login-button"
           className="w-full"
-          aria-label="Continue with Facebook"
+          aria-label={t('continueFacebook')}
         >
           <FacebookIcon />
-          Continue with Facebook
+          {t('continueFacebook')}
         </Button>
       </div>
 
       <p className="mt-6 text-center text-sm text-gray-500">
-        Don&apos;t have an account?{' '}
+        {t('noAccount')}{' '}
         <Link
           href="signup"
           className="font-medium text-green-700 hover:text-green-800 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded"
         >
-          Sign up
+          {t('signupLink')}
         </Link>
       </p>
     </div>

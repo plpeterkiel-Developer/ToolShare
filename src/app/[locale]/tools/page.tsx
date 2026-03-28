@@ -56,9 +56,9 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
       {/* Active filters summary */}
       {(q || category) && (
         <p className="mb-4 text-sm text-gray-500" data-testid="active-filters">
-          {tools.length} result{tools.length !== 1 ? 's' : ''}
-          {q ? ` for "${q}"` : ''}
-          {category ? ` in ${category}` : ''}
+          {t('resultsCount', { count: tools.length })}
+          {q ? ` ${t('resultsFor', { query: q })}` : ''}
+          {category ? ` ${t('resultsIn', { category })}` : ''}
         </p>
       )}
 

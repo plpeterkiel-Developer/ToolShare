@@ -6,7 +6,10 @@
     "login": "Log In",
     "signup": "Sign Up",
     "logout": "Log Out",
-    "listTool": "Add a Tool"
+    "listTool": "Add a Tool",
+    "skipToContent": "Skip to content",
+    "tools": "Tools",
+    "profile": "Profile"
   },
   "home": {
     "hero": {
@@ -15,7 +18,10 @@
       "cta": "Browse Tools",
       "ctaSecondary": "Add a Tool"
     },
-    "recentTools": "Recently Available Tools"
+    "recentTools": "Recently Available Tools",
+    "noToolsYet": "No tools available yet",
+    "noToolsYetHint": "Be the first to add a tool to the community",
+    "viewAll": "View all tools"
   },
   "tools": {
     "browse": "Browse Tools",
@@ -28,6 +34,12 @@
     "available": "Available",
     "onLoan": "On Loan",
     "unavailable": "Unavailable",
+    "editTool": "Edit Tool",
+    "conditionLabel": "Condition:",
+    "activeRequests": "{count, plural, one {# active request} other {# active requests}}",
+    "resultsCount": "{count, plural, one {# result} other {# results}}",
+    "resultsFor": "for \"{query}\"",
+    "resultsIn": "in {category}",
     "condition": {
       "good": "Good condition",
       "fair": "Fair condition",
@@ -43,7 +55,7 @@
       "other": "Other"
     },
     "form": {
-      "name": "Name",
+      "name": "Tool name",
       "namePlaceholder": "e.g. Power Drill",
       "description": "Description",
       "descriptionPlaceholder": "Describe the tool, its condition, and any limitations",
@@ -52,8 +64,8 @@
       "image": "Image",
       "availability": "Availability",
       "submit": "Save",
-      "submitCreate": "Add Tool",
-      "submitEdit": "Save Changes",
+      "submitCreate": "Create tool",
+      "submitEdit": "Save changes",
       "cancel": "Cancel"
     },
     "detail": {
@@ -63,7 +75,21 @@
       "deleteListing": "Delete",
       "confirmDelete": "Are you sure you want to delete this tool?",
       "deleteBlocked": "Cannot delete — there is an active borrow request",
-      "reportListing": "Report"
+      "reportListing": "Report",
+      "deleteModalTitle": "Delete tool",
+      "deleteModalMessage": "Are you sure you want to delete this tool? This action cannot be undone.",
+      "deleteModalConfirm": "Yes, delete"
+    },
+    "image": {
+      "label": "Tool image",
+      "noImage": "No image selected",
+      "uploading": "Uploading…",
+      "changeImage": "Change image",
+      "chooseImage": "Choose image",
+      "tooLarge": "Image must be smaller than 5 MB",
+      "unsupported": "Only JPEG, PNG, WebP and GIF images are supported",
+      "loginRequired": "You must be logged in to upload images",
+      "uploadFailed": "Upload failed"
     }
   },
   "requests": {
@@ -72,6 +98,8 @@
     "outgoing": "Outgoing",
     "noIncoming": "No incoming requests",
     "noOutgoing": "No outgoing requests",
+    "noIncomingHint": "When someone requests to borrow your tools, they will appear here",
+    "noOutgoingHint": "Your borrow requests will appear here",
     "status": {
       "pending": "Pending",
       "approved": "Approved",
@@ -83,39 +111,60 @@
     "approve": "Approve",
     "deny": "Deny",
     "cancel": "Cancel",
+    "cancelRequest": "Cancel request",
+    "markReturned": "Mark as returned",
+    "tool": "Tool",
+    "borrower": "Borrower",
+    "owner": "Owner",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "message": "Message",
     "denyReason": "Enter a reason (optional)",
     "confirmCancel": "Are you sure you want to cancel this request?",
+    "borrowTitle": "Borrow \"{name}\"",
+    "requestSent": "Request sent successfully!",
     "form": {
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "message": "Message (optional)",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "message": "Message to owner (optional)",
       "messagePlaceholder": "Tell the owner what you need it for",
-      "submit": "Send Request"
+      "submit": "Send request"
     }
   },
   "auth": {
     "login": {
       "title": "Log In",
+      "heading": "Log in to ToolShare",
       "email": "Email",
+      "emailLabel": "Email address",
       "password": "Password",
-      "submit": "Log In",
+      "submit": "Log in",
       "noAccount": "Don't have an account?",
       "signupLink": "Sign up",
       "orContinueWith": "Or continue with",
       "google": "Google",
-      "facebook": "Facebook"
+      "facebook": "Facebook",
+      "continueGoogle": "Continue with Google",
+      "continueFacebook": "Continue with Facebook"
     },
     "signup": {
       "title": "Create Account",
-      "displayName": "Name",
+      "heading": "Create an account",
+      "displayName": "Display name",
       "email": "Email",
+      "emailLabel": "Email address",
       "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "location": "City / Neighbourhood (optional)",
-      "submit": "Create Account",
+      "confirmPassword": "Confirm password",
+      "location": "Location (optional)",
+      "submit": "Create account",
       "hasAccount": "Already have an account?",
       "loginLink": "Log in",
       "orContinueWith": "Or continue with"
+    },
+    "confirm": {
+      "title": "Check your email",
+      "message": "We've sent you a confirmation link. Click the link in the email to activate your account.",
+      "goToLogin": "Go to login"
     },
     "errors": {
       "invalidCredentials": "Invalid email or password",
@@ -131,33 +180,63 @@
     "ratings": "Ratings",
     "noRatings": "No ratings yet",
     "averageRating": "Average Rating",
+    "memberSince": "Member since",
+    "noToolsYet": "No tools listed yet",
+    "noToolsYetHint": "Add your first tool to start sharing with the community",
+    "addTool": "+ Add Tool",
+    "privacyData": "Privacy & Data",
+    "saved": "Profile saved!",
+    "tools": "Tools",
+    "ratingCount": "{count, plural, one {# rating} other {# ratings}}",
+    "noToolsListed": "No tools listed",
+    "noToolsListedHint": "This user hasn't added any tools yet",
     "form": {
-      "displayName": "Name",
+      "displayName": "Display Name",
       "location": "City / Neighbourhood",
       "pickupAddress": "Pick-up Address (private)",
       "pickupAddressHint": "Only shown to approved borrowers via email",
       "bio": "About Me",
       "save": "Save Profile"
-    },
-    "memberSince": "Member since"
+    }
   },
   "ratings": {
     "rateUser": "Rate",
     "yourExperience": "How was your experience?",
     "comment": "Comment (optional)",
-    "submit": "Submit Rating",
-    "alreadyRated": "You have already rated this loan"
+    "submit": "Submit rating",
+    "alreadyRated": "You have already rated this loan",
+    "thankYou": "Thank you for rating {name}!",
+    "rateExperience": "Rate your experience with",
+    "selectRating": "Please select a star rating",
+    "commentPlaceholder": "Share your experience…",
+    "anonymous": "Anonymous"
   },
   "gdpr": {
     "title": "Your Data",
-    "downloadData": "Download My Data",
-    "downloadDataDesc": "Receive a copy of all your data as JSON via email",
-    "requestErasure": "Request Erasure",
-    "requestErasureDesc": "Request deletion of your account and all your data within 30 days",
-    "rectifyData": "Rectify My Data",
-    "rectifyDataDesc": "Update your personal information",
-    "erasureRequested": "Erasure request received. Your account will be anonymised within 30 days.",
-    "confirmErasure": "Are you sure? This action cannot be undone."
+    "pageTitle": "Your Data & Privacy Rights",
+    "pageDescription": "Under the General Data Protection Regulation (GDPR), you have several rights regarding your personal data. Use the tools below to exercise these rights.",
+    "rightsTitle": "Your rights under GDPR",
+    "rightAccess": "<bold>Right of access</bold> — You can request a copy of all personal data we hold about you.",
+    "rightRectification": "<bold>Right to rectification</bold> — You can correct inaccurate or incomplete personal data.",
+    "rightErasure": "<bold>Right to erasure</bold> — You can request deletion of your personal data (\u201cthe right to be forgotten\u201d).",
+    "rightPortability": "<bold>Right to data portability</bold> — You can receive your data in a machine-readable format.",
+    "rightObject": "<bold>Right to object</bold> — You can object to processing of your personal data in certain circumstances.",
+    "contactInfo": "For requests not covered by the tools below, contact us at",
+    "downloadData": "Download your data",
+    "downloadDataDesc": "Request a copy of all data ToolShare holds about you. We will send a JSON export to your registered email address.",
+    "downloadButton": "Download my data",
+    "downloadSuccess": "Data export email sent — check your inbox.",
+    "requestErasure": "Request account erasure",
+    "requestErasureDesc": "You may request that ToolShare delete your personal data. Your account will be anonymised within 30 days of the request.",
+    "erasureRequested": "Your erasure request has been recorded. Your data will be removed within 30 days.",
+    "erasureButton": "Request erasure",
+    "erasureModalTitle": "Confirm account erasure",
+    "erasureModalMessage": "Are you sure you want to request account erasure? This action cannot be undone. Your personal data will be permanently deleted within 30 days.",
+    "erasureConfirm": "Yes, delete my data",
+    "confirmErasure": "Are you sure? This action cannot be undone.",
+    "rectifyData": "Rectify your data",
+    "rectifyDataDesc": "You can update your personal information at any time from your profile page.",
+    "rectifyLink": "Go to my profile"
   },
   "common": {
     "loading": "Loading...",
@@ -171,6 +250,13 @@
     "close": "Close",
     "back": "Back",
     "noResults": "No results",
-    "required": "Required"
+    "required": "Required",
+    "search": "Search",
+    "clear": "Clear",
+    "all": "All"
+  },
+  "footer": {
+    "copyright": "ToolShare © 2026",
+    "gdprLink": "GDPR & Privacy"
   }
 }

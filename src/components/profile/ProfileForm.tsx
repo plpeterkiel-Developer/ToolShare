@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
@@ -15,6 +16,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
   const [success, setSuccess] = useState(false)
+  const t = useTranslations('profile')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -57,7 +59,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           data-testid="profile-form-success"
           className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
         >
-          Profile saved!
+          {t('saved')}
         </div>
       )}
 
@@ -65,7 +67,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         id="display-name"
         name="display_name"
         type="text"
-        label="Display Name"
+        label={t('form.displayName')}
         required
         defaultValue={profile.display_name}
         data-testid="display-name-input"
@@ -75,7 +77,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         id="location"
         name="location"
         type="text"
-        label="City / Neighbourhood"
+        label={t('form.location')}
         defaultValue={profile.location ?? ''}
         data-testid="location-input"
       />
@@ -84,7 +86,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         id="pickup-address"
         name="pickup_address"
         type="text"
-        label="Pick-up Address (private)"
+        label={t('form.pickupAddress')}
         defaultValue={profile.pickup_address ?? ''}
         data-testid="pickup-address-input"
       />
@@ -92,7 +94,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       <Textarea
         id="bio"
         name="bio"
-        label="About Me"
+        label={t('form.bio')}
         rows={4}
         defaultValue={profile.bio ?? ''}
         data-testid="bio-input"
@@ -105,7 +107,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         data-testid="save-profile-button"
         className="w-full sm:w-auto"
       >
-        Save Profile
+        {t('form.save')}
       </Button>
     </form>
   )

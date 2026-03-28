@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import type { User } from '@supabase/supabase-js'
+import { useTranslations } from 'next-intl'
 import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher'
 import { LogoutButton } from '@/components/layout/LogoutButton'
 
@@ -13,16 +14,17 @@ interface NavbarClientProps {
 
 export function NavbarClient({ user, locale }: NavbarClientProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const t = useTranslations('nav')
 
   const navLinks = user
     ? [
-        { href: `/${locale}/tools`, label: 'Tools' },
-        { href: `/${locale}/requests`, label: 'Requests' },
-        { href: `/${locale}/profile`, label: 'Profile' },
+        { href: `/${locale}/tools`, label: t('tools') },
+        { href: `/${locale}/requests`, label: t('requests') },
+        { href: `/${locale}/profile`, label: t('profile') },
       ]
     : [
-        { href: `/${locale}/auth/login`, label: 'Log in' },
-        { href: `/${locale}/auth/signup`, label: 'Sign up' },
+        { href: `/${locale}/auth/login`, label: t('login') },
+        { href: `/${locale}/auth/signup`, label: t('signup') },
       ]
 
   return (

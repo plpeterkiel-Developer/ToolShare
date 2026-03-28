@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { RequestStatusBadge } from '@/components/requests/RequestStatusBadge'
 import { Button } from '@/components/ui/Button'
 import { approveRequest, denyRequest, cancelRequest, markReturned } from '@/lib/actions/requests'
@@ -23,6 +24,7 @@ function formatDate(dateStr: string | null): string {
 export function RequestCard({ request, currentUserId }: RequestCardProps) {
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | undefined>()
+  const t = useTranslations('requests')
 
   const isOwner = currentUserId === request.owner_id
   const isBorrower = currentUserId === request.borrower_id
@@ -64,7 +66,7 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Tool</p>
+          <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">{t('tool')}</p>
           <p data-testid="request-tool-name" className="font-semibold text-gray-900">
             {request.tool.name}
           </p>
@@ -75,13 +77,13 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
       {/* Parties */}
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div>
-          <p className="text-xs text-gray-500">Borrower</p>
+          <p className="text-xs text-gray-500">{t('borrower')}</p>
           <p data-testid="request-borrower" className="font-medium text-gray-800">
             {request.borrower.display_name}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500">Owner</p>
+          <p className="text-xs text-gray-500">{t('owner')}</p>
           <p data-testid="request-owner" className="font-medium text-gray-800">
             {request.owner.display_name}
           </p>
@@ -91,11 +93,11 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
       {/* Dates */}
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div>
-          <p className="text-xs text-gray-500">Start date</p>
+          <p className="text-xs text-gray-500">{t('startDate')}</p>
           <p data-testid="request-start-date">{formatDate(request.start_date)}</p>
         </div>
         <div>
-          <p className="text-xs text-gray-500">End date</p>
+          <p className="text-xs text-gray-500">{t('endDate')}</p>
           <p data-testid="request-end-date">{formatDate(request.end_date)}</p>
         </div>
       </div>
@@ -103,7 +105,7 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
       {/* Message */}
       {request.message && (
         <div className="text-sm">
-          <p className="text-xs text-gray-500">Message</p>
+          <p className="text-xs text-gray-500">{t('message')}</p>
           <p data-testid="request-message" className="text-gray-700 italic">
             &ldquo;{request.message}&rdquo;
           </p>
@@ -130,7 +132,7 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
               onClick={onApprove}
               data-testid="approve-button"
             >
-              Approve
+              {t('approve')}
             </Button>
             <Button
               type="button"
@@ -141,7 +143,7 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
               onClick={onDeny}
               data-testid="deny-button"
             >
-              Deny
+              {t('deny')}
             </Button>
           </>
         )}
@@ -156,7 +158,7 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
             onClick={onCancel}
             data-testid="cancel-button"
           >
-            Cancel request
+            {t('cancelRequest')}
           </Button>
         )}
 
@@ -170,7 +172,7 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
             onClick={onMarkReturned}
             data-testid="mark-returned-button"
           >
-            Mark as returned
+            {t('markReturned')}
           </Button>
         )}
       </div>

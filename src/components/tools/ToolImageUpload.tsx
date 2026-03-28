@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { Spinner } from '@/components/ui/Spinner'
 
@@ -15,6 +16,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const t = useTranslations('tools.image')
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -22,13 +24,13 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
 
     const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
     if (file.size > MAX_SIZE) {
-      setError('Image must be smaller than 5 MB')
+      setError(t('tooLarge'))
       return
     }
 
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
     if (!allowed.includes(file.type)) {
-      setError('Only JPEG, PNG, WebP and GIF images are supported')
+      setError(t('unsupported'))
       return
     }
 
@@ -43,7 +45,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
       const supabase = createClient()
       const { data: userData } = await supabase.auth.getUser()
       if (!userData.user) {
-        setError('You must be logged in to upload images')
+        setError(t('loginRequired'))
         setUploading(false)
         return
       }
@@ -64,7 +66,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
       const { data: urlData } = supabase.storage.from('tool-images').getPublicUrl(path)
       onUpload(urlData.publicUrl)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed')
+      setError(err instanceof Error ? err.message : t('uploadFailed'))
     } finally {
       setUploading(false)
     }
@@ -72,14 +74,14 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-sm font-medium text-gray-700">Tool image</span>
+      <span className="text-sm font-medium text-gray-700">{t('label')}</span>
 
       {/* Preview area */}
       <div className="relative h-48 w-full overflow-hidden rounded-lg border-2 border-dashed border-gray-300 bg-gray-50">
         {preview ? (
           <Image
             src={preview}
-            alt="Tool image preview"
+            alt={t('label')}
             fill
             className="object-cover"
             sizes="(max-width: 640px) 100vw, 50vw"
@@ -101,7 +103,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <span className="text-sm">No image selected</span>
+            <span className="text-sm">{t('noImage')}</span>
           </div>
         )}
         {uploading && (
@@ -118,7 +120,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
         accept="image/jpeg,image/png,image/webp,image/gif"
         className="sr-only"
         id="tool-image-file"
-        aria-label="Upload tool image"
+        aria-label={t('chooseImage')}
         data-testid="tool-image-input"
         onChange={handleChange}
         disabled={uploading}
@@ -128,7 +130,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
         data-testid="tool-image-upload-button"
-        aria-label="Choose image to upload"
+        aria-label={t('chooseImage')}
         className={[
           'inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700',
           'hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2',
@@ -136,7 +138,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
         ].join(' ')}
       >
         {uploading ? <Spinner size="sm" /> : null}
-        {uploading ? 'Uploading…' : preview ? 'Change image' : 'Choose image'}
+        {uploading ? t('uploading') : preview ? t('changeImage') : t('chooseImage')}
       </button>
 
       {error && (

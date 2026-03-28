@@ -2,13 +2,15 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { signup } from '@/lib/actions/auth'
 
 export function SignUpForm() {
   const locale = useLocale()
+  const t = useTranslations('auth.signup')
+  const tErrors = useTranslations('auth.errors')
   const [error, setError] = useState<string | undefined>()
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
@@ -25,7 +27,7 @@ export function SignUpForm() {
     const confirmPassword = formData.get('confirmPassword') as string
 
     if (password !== confirmPassword) {
-      setFieldErrors({ confirmPassword: 'Passwords do not match' })
+      setFieldErrors({ confirmPassword: tErrors('passwordMismatch') })
       return
     }
 
@@ -44,7 +46,7 @@ export function SignUpForm() {
 
   return (
     <div className="mx-auto w-full max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Create an account</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t('heading')}</h1>
 
       {error && (
         <div
@@ -61,7 +63,7 @@ export function SignUpForm() {
           id="display_name"
           name="display_name"
           type="text"
-          label="Display name"
+          label={t('displayName')}
           autoComplete="name"
           required
           data-testid="display-name-input"
@@ -71,7 +73,7 @@ export function SignUpForm() {
           id="email"
           name="email"
           type="email"
-          label="Email address"
+          label={t('emailLabel')}
           autoComplete="email"
           required
           data-testid="email-input"
@@ -81,7 +83,7 @@ export function SignUpForm() {
           id="password"
           name="password"
           type="password"
-          label="Password"
+          label={t('password')}
           autoComplete="new-password"
           required
           minLength={6}
@@ -92,7 +94,7 @@ export function SignUpForm() {
           id="confirmPassword"
           name="confirmPassword"
           type="password"
-          label="Confirm password"
+          label={t('confirmPassword')}
           autoComplete="new-password"
           required
           data-testid="confirm-password-input"
@@ -102,7 +104,7 @@ export function SignUpForm() {
           id="location"
           name="location"
           type="text"
-          label="Location (optional)"
+          label={t('location')}
           autoComplete="address-level2"
           data-testid="location-input"
           error={fieldErrors.location}
@@ -114,17 +116,17 @@ export function SignUpForm() {
           data-testid="register-submit"
           className="w-full"
         >
-          Create account
+          {t('submit')}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-gray-500">
-        Already have an account?{' '}
+        {t('hasAccount')}{' '}
         <Link
           href="login"
           className="font-medium text-green-700 hover:text-green-800 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded"
         >
-          Log in
+          {t('loginLink')}
         </Link>
       </p>
     </div>

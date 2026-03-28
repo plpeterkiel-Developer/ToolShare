@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Select } from '@/components/ui/Select'
@@ -28,24 +29,25 @@ const CATEGORIES = [
   'Other',
 ]
 
-const categoryOptions = CATEGORIES.map((c) => ({ value: c, label: c }))
-
-const conditionOptions = [
-  { value: 'good', label: 'Good' },
-  { value: 'fair', label: 'Fair' },
-  { value: 'worn', label: 'Worn' },
-]
-
-const availabilityOptions = [
-  { value: 'available', label: 'Available' },
-  { value: 'on_loan', label: 'On loan' },
-  { value: 'unavailable', label: 'Unavailable' },
-]
-
 export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
   const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(initialData?.image_url ?? '')
+  const t = useTranslations('tools')
+
+  const categoryOptions = CATEGORIES.map((c) => ({ value: c, label: c }))
+
+  const conditionOptions = [
+    { value: 'good', label: t('condition.good') },
+    { value: 'fair', label: t('condition.fair') },
+    { value: 'worn', label: t('condition.worn') },
+  ]
+
+  const availabilityOptions = [
+    { value: 'available', label: t('available') },
+    { value: 'on_loan', label: t('onLoan') },
+    { value: 'unavailable', label: t('unavailable') },
+  ]
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -87,7 +89,7 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
         id="tool-name"
         name="name"
         type="text"
-        label="Tool name"
+        label={t('form.name')}
         required
         defaultValue={initialData?.name ?? ''}
         data-testid="tool-name"
@@ -96,7 +98,7 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
       <Textarea
         id="tool-description"
         name="description"
-        label="Description"
+        label={t('form.description')}
         defaultValue={initialData?.description ?? ''}
         data-testid="tool-description"
       />
@@ -104,7 +106,7 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
       <Select
         id="tool-category"
         name="category"
-        label="Category"
+        label={t('form.category')}
         required
         options={categoryOptions}
         defaultValue={initialData?.category ?? categoryOptions[0].value}
@@ -114,7 +116,7 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
       <Select
         id="tool-condition"
         name="condition"
-        label="Condition"
+        label={t('form.condition')}
         required
         options={conditionOptions}
         defaultValue={initialData?.condition ?? 'good'}
@@ -125,7 +127,7 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
         <Select
           id="availability"
           name="availability"
-          label="Availability"
+          label={t('form.availability')}
           options={availabilityOptions}
           defaultValue={initialData?.availability ?? 'available'}
           data-testid="availability-toggle"
@@ -141,7 +143,7 @@ export function ToolForm({ initialData, mode, toolId }: ToolFormProps) {
         data-testid="tool-form-submit"
         className="w-full sm:w-auto"
       >
-        {mode === 'edit' ? 'Save changes' : 'Create tool'}
+        {mode === 'edit' ? t('form.submitEdit') : t('form.submitCreate')}
       </Button>
     </form>
   )

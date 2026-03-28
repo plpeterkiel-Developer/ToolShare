@@ -9,14 +9,9 @@ interface ToolGridProps {
   emptyDescription?: string
 }
 
-export function ToolGrid({
-  tools,
-  locale,
-  emptyTitle = 'No tools found',
-  emptyDescription = 'Try a different search or category',
-}: ToolGridProps) {
+export function ToolGrid({ tools, locale, emptyTitle, emptyDescription }: ToolGridProps) {
   if (tools.length === 0) {
-    return <EmptyState title={emptyTitle} description={emptyDescription} />
+    return <EmptyState title={emptyTitle ?? ''} description={emptyDescription} />
   }
 
   return (

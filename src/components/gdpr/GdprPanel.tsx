@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
@@ -9,6 +10,8 @@ import { downloadMyData, requestErasure } from '@/lib/actions/gdpr'
 
 export function GdprPanel() {
   const { addToast } = useToast()
+  const t = useTranslations('gdpr')
+  const tCommon = useTranslations('common')
   const [downloadLoading, setDownloadLoading] = useState(false)
   const [erasureOpen, setErasureOpen] = useState(false)
   const [erasureLoading, setErasureLoading] = useState(false)
@@ -21,7 +24,7 @@ export function GdprPanel() {
     if (result?.error) {
       addToast('error', result.error)
     } else {
-      addToast('success', 'Data export email sent — check your inbox.')
+      addToast('success', t('downloadSuccess'))
     }
   }
 
@@ -43,12 +46,9 @@ export function GdprPanel() {
       {/* 1. Download data */}
       <section aria-labelledby="gdpr-download-heading" className="flex flex-col gap-3">
         <h2 id="gdpr-download-heading" className="text-base font-semibold text-gray-900">
-          Download your data
+          {t('downloadData')}
         </h2>
-        <p className="text-sm text-gray-600">
-          Request a copy of all data ToolShare holds about you. We will send a JSON export to your
-          registered email address.
-        </p>
+        <p className="text-sm text-gray-600">{t('downloadDataDesc')}</p>
         <div>
           <Button
             type="button"
@@ -56,9 +56,9 @@ export function GdprPanel() {
             loading={downloadLoading}
             onClick={handleDownload}
             data-testid="gdpr-download-button"
-            aria-label="Download my data"
+            aria-label={t('downloadButton')}
           >
-            Download my data
+            {t('downloadButton')}
           </Button>
         </div>
       </section>
@@ -68,19 +68,16 @@ export function GdprPanel() {
       {/* 2. Request erasure */}
       <section aria-labelledby="gdpr-erasure-heading" className="flex flex-col gap-3">
         <h2 id="gdpr-erasure-heading" className="text-base font-semibold text-gray-900">
-          Request account erasure
+          {t('requestErasure')}
         </h2>
-        <p className="text-sm text-gray-600">
-          You may request that ToolShare delete your personal data. Your account will be anonymised
-          within 30 days of the request.
-        </p>
+        <p className="text-sm text-gray-600">{t('requestErasureDesc')}</p>
         {erasureRequested ? (
           <div
             role="status"
             data-testid="gdpr-erasure-confirmation"
             className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
           >
-            Your erasure request has been recorded. Your data will be removed within 30 days.
+            {t('erasureRequested')}
           </div>
         ) : (
           <div>
@@ -89,9 +86,9 @@ export function GdprPanel() {
               variant="danger"
               onClick={() => setErasureOpen(true)}
               data-testid="gdpr-erasure-button"
-              aria-label="Request account erasure"
+              aria-label={t('erasureButton')}
             >
-              Request erasure
+              {t('erasureButton')}
             </Button>
           </div>
         )}
@@ -101,13 +98,10 @@ export function GdprPanel() {
       <Modal
         open={erasureOpen}
         onClose={() => !erasureLoading && setErasureOpen(false)}
-        title="Confirm account erasure"
+        title={t('erasureModalTitle')}
       >
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-gray-700">
-            Are you sure you want to request account erasure? This action cannot be undone. Your
-            personal data will be permanently deleted within 30 days.
-          </p>
+          <p className="text-sm text-gray-700">{t('erasureModalMessage')}</p>
           <div className="flex justify-end gap-2">
             <Button
               type="button"
@@ -116,7 +110,7 @@ export function GdprPanel() {
               onClick={() => setErasureOpen(false)}
               data-testid="gdpr-erasure-cancel"
             >
-              Cancel
+              {tCommon('cancel')}
             </Button>
             <Button
               type="button"
@@ -125,7 +119,7 @@ export function GdprPanel() {
               onClick={handleErasure}
               data-testid="gdpr-erasure-confirm"
             >
-              Yes, delete my data
+              {t('erasureConfirm')}
             </Button>
           </div>
         </div>
@@ -136,18 +130,16 @@ export function GdprPanel() {
       {/* 3. Rectify data */}
       <section aria-labelledby="gdpr-rectify-heading" className="flex flex-col gap-3">
         <h2 id="gdpr-rectify-heading" className="text-base font-semibold text-gray-900">
-          Rectify your data
+          {t('rectifyData')}
         </h2>
-        <p className="text-sm text-gray-600">
-          You can update your personal information at any time from your profile page.
-        </p>
+        <p className="text-sm text-gray-600">{t('rectifyDataDesc')}</p>
         <div>
           <Link
             href="/profile"
             data-testid="gdpr-rectify-link"
             className="inline-flex items-center gap-1 text-sm font-medium text-green-700 hover:text-green-800 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded"
           >
-            Go to my profile
+            {t('rectifyLink')}
           </Link>
         </div>
       </section>

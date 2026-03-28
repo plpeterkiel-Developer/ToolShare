@@ -2,20 +2,22 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useTransition } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface SearchBarProps {
   defaultValue?: string
   placeholder?: string
 }
 
-export function SearchBar({
-  defaultValue = '',
-  placeholder = 'Search for tools...',
-}: SearchBarProps) {
+export function SearchBar({ defaultValue = '', placeholder }: SearchBarProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [, startTransition] = useTransition()
+  const t = useTranslations('common')
+  const tTools = useTranslations('tools')
+
+  const resolvedPlaceholder = placeholder ?? tTools('search')
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -70,7 +72,7 @@ export function SearchBar({
           id="tool-search"
           data-testid="search-input"
           defaultValue={defaultValue}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           autoComplete="off"
           className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
         />
@@ -80,7 +82,7 @@ export function SearchBar({
         data-testid="search-submit"
         className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
       >
-        Search
+        {t('search')}
       </button>
       {defaultValue && (
         <button
@@ -89,7 +91,7 @@ export function SearchBar({
           data-testid="search-clear"
           className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
         >
-          Clear
+          {t('clear')}
         </button>
       )}
     </form>

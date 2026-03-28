@@ -60,8 +60,8 @@ export default async function HomePage({ params }: HomePageProps) {
         <ToolGrid
           tools={recentTools}
           locale={locale}
-          emptyTitle="No tools available yet"
-          emptyDescription="Be the first to add a tool to the community"
+          emptyTitle={t('noToolsYet')}
+          emptyDescription={t('noToolsYetHint')}
         />
         {recentTools.length > 0 && (
           <div className="mt-10 text-center">
@@ -69,7 +69,7 @@ export default async function HomePage({ params }: HomePageProps) {
               href={`/${locale}/tools`}
               className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors"
             >
-              View all tools →
+              {t('viewAll')} →
             </Link>
           </div>
         )}

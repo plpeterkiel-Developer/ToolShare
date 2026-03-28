@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { Input } from '@/components/ui/Input'
@@ -18,6 +19,9 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
   const [success, setSuccess] = useState(false)
+  const t = useTranslations('requests')
+  const tTools = useTranslations('tools')
+  const tCommon = useTranslations('common')
 
   // Don't show if user is the owner or tool not available
   if (!currentUserId || currentUserId === tool.owner_id || tool.availability !== 'available') {
@@ -58,18 +62,22 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
           setOpen(true)
         }}
         data-testid="request-to-borrow-button"
-        aria-label={`Request to borrow ${tool.name}`}
+        aria-label={`${tTools('detail.requestBorrow')} ${tool.name}`}
       >
-        Request to Borrow
+        {tTools('detail.requestBorrow')}
       </Button>
 
-      <Modal open={open} onClose={() => !loading && setOpen(false)} title={`Borrow "${tool.name}"`}>
+      <Modal
+        open={open}
+        onClose={() => !loading && setOpen(false)}
+        title={t('borrowTitle', { name: tool.name })}
+      >
         {success ? (
           <div
             role="status"
             className="rounded-md bg-green-50 px-4 py-3 text-sm text-green-700 text-center"
           >
-            Request sent successfully!
+            {t('requestSent')}
           </div>
         ) : (
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
@@ -87,7 +95,7 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
               id="start-date"
               name="start_date"
               type="date"
-              label="Start date"
+              label={t('form.startDate')}
               required
               data-testid="start-date-input"
               min={new Date().toISOString().split('T')[0]}
@@ -96,7 +104,7 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
               id="end-date"
               name="end_date"
               type="date"
-              label="End date"
+              label={t('form.endDate')}
               required
               data-testid="end-date-input"
               min={new Date().toISOString().split('T')[0]}
@@ -104,7 +112,7 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
             <Textarea
               id="borrow-message"
               name="message"
-              label="Message to owner (optional)"
+              label={t('form.message')}
               rows={3}
               data-testid="borrow-message"
             />
@@ -116,7 +124,7 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
                 onClick={() => setOpen(false)}
                 disabled={loading}
               >
-                Cancel
+                {tCommon('cancel')}
               </Button>
               <Button
                 type="submit"
@@ -124,7 +132,7 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
                 loading={loading}
                 data-testid="request-submit"
               >
-                Send request
+                {t('form.submit')}
               </Button>
             </div>
           </form>
