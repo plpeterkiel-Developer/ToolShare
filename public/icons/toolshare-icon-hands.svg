@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background circle with subtle gradient -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+  </defs>
+  <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
+  <!-- Wrench tool centered -->
+  <g transform="translate(256,220) rotate(-30)">
+    <!-- Wrench head -->
+    <path d="M-20,-80 L-30,-60 L-10,-40 L10,-40 L30,-60 L20,-80 L10,-70 C4,-64 -4,-64 -10,-70 Z" fill="white"/>
+    <!-- Wrench shaft -->
+    <rect x="-10" y="-44" width="20" height="140" rx="6" fill="white"/>
+    <!-- Wrench end -->
+    <path d="M-20,96 L-30,116 L-10,136 L10,136 L30,116 L20,96 L10,106 C4,112 -4,112 -10,106 Z" fill="white"/>
+  </g>
+  <!-- Two curved arrows forming a cycle around the wrench -->
+  <!-- Top-right arrow -->
+  <path d="M320 120 A140 140 0 0 1 400 256" stroke="white" stroke-width="16" stroke-linecap="round" fill="none" opacity="0.75"/>
+  <polygon points="395,250 415,270 385,270" fill="white" opacity="0.75"/>
+  <!-- Bottom-left arrow -->
+  <path d="M192 392 A140 140 0 0 1 112 256" stroke="white" stroke-width="16" stroke-linecap="round" fill="none" opacity="0.75"/>
+  <polygon points="117,262 97,242 127,242" fill="white" opacity="0.75"/>
+</svg>

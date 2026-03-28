@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background rounded square -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="#16a34a"/>
+  <!-- Garden trowel -->
+  <g transform="translate(128, 96)">
+    <!-- Blade -->
+    <path d="M60 0C26.9 0 0 40 0 90c0 30 12 56 30 72l10 8 80-80-8-10C96 62 80 30 60 0z" fill="white" opacity="0.95"/>
+    <!-- Handle -->
+    <rect x="105" y="85" width="28" height="180" rx="14" transform="rotate(-45 105 85)" fill="white" opacity="0.85"/>
+    <rect x="188" y="168" width="28" height="60" rx="8" transform="rotate(-45 188 168)" fill="#fbbf24" opacity="0.9"/>
+  </g>
+  <!-- Two hands sharing symbol -->
+  <g transform="translate(60, 280)">
+    <!-- Left hand offering -->
+    <path d="M40 60c-8-4-16-2-20 6s-2 16 6 20l60 32c8 4 18 4 26 0l40-22" stroke="white" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.8"/>
+    <!-- Right hand receiving -->
+    <path d="M350 60c8-4 16-2 20 6s2 16-6 20l-60 32c-8 4-18 4-26 0l-40-22" stroke="white" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.8"/>
+    <!-- Connection arc -->
+    <path d="M152 96c20-20 68-20 88 0" stroke="white" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.6"/>
+  </g>
+</svg>
