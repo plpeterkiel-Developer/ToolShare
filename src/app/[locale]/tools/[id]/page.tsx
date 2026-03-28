@@ -70,7 +70,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="grid gap-8 md:grid-cols-2">
         {/* Image */}
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-gray-100">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-stone-100">
           {tool.image_url ? (
             <Image
               src={tool.image_url}
@@ -81,7 +81,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               priority
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-gray-300">
+            <div className="flex h-full w-full items-center justify-center text-stone-300">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-24 w-24"
@@ -105,17 +105,17 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
         <div className="flex flex-col gap-5">
           <div>
             <div className="flex items-start justify-between gap-3">
-              <h1 data-testid="tool-detail-name" className="text-2xl font-bold text-gray-900">
+              <h1 data-testid="tool-detail-name" className="text-2xl font-bold text-stone-900">
                 {tool.name}
               </h1>
               <Badge variant={badge.variant}>{t(badge.key)}</Badge>
             </div>
-            <p data-testid="tool-detail-category" className="mt-1 text-sm text-gray-500">
+            <p data-testid="tool-detail-category" className="mt-1 text-sm text-stone-500">
               {tool.category}
             </p>
           </div>
 
-          <div className="flex gap-4 text-sm text-gray-600">
+          <div className="flex gap-4 text-sm text-stone-600">
             <span data-testid="tool-detail-condition">
               <span className="font-medium">{t('conditionLabel')}</span>{' '}
               {t(conditionKeys[tool.condition] ?? 'condition.good')}
@@ -126,14 +126,14 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
           {tool.community && (
             <div className="flex items-center gap-2" data-testid="tool-community-badge">
               <Badge variant="blue">{tool.community.name}</Badge>
-              <span className="text-xs text-gray-500">{t('detail.communityOnly')}</span>
+              <span className="text-xs text-stone-500">{t('detail.communityOnly')}</span>
             </div>
           )}
 
           {tool.description && (
             <p
               data-testid="tool-detail-description"
-              className="text-sm text-gray-700 leading-relaxed"
+              className="text-sm text-stone-600 leading-relaxed"
             >
               {tool.description}
             </p>
@@ -141,19 +141,19 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
 
           {/* Owner info */}
           {tool.owner && (
-            <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3">
+            <div className="flex items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 p-3">
               <Avatar name={tool.owner.display_name} avatarUrl={tool.owner.avatar_url} size="md" />
               <div className="min-w-0">
-                <p className="text-xs text-gray-500">{t('detail.ownedBy')}</p>
+                <p className="text-xs text-stone-500">{t('detail.ownedBy')}</p>
                 <Link
                   href={`/${locale}/profile/${tool.owner.id}`}
                   data-testid="tool-owner-link"
-                  className="text-sm font-medium text-gray-900 hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
+                  className="text-sm font-medium text-stone-900 hover:text-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-800 rounded"
                 >
                   {tool.owner.display_name}
                 </Link>
                 {tool.owner.location && (
-                  <p className="text-xs text-gray-400">{tool.owner.location}</p>
+                  <p className="text-xs text-stone-400">{tool.owner.location}</p>
                 )}
               </div>
             </div>
@@ -161,7 +161,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
 
           {/* Borrow action - restricted if not community member */}
           {tool.community_id && !isCommunityMember && !isOwner ? (
-            <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+            <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
               {t('detail.communityRestricted')}
             </p>
           ) : (
@@ -172,17 +172,17 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
           {isOwner && (
             <div
               data-testid="owner-controls"
-              className="flex flex-wrap gap-2 pt-2 border-t border-gray-100"
+              className="flex flex-wrap gap-2 pt-2 border-t border-stone-100"
             >
               {activeRequestCount > 0 && (
-                <p className="w-full text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+                <p className="w-full text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
                   {t('activeRequests', { count: activeRequestCount })}
                 </p>
               )}
               <Link
                 href={`/${locale}/tools/${tool.id}/edit`}
                 data-testid="edit-tool-link"
-                className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors"
+                className="inline-flex items-center justify-center rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-800 focus-visible:ring-offset-2 transition-colors"
               >
                 {t('detail.editListing')}
               </Link>

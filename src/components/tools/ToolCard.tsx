@@ -29,9 +29,9 @@ export async function ToolCard({ tool, locale }: ToolCardProps) {
     <Link
       href={`/${locale}/tools/${tool.id}`}
       data-testid="tool-card"
-      className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-2xl bg-stone-100">
         {tool.image_url ? (
           <Image
             src={tool.image_url}
@@ -43,7 +43,7 @@ export async function ToolCard({ tool, locale }: ToolCardProps) {
         ) : (
           <div
             aria-hidden="true"
-            className="flex h-full w-full items-center justify-center text-gray-300"
+            className="flex h-full w-full items-center justify-center text-stone-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -66,15 +66,15 @@ export async function ToolCard({ tool, locale }: ToolCardProps) {
         <div className="flex items-start justify-between gap-2">
           <h3
             data-testid="tool-name"
-            className="line-clamp-2 text-sm font-semibold text-gray-900 group-hover:text-green-700"
+            className="line-clamp-2 text-sm font-semibold text-stone-900 group-hover:text-green-800"
           >
             {tool.name}
           </h3>
           <Badge variant={config.variant}>{t(config.key)}</Badge>
         </div>
-        <p className="text-xs text-gray-500">{tool.category}</p>
+        <p className="text-xs text-stone-500">{tool.category}</p>
         {tool.owner && (
-          <p className="mt-auto text-xs text-gray-400 truncate">
+          <p className="mt-auto text-xs text-stone-400 truncate">
             {tool.owner.display_name}
             {tool.owner.location ? ` · ${tool.owner.location}` : ''}
           </p>

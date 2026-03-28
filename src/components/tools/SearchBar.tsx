@@ -49,7 +49,7 @@ export function SearchBar({ defaultValue = '', placeholder }: SearchBarProps) {
       <div className="relative flex-1">
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -74,13 +74,13 @@ export function SearchBar({ defaultValue = '', placeholder }: SearchBarProps) {
           defaultValue={defaultValue}
           placeholder={resolvedPlaceholder}
           autoComplete="off"
-          className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+          className="block w-full rounded-xl border border-stone-300 bg-white py-2 pl-9 pr-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
         />
       </div>
       <button
         type="submit"
         data-testid="search-submit"
-        className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+        className="rounded-xl bg-green-800 px-4 py-2 text-sm font-medium text-white hover:bg-green-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
       >
         {t('search')}
       </button>
@@ -89,7 +89,7 @@ export function SearchBar({ defaultValue = '', placeholder }: SearchBarProps) {
           type="button"
           onClick={handleClear}
           data-testid="search-clear"
-          className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+          className="rounded-xl border border-stone-200 px-3 py-2 text-sm text-stone-600 hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
         >
           {t('clear')}
         </button>

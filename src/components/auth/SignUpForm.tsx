@@ -45,14 +45,14 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t('heading')}</h1>
+    <div className="mx-auto w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 sm:p-10">
+      <h1 className="mb-6 text-2xl font-bold text-stone-900">{t('heading')}</h1>
 
       {error && (
         <div
           role="alert"
           data-testid="error-message"
-          className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           {error}
         </div>
@@ -120,11 +120,11 @@ export function SignUpForm() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-500">
+      <p className="mt-6 text-center text-sm text-stone-500">
         {t('hasAccount')}{' '}
         <Link
           href="login"
-          className="font-medium text-green-700 hover:text-green-800 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded"
+          className="font-medium text-green-800 hover:text-green-900 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded"
         >
           {t('loginLink')}
         </Link>

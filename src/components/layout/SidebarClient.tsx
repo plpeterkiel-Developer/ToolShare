@@ -255,11 +255,11 @@ function NavItem({
         onClick={onClick}
         title={expanded ? undefined : label}
         className={[
-          'relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2',
+          'relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
           isActive
-            ? 'bg-green-100 text-green-800'
-            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+            ? 'bg-green-100 text-green-800 font-medium'
+            : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900',
         ].join(' ')}
         aria-current={isActive ? 'page' : undefined}
       >
@@ -349,7 +349,7 @@ export function SidebarClient({
         aria-expanded={expanded}
         aria-controls="sidebar-nav"
         onClick={() => setExpanded((prev) => !prev)}
-        className="fixed left-3 top-3 z-50 rounded-md bg-white p-2 text-gray-600 shadow-md hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 md:hidden"
+        className="fixed left-3 top-3 z-50 rounded-xl bg-white p-2 text-stone-600 shadow-md hover:bg-stone-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 md:hidden"
       >
         {expanded ? <CloseIcon /> : <MenuIcon />}
       </button>
@@ -370,7 +370,7 @@ export function SidebarClient({
         role="complementary"
         aria-label={t('navigation')}
         className={[
-          'fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-200 bg-white transition-transform duration-300 ease-in-out md:hidden',
+          'fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-stone-200 bg-white transition-transform duration-300 ease-in-out md:hidden',
           expanded ? 'translate-x-0' : '-translate-x-full',
         ].join(' ')}
       >
@@ -391,7 +391,7 @@ export function SidebarClient({
         role="complementary"
         aria-label={t('navigation')}
         className={[
-          'hidden md:flex flex-col shrink-0 border-r border-gray-200 bg-white sticky top-0 h-screen overflow-y-auto overflow-x-hidden transition-[width] duration-300 ease-in-out',
+          'hidden md:flex flex-col shrink-0 border-r border-stone-200 bg-white sticky top-0 h-screen overflow-y-auto overflow-x-hidden transition-[width] duration-300 ease-in-out',
           expanded ? 'w-64' : 'w-16',
         ].join(' ')}
       >
@@ -404,7 +404,7 @@ export function SidebarClient({
             aria-expanded={expanded}
             aria-controls="sidebar-nav"
             onClick={() => setExpanded((prev) => !prev)}
-            className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+            className="rounded-xl p-2 text-stone-500 hover:bg-stone-100 hover:text-stone-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
           >
             {expanded ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </button>
@@ -457,14 +457,14 @@ function SidebarContent({
       {/* Logo */}
       <div
         className={[
-          'flex items-center border-b border-gray-200 px-3 py-4',
+          'flex items-center border-b border-stone-200 px-3 py-4',
           expanded ? 'justify-start gap-3' : 'justify-center',
         ].join(' ')}
       >
         <Link
           href={`/${locale}`}
           onClick={onNavClick}
-          className="flex items-center gap-2 text-lg font-bold text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded shrink-0"
+          className="flex items-center gap-2 text-lg font-bold text-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded-xl shrink-0"
         >
           <ToolShareIcon size={28} />
           {expanded && <span>ToolShare</span>}
@@ -491,14 +491,14 @@ function SidebarContent({
 
         {/* Active borrows summary */}
         {user && activeBorrowsCount > 0 && expanded && (
-          <div className="mt-4 mx-1 rounded-md bg-blue-50 px-3 py-2.5">
+          <div className="mt-4 mx-1 rounded-xl bg-sky-50 px-3 py-2.5">
             <Link
               href={`/${locale}/requests`}
               onClick={onNavClick}
-              className="flex items-center gap-2 text-sm text-blue-700 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded"
+              className="flex items-center gap-2 text-sm text-sky-700 hover:text-sky-900 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded-xl"
             >
               <span
-                className="inline-flex items-center justify-center rounded-full bg-blue-500 text-white text-xs font-bold h-5 w-5 shrink-0"
+                className="inline-flex items-center justify-center rounded-full bg-sky-500 text-white text-xs font-bold h-5 w-5 shrink-0"
                 data-testid="sidebar-active-badge"
               >
                 {activeBorrowsCount}
@@ -515,7 +515,7 @@ function SidebarContent({
               href={`/${locale}/requests`}
               onClick={onNavClick}
               title={t('activeBorrows', { count: activeBorrowsCount })}
-              className="inline-flex items-center justify-center rounded-full bg-blue-500 text-white text-xs font-bold h-6 w-6 hover:bg-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+              className="inline-flex items-center justify-center rounded-full bg-sky-500 text-white text-xs font-bold h-6 w-6 hover:bg-sky-600 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
               data-testid="sidebar-active-badge"
             >
               {activeBorrowsCount}
@@ -527,7 +527,7 @@ function SidebarContent({
       {/* Bottom section */}
       <div
         className={[
-          'border-t border-gray-200 px-2 py-3',
+          'border-t border-stone-200 px-2 py-3',
           expanded ? '' : 'flex flex-col items-center gap-2',
         ].join(' ')}
       >
@@ -535,7 +535,7 @@ function SidebarContent({
           <div className="mb-2 px-3">
             <span
               data-testid="nav-profile-name"
-              className="block truncate text-sm text-gray-500"
+              className="block truncate text-sm text-stone-500"
               aria-label={`Logged in as ${user.email ?? 'user'}`}
             >
               {user.email}

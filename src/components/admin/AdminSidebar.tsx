@@ -33,10 +33,10 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
               <Link
                 href={link.href}
                 className={[
-                  'block whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  'block whitespace-nowrap rounded-xl px-3 py-2 text-sm transition-colors',
                   isActive
-                    ? 'bg-green-100 text-green-800'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+                    ? 'bg-green-50 text-green-800 font-medium'
+                    : 'text-stone-600 hover:bg-stone-100 hover:text-green-800',
                 ].join(' ')}
                 aria-current={isActive ? 'page' : undefined}
               >

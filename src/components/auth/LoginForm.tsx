@@ -49,14 +49,14 @@ export function LoginForm({ initialError }: LoginFormProps) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t('heading')}</h1>
+    <div className="mx-auto w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 sm:p-10">
+      <h1 className="mb-6 text-2xl font-bold text-stone-900">{t('heading')}</h1>
 
       {error && (
         <div
           role="alert"
           data-testid="error-message"
-          className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           {error}
         </div>
@@ -94,7 +94,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
 
       <div className="my-6 flex items-center gap-3">
         <hr className="flex-1 border-gray-200" />
-        <span className="text-xs text-gray-400 uppercase tracking-wider">
+        <span className="text-xs text-stone-400 uppercase tracking-wider">
           {t('orContinueWith')}
         </span>
         <hr className="flex-1 border-gray-200" />
@@ -108,7 +108,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
           disabled={oauthLoading !== null}
           onClick={handleGoogle}
           data-testid="google-login-button"
-          className="w-full"
+          className="w-full shadow-sm"
           aria-label={t('continueGoogle')}
         >
           <GoogleIcon />
@@ -121,7 +121,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
           disabled={oauthLoading !== null}
           onClick={handleFacebook}
           data-testid="facebook-login-button"
-          className="w-full"
+          className="w-full shadow-sm"
           aria-label={t('continueFacebook')}
         >
           <FacebookIcon />
@@ -129,11 +129,11 @@ export function LoginForm({ initialError }: LoginFormProps) {
         </Button>
       </div>
 
-      <p className="mt-6 text-center text-sm text-gray-500">
+      <p className="mt-6 text-center text-sm text-stone-500">
         {t('noAccount')}{' '}
         <Link
           href="signup"
-          className="font-medium text-green-700 hover:text-green-800 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded"
+          className="font-medium text-green-800 hover:text-green-900 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded"
         >
           {t('signupLink')}
         </Link>

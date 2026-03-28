@@ -52,7 +52,7 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
       <div
         role="status"
         data-testid="rating-success"
-        className="rounded-md bg-green-50 px-4 py-3 text-sm text-green-700"
+        className="rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700"
       >
         {t('thankYou', { name: rateeName })}
       </div>
@@ -66,9 +66,9 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
       onSubmit={handleSubmit}
       noValidate
       data-testid="rating-form"
-      className="flex flex-col gap-4"
+      className="bg-white rounded-2xl shadow-sm p-6 flex flex-col gap-4"
     >
-      <p className="text-sm font-medium text-gray-700">
+      <p className="text-sm font-medium text-stone-700">
         {t('rateExperience')} <strong>{rateeName}</strong>
       </p>
 
@@ -92,14 +92,14 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
             onMouseEnter={() => setHovered(star)}
             onFocus={() => setHovered(star)}
             onBlur={() => setHovered(0)}
-            className="rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+            className="rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-800 focus-visible:ring-offset-2"
           >
             <svg
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               className={[
                 'h-8 w-8 transition-colors',
-                displayScore >= star ? 'text-yellow-400' : 'text-gray-200 hover:text-yellow-300',
+                displayScore >= star ? 'text-amber-500' : 'text-stone-300 hover:text-amber-300',
               ].join(' ')}
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -109,7 +109,7 @@ export function RatingForm({ requestId, rateeId, rateeName }: RatingFormProps) {
           </button>
         ))}
         {score > 0 && (
-          <span className="ml-2 text-sm text-gray-600" aria-live="polite">
+          <span className="ml-2 text-sm text-stone-600" aria-live="polite">
             {score} / 5
           </span>
         )}

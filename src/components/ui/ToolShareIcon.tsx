@@ -1,7 +1,7 @@
 interface ToolShareIconProps {
-  size?: number;
-  className?: string;
-  variant?: 'circle' | 'rounded';
+  size?: number
+  className?: string
+  variant?: 'circle' | 'rounded'
 }
 
 export function ToolShareIcon({
@@ -21,7 +21,7 @@ export function ToolShareIcon({
         aria-label="ToolShare"
         role="img"
       >
-        <rect x="16" y="16" width="480" height="480" rx="96" fill="#16a34a" />
+        <rect x="16" y="16" width="480" height="480" rx="96" fill="#166534" />
         <g transform="translate(256,256)">
           <path
             d="M0,-140 C-50,-140 -80,-100 -80,-50 C-80,10 -40,60 0,80 C40,60 80,10 80,-50 C80,-100 50,-140 0,-140Z"
@@ -29,18 +29,10 @@ export function ToolShareIcon({
             opacity="0.95"
           />
           <rect x="-10" y="60" width="20" height="100" rx="4" fill="white" opacity="0.9" />
-          <rect
-            x="-36"
-            y="152"
-            width="72"
-            height="20"
-            rx="10"
-            fill="white"
-            opacity="0.9"
-          />
+          <rect x="-36" y="152" width="72" height="20" rx="10" fill="white" opacity="0.9" />
         </g>
       </svg>
-    );
+    )
   }
 
   return (
@@ -56,8 +48,8 @@ export function ToolShareIcon({
     >
       <defs>
         <linearGradient id="toolshare-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#22c55e" />
-          <stop offset="100%" stopColor="#15803d" />
+          <stop offset="0%" stopColor="#166534" />
+          <stop offset="100%" stopColor="#14532d" />
         </linearGradient>
       </defs>
       <circle cx="256" cy="256" r="256" fill="url(#toolshare-bg)" />
@@ -91,5 +83,5 @@ export function ToolShareIcon({
       />
       <polygon points="117,262 97,242 127,242" fill="white" opacity="0.75" />
     </svg>
-  );
+  )
 }

@@ -29,10 +29,10 @@ export function AdminUsersTable({ users, communities }: AdminUsersTableProps) {
 
   return (
     <div>
-      <div className="border-b border-gray-200 px-4 py-3">
+      <div className="border-b border-stone-200 px-4 py-3">
         <div className="relative max-w-sm">
           <svg
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -50,48 +50,48 @@ export function AdminUsersTable({ users, communities }: AdminUsersTableProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('searchPlaceholder')}
-            className="w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+            className="w-full rounded-xl border border-stone-300 bg-white py-2 pl-9 pr-3 text-sm text-stone-900 placeholder:text-stone-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-800 focus-visible:ring-offset-2"
           />
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-stone-200">
+          <thead className="bg-stone-50">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-stone-500">
                 {t('name')}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-stone-500">
                 {t('email')}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-stone-500">
                 {t('status')}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-stone-500">
                 {t('warnings')}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-stone-500">
                 {t('joined')}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase text-stone-500">
                 {t('actions')}
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className="divide-y divide-stone-200 bg-white">
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-sm text-stone-500">
                   {t('noResults')}
                 </td>
               </tr>
             ) : (
               filteredUsers.map((user) => (
                 <tr key={user.id}>
-                  <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
+                  <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-stone-900">
                     {user.display_name}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-4 py-3 text-sm text-stone-500">
                     {user.email ?? '—'}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-sm">
@@ -101,10 +101,10 @@ export function AdminUsersTable({ users, communities }: AdminUsersTableProps) {
                       <Badge variant="green">{t('active')}</Badge>
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-4 py-3 text-sm text-stone-500">
                     {user.warning_count}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-4 py-3 text-sm text-stone-500">
                     {new Date(user.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 text-sm">

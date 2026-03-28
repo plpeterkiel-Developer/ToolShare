@@ -10,7 +10,7 @@ const geist = Geist({
 export const metadata: Metadata = {
   title: 'ToolShare — Del dine haveværktøjer',
   description: 'Gratis fællesskab for deling af haveværktøjer i dit kvarter.',
-  themeColor: '#16a34a',
+  themeColor: '#166534',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

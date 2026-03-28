@@ -20,7 +20,7 @@ export function RatingStars({ score, max = 5, size = 'md' }: RatingStarsProps) {
             key={i}
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
-            className={[starSize, filled ? 'text-yellow-400' : 'text-gray-200'].join(' ')}
+            className={[starSize, filled ? 'text-amber-500' : 'text-stone-300'].join(' ')}
             viewBox="0 0 20 20"
             fill="currentColor"
           >

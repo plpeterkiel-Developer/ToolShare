@@ -9,10 +9,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
-  primary: 'bg-green-600 hover:bg-green-700 text-white border border-transparent',
-  secondary: 'border border-gray-300 hover:bg-gray-50 text-gray-700 bg-white',
+  primary:
+    'bg-green-800 hover:bg-green-900 text-white border border-transparent shadow-sm hover:shadow-md',
+  secondary: 'border border-stone-300 hover:bg-stone-50 text-stone-700 bg-white',
   danger: 'bg-red-600 hover:bg-red-700 text-white border border-transparent',
-  ghost: 'hover:bg-gray-100 text-gray-700 border border-transparent bg-transparent',
+  ghost: 'hover:bg-stone-100 text-stone-600 border border-transparent bg-transparent',
 }
 
 const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {
@@ -38,8 +39,8 @@ export function Button({
       aria-disabled={isDisabled}
       aria-busy={loading}
       className={[
-        'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2',
+        'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
         'disabled:pointer-events-none disabled:opacity-50',
         variantClasses[variant],
         sizeClasses[size],

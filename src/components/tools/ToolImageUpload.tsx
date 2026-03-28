@@ -74,10 +74,10 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-sm font-medium text-gray-700">{t('label')}</span>
+      <span className="text-sm font-medium text-stone-700">{t('label')}</span>
 
       {/* Preview area */}
-      <div className="relative h-48 w-full overflow-hidden rounded-lg border-2 border-dashed border-gray-300 bg-gray-50">
+      <div className="relative h-48 w-full overflow-hidden rounded-2xl border-2 border-dashed border-stone-300 bg-stone-50">
         {preview ? (
           <Image
             src={preview}
@@ -87,7 +87,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
             sizes="(max-width: 640px) 100vw, 50vw"
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-gray-400">
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-stone-400">
             <svg
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
@@ -132,8 +132,8 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
         data-testid="tool-image-upload-button"
         aria-label={t('chooseImage')}
         className={[
-          'inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700',
-          'hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2',
+          'inline-flex items-center justify-center gap-2 rounded-xl border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700',
+          'hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
           'disabled:pointer-events-none disabled:opacity-50',
         ].join(' ')}
       >

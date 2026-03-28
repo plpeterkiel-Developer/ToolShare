@@ -95,91 +95,93 @@ export function ToolForm({ initialData, mode, toolId, communities = [] }: ToolFo
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-      {error && (
-        <div
-          role="alert"
-          data-testid="tool-form-error"
-          className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          {error}
-        </div>
-      )}
+    <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+        {error && (
+          <div
+            role="alert"
+            data-testid="tool-form-error"
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          >
+            {error}
+          </div>
+        )}
 
-      <Input
-        id="tool-name"
-        name="name"
-        type="text"
-        label={t('form.name')}
-        required
-        defaultValue={initialData?.name ?? ''}
-        data-testid="tool-name"
-      />
-
-      <Textarea
-        id="tool-description"
-        name="description"
-        label={t('form.description')}
-        defaultValue={initialData?.description ?? ''}
-        data-testid="tool-description"
-      />
-
-      <Select
-        id="tool-category"
-        name="category"
-        label={t('form.category')}
-        required
-        options={categoryOptions}
-        defaultValue={initialData?.category ?? categoryOptions[0].value}
-        data-testid="tool-category"
-      />
-
-      <Select
-        id="tool-condition"
-        name="condition"
-        label={t('form.condition')}
-        required
-        options={conditionOptions}
-        defaultValue={initialData?.condition ?? 'good'}
-        data-testid="tool-condition"
-      />
-
-      {mode === 'edit' && (
-        <Select
-          id="availability"
-          name="availability"
-          label={t('form.availability')}
-          options={availabilityOptions}
-          defaultValue={initialData?.availability ?? 'available'}
-          data-testid="availability-toggle"
+        <Input
+          id="tool-name"
+          name="name"
+          type="text"
+          label={t('form.name')}
+          required
+          defaultValue={initialData?.name ?? ''}
+          data-testid="tool-name"
         />
-      )}
 
-      {communities.length > 0 && (
-        <div>
+        <Textarea
+          id="tool-description"
+          name="description"
+          label={t('form.description')}
+          defaultValue={initialData?.description ?? ''}
+          data-testid="tool-description"
+        />
+
+        <Select
+          id="tool-category"
+          name="category"
+          label={t('form.category')}
+          required
+          options={categoryOptions}
+          defaultValue={initialData?.category ?? categoryOptions[0].value}
+          data-testid="tool-category"
+        />
+
+        <Select
+          id="tool-condition"
+          name="condition"
+          label={t('form.condition')}
+          required
+          options={conditionOptions}
+          defaultValue={initialData?.condition ?? 'good'}
+          data-testid="tool-condition"
+        />
+
+        {mode === 'edit' && (
           <Select
-            id="tool-community"
-            name="community_id"
-            label={t('form.community')}
-            options={communityOptions}
-            defaultValue={defaultCommunityId}
-            data-testid="tool-community"
+            id="availability"
+            name="availability"
+            label={t('form.availability')}
+            options={availabilityOptions}
+            defaultValue={initialData?.availability ?? 'available'}
+            data-testid="availability-toggle"
           />
-          <p className="mt-1 text-xs text-gray-500">{t('form.communityHint')}</p>
-        </div>
-      )}
+        )}
 
-      <ToolImageUpload currentUrl={initialData?.image_url} onUpload={(url) => setImageUrl(url)} />
+        {communities.length > 0 && (
+          <div>
+            <Select
+              id="tool-community"
+              name="community_id"
+              label={t('form.community')}
+              options={communityOptions}
+              defaultValue={defaultCommunityId}
+              data-testid="tool-community"
+            />
+            <p className="mt-1 text-xs text-stone-500">{t('form.communityHint')}</p>
+          </div>
+        )}
 
-      <Button
-        type="submit"
-        variant="primary"
-        loading={loading}
-        data-testid="tool-form-submit"
-        className="w-full sm:w-auto"
-      >
-        {mode === 'edit' ? t('form.submitEdit') : t('form.submitCreate')}
-      </Button>
-    </form>
+        <ToolImageUpload currentUrl={initialData?.image_url} onUpload={(url) => setImageUrl(url)} />
+
+        <Button
+          type="submit"
+          variant="primary"
+          loading={loading}
+          data-testid="tool-form-submit"
+          className="w-full sm:w-auto"
+        >
+          {mode === 'edit' ? t('form.submitEdit') : t('form.submitCreate')}
+        </Button>
+      </form>
+    </div>
   )
 }

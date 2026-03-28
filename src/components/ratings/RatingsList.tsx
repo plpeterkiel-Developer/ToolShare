@@ -33,7 +33,7 @@ export async function RatingsList({ ratings, emptyTitle }: RatingsListProps) {
         <li
           key={rating.id}
           data-testid="rating-item"
-          className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2"
+          className="rounded-xl border border-stone-200 bg-white p-4 flex flex-col gap-2"
         >
           <div className="flex items-center gap-3">
             <Avatar
@@ -42,10 +42,10 @@ export async function RatingsList({ ratings, emptyTitle }: RatingsListProps) {
               size="sm"
             />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
+              <p className="text-sm font-medium text-stone-900 truncate">
                 {rating.rater?.display_name ?? t('anonymous')}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-stone-400">
                 {new Date(rating.created_at).toLocaleDateString(undefined, {
                   year: 'numeric',
                   month: 'short',
@@ -56,7 +56,7 @@ export async function RatingsList({ ratings, emptyTitle }: RatingsListProps) {
             <RatingStars score={rating.score} size="sm" />
           </div>
           {rating.comment && (
-            <p className="text-sm text-gray-600 italic">&ldquo;{rating.comment}&rdquo;</p>
+            <p className="text-sm text-stone-600 italic">&ldquo;{rating.comment}&rdquo;</p>
           )}
         </li>
       ))}

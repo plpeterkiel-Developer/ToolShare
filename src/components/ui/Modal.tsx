@@ -53,7 +53,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
       aria-modal="true"
       onClick={handleBackdropClick}
       className={[
-        'w-full max-w-md rounded-lg bg-white p-6 shadow-xl',
+        'w-full max-w-md rounded-2xl bg-white p-6 shadow-xl',
         'backdrop:bg-black/50',
         'open:animate-none',
         'focus-visible:outline-none',
@@ -61,7 +61,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
     >
       <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 id={titleId} className="text-lg font-semibold text-gray-900">
+          <h2 id={titleId} className="text-lg font-semibold text-stone-900">
             {title}
           </h2>
           <button
@@ -70,8 +70,8 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
             onClick={onClose}
             data-testid="modal-close"
             className={[
-              'rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2',
+              'rounded-xl p-1 text-stone-400 hover:bg-stone-100 hover:text-stone-600 transition-colors duration-150',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
             ].join(' ')}
           >
             <svg

@@ -61,13 +61,13 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
   return (
     <article
       data-testid="request-card"
-      className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm flex flex-col gap-3"
+      className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm flex flex-col gap-3"
     >
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">{t('tool')}</p>
-          <p data-testid="request-tool-name" className="font-semibold text-gray-900">
+          <p className="text-xs text-stone-500 uppercase tracking-wide font-medium">{t('tool')}</p>
+          <p data-testid="request-tool-name" className="font-semibold text-stone-900">
             {request.tool.name}
           </p>
         </div>
@@ -77,14 +77,14 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
       {/* Parties */}
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div>
-          <p className="text-xs text-gray-500">{t('borrower')}</p>
-          <p data-testid="request-borrower" className="font-medium text-gray-800">
+          <p className="text-xs text-stone-500">{t('borrower')}</p>
+          <p data-testid="request-borrower" className="font-medium text-stone-600">
             {request.borrower.display_name}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500">{t('owner')}</p>
-          <p data-testid="request-owner" className="font-medium text-gray-800">
+          <p className="text-xs text-stone-500">{t('owner')}</p>
+          <p data-testid="request-owner" className="font-medium text-stone-600">
             {request.owner.display_name}
           </p>
         </div>
@@ -93,20 +93,24 @@ export function RequestCard({ request, currentUserId }: RequestCardProps) {
       {/* Dates */}
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div>
-          <p className="text-xs text-gray-500">{t('startDate')}</p>
-          <p data-testid="request-start-date">{formatDate(request.start_date)}</p>
+          <p className="text-xs text-stone-500">{t('startDate')}</p>
+          <p data-testid="request-start-date" className="text-stone-600">
+            {formatDate(request.start_date)}
+          </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500">{t('endDate')}</p>
-          <p data-testid="request-end-date">{formatDate(request.end_date)}</p>
+          <p className="text-xs text-stone-500">{t('endDate')}</p>
+          <p data-testid="request-end-date" className="text-stone-600">
+            {formatDate(request.end_date)}
+          </p>
         </div>
       </div>
 
       {/* Message */}
       {request.message && (
         <div className="text-sm">
-          <p className="text-xs text-gray-500">{t('message')}</p>
-          <p data-testid="request-message" className="text-gray-700 italic">
+          <p className="text-xs text-stone-500">{t('message')}</p>
+          <p data-testid="request-message" className="text-stone-600 italic">
             &ldquo;{request.message}&rdquo;
           </p>
         </div>

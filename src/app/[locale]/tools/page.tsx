@@ -62,14 +62,14 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       {/* Page header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-        <h1 data-testid="tools-heading" className="text-2xl font-bold text-gray-900">
+        <h1 data-testid="tools-heading" className="text-2xl font-bold text-stone-900">
           {t('browse')}
         </h1>
         {user && (
           <Link
             href={`/${locale}/tools/new`}
             data-testid="add-tool-link"
-            className="inline-flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors"
+            className="inline-flex items-center justify-center rounded-xl bg-green-800 px-4 py-2 text-sm font-medium text-white hover:bg-green-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-800 focus-visible:ring-offset-2 transition-colors"
           >
             + {t('addTool')}
           </Link>
@@ -95,7 +95,7 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
 
       {/* Active filters summary */}
       {(q || category || hasLocation) && (
-        <p className="mb-4 text-sm text-gray-500" data-testid="active-filters">
+        <p className="mb-4 text-sm text-stone-500" data-testid="active-filters">
           {t('resultsCount', { count: tools.length })}
           {q ? ` ${t('resultsFor', { query: q })}` : ''}
           {category ? ` ${t('resultsIn', { category })}` : ''}

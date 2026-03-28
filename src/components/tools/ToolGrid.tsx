@@ -15,7 +15,7 @@ export function ToolGrid({ tools, locale, emptyTitle, emptyDescription }: ToolGr
   }
 
   return (
-    <div data-testid="tool-grid" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div data-testid="tool-grid" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {tools.map((tool) => (
         <ToolCard key={tool.id} tool={tool} locale={locale} />
       ))}

@@ -17,7 +17,7 @@ export function Select({ label, error, id, options, className = '', ...props }: 
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-sm font-medium text-gray-700">
+      <label htmlFor={id} className="text-sm font-medium text-stone-700">
         {label}
       </label>
       <select
@@ -25,10 +25,10 @@ export function Select({ label, error, id, options, className = '', ...props }: 
         aria-describedby={error ? errorId : undefined}
         aria-invalid={error ? true : undefined}
         className={[
-          'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 shadow-sm bg-white',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2',
+          'block w-full rounded-xl border px-4 py-2.5 text-sm text-stone-900 shadow-sm bg-white',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
           'disabled:pointer-events-none disabled:opacity-50',
-          error ? 'border-red-500 focus-visible:ring-red-500' : 'border-gray-300',
+          error ? 'border-red-500 focus-visible:ring-red-500' : 'border-stone-300',
           className,
         ].join(' ')}
         {...props}
