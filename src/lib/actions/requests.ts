@@ -7,6 +7,7 @@ import RequestReceived from '@/lib/email/templates/request-received'
 import RequestApproved from '@/lib/email/templates/request-approved'
 import RequestDenied from '@/lib/email/templates/request-denied'
 import RequestCancelled from '@/lib/email/templates/request-cancelled'
+import { trackAction } from '@/lib/tracking'
 
 export async function createBorrowRequest(formData: FormData) {
   const supabase = await createClient()
@@ -20,6 +21,8 @@ export async function createBorrowRequest(formData: FormData) {
   const message = formData.get('message') as string | null
   const startDate = formData.get('start_date') as string | null
   const endDate = formData.get('end_date') as string | null
+
+  trackAction('borrow_request_create', user.id, { toolId })
 
   // Get tool to find owner
   const { data: tool } = await supabase
@@ -104,6 +107,8 @@ export async function approveRequest(requestId: string) {
 
   if (!user) return { error: 'Not authenticated' }
 
+  trackAction('borrow_request_approve', user.id, { requestId })
+
   // Fetch request + tool + borrower profile + owner pickup address (service role needed for pickup_address)
   const { data: req } = await supabase
     .from('borrow_requests')
@@ -162,6 +167,8 @@ export async function denyRequest(requestId: string, reason?: string) {
 
   if (!user) return { error: 'Not authenticated' }
 
+  trackAction('borrow_request_deny', user.id, { requestId })
+
   const { data: req } = await supabase
     .from('borrow_requests')
     .select('*, tool:tools(name), borrower:profiles!borrower_id(display_name)')
@@ -209,6 +216,8 @@ export async function cancelRequest(requestId: string) {
   } = await supabase.auth.getUser()
 
   if (!user) return { error: 'Not authenticated' }
+
+  trackAction('borrow_request_cancel', user.id, { requestId })
 
   const { data: req } = await supabase
     .from('borrow_requests')
@@ -263,6 +272,8 @@ export async function markReturned(requestId: string) {
   } = await supabase.auth.getUser()
 
   if (!user) return { error: 'Not authenticated' }
+
+  trackAction('borrow_request_return', user.id, { requestId })
 
   const { error } = await supabase
     .from('borrow_requests')

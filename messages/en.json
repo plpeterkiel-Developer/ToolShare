@@ -269,7 +269,8 @@
       "communities": "Communities",
       "tools": "Tools",
       "reports": "Reports",
-      "requests": "Requests"
+      "requests": "Requests",
+      "analytics": "Analytics"
     },
     "dashboard": {
       "title": "Admin Dashboard",
@@ -330,6 +331,20 @@
       "status": "Status",
       "period": "Period",
       "created": "Created"
+    },
+    "analytics": {
+      "title": "Usage Analytics",
+      "period": "{days}d",
+      "totalEvents": "Total events tracked",
+      "topPages": "Top Pages",
+      "topActions": "Top Actions",
+      "page": "Page",
+      "visits": "Visits",
+      "depth": "Depth",
+      "action": "Action",
+      "count": "Count",
+      "depthHome": "Home",
+      "depthClicks": "{count, plural, one {# click} other {# clicks}}"
     },
     "communities": {
       "title": "Community Management",

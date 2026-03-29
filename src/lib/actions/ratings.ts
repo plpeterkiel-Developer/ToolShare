@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { trackAction } from '@/lib/tracking'
 
 export async function submitRating(formData: FormData) {
   const supabase = await createClient()
@@ -18,6 +19,8 @@ export async function submitRating(formData: FormData) {
 
   if (!requestId || !rateeId) return { error: 'Missing required fields' }
   if (isNaN(score) || score < 1 || score > 5) return { error: 'Score must be between 1 and 5' }
+
+  trackAction('rating_submit', user.id, { score })
 
   // Verify the request is returned and user is a participant
   const { data: req } = await supabase

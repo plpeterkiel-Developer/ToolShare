@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { getUserCommunities } from '@/lib/queries/communities'
 import { ToolForm } from '@/components/tools/ToolForm'
+import { trackPageView } from '@/lib/tracking'
 
 interface NewToolPageProps {
   params: Promise<{ locale: string }>
@@ -22,6 +23,8 @@ export default async function NewToolPage({ params }: NewToolPageProps) {
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/tools/new`)
   }
+
+  trackPageView('/tools/new', 'tool_create_page', user.id)
 
   const communities = await getUserCommunities(user.id)
 

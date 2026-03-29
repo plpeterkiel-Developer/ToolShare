@@ -269,7 +269,8 @@
       "communities": "Fællesskaber",
       "tools": "Værktøjer",
       "reports": "Anmeldelser",
-      "requests": "Forespørgsler"
+      "requests": "Forespørgsler",
+      "analytics": "Analyse"
     },
     "dashboard": {
       "title": "Admin Oversigt",
@@ -330,6 +331,20 @@
       "status": "Status",
       "period": "Periode",
       "created": "Oprettet"
+    },
+    "analytics": {
+      "title": "Brugsanalyse",
+      "period": "{days}d",
+      "totalEvents": "Hændelser i alt",
+      "topPages": "Mest besøgte sider",
+      "topActions": "Mest brugte handlinger",
+      "page": "Side",
+      "visits": "Besøg",
+      "depth": "Dybde",
+      "action": "Handling",
+      "count": "Antal",
+      "depthHome": "Hjem",
+      "depthClicks": "{count, plural, one {# klik} other {# klik}}"
     },
     "communities": {
       "title": "Fællesskabsstyring",

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getRecentAvailableTools } from '@/lib/queries/tools'
 import { ToolGrid } from '@/components/tools/ToolGrid'
+import { trackPageView } from '@/lib/tracking'
 
 interface HomePageProps {
   params: Promise<{ locale: string }>
@@ -12,6 +13,8 @@ export default async function HomePage({ params }: HomePageProps) {
   setRequestLocale(locale)
 
   const t = await getTranslations('home')
+
+  trackPageView('/', 'home')
 
   const recentTools = await getRecentAvailableTools(6)
 

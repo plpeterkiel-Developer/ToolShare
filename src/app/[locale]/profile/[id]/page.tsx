@@ -7,6 +7,7 @@ import { ToolGrid } from '@/components/tools/ToolGrid'
 import { RatingsList } from '@/components/ratings/RatingsList'
 import { RatingStars } from '@/components/ratings/RatingStars'
 import { Avatar } from '@/components/ui/Avatar'
+import { trackPageView } from '@/lib/tracking'
 
 interface PublicProfilePageProps {
   params: Promise<{ locale: string; id: string }>
@@ -17,6 +18,8 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
   setRequestLocale(locale)
 
   const t = await getTranslations('profile')
+
+  trackPageView('/profile/[id]', 'profile_public')
 
   const [profile, tools, ratings, averageRating] = await Promise.all([
     getProfile(id),

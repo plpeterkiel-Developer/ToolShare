@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { trackPageView } from '@/lib/tracking'
 
 interface AboutPageProps {
   params: Promise<{ locale: string }>
@@ -9,6 +10,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
   setRequestLocale(locale)
 
   const t = await getTranslations('about')
+
+  trackPageView('/about', 'about')
 
   return (
     <div className="flex flex-col">

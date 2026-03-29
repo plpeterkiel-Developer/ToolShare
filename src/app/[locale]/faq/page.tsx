@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { trackPageView } from '@/lib/tracking'
 
 interface FaqPageProps {
   params: Promise<{ locale: string }>
@@ -50,6 +51,8 @@ export default async function FaqPage({ params }: FaqPageProps) {
   setRequestLocale(locale)
 
   const t = await getTranslations('faq')
+
+  trackPageView('/faq', 'faq')
 
   const sections = [
     {

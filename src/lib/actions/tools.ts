@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { ToolAvailability, ToolCondition } from '@/types/database.types'
+import { trackAction } from '@/lib/tracking'
 
 export async function createTool(formData: FormData) {
   const supabase = await createClient()
@@ -22,6 +23,8 @@ export async function createTool(formData: FormData) {
 
   if (!name?.trim()) return { error: 'Name is required' }
   if (!category?.trim()) return { error: 'Category is required' }
+
+  trackAction('tool_create', user.id, { category })
 
   // Validate community membership if a community is specified
   if (communityId) {
@@ -72,6 +75,8 @@ export async function updateTool(toolId: string, formData: FormData) {
 
   if (!name?.trim()) return { error: 'Name is required' }
 
+  trackAction('tool_update', user.id, { toolId })
+
   // Validate community membership if a community is specified
   if (communityId) {
     const { data: membership } = await supabase
@@ -111,6 +116,8 @@ export async function deleteTool(toolId: string) {
   } = await supabase.auth.getUser()
 
   if (!user) return { error: 'Not authenticated' }
+
+  trackAction('tool_delete', user.id, { toolId })
 
   // Check for active requests before deleting
   const { data: activeRequests } = await supabase

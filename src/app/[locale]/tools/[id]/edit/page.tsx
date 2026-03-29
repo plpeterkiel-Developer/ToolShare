@@ -4,6 +4,7 @@ import { getToolById } from '@/lib/queries/tools'
 import { getUserCommunities } from '@/lib/queries/communities'
 import { createClient } from '@/lib/supabase/server'
 import { ToolForm } from '@/components/tools/ToolForm'
+import { trackPageView } from '@/lib/tracking'
 
 interface EditToolPageProps {
   params: Promise<{ locale: string; id: string }>
@@ -23,6 +24,8 @@ export default async function EditToolPage({ params }: EditToolPageProps) {
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/tools/${id}/edit`)
   }
+
+  trackPageView('/tools/[id]/edit', 'tool_edit_page', user.id)
 
   const tool = await getToolById(id)
   if (!tool) notFound()

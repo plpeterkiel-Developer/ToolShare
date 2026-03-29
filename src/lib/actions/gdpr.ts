@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getResend, EMAIL_FROM } from '@/lib/email/resend'
 import GdprExport from '@/lib/email/templates/gdpr-export'
 
@@ -13,26 +14,34 @@ export async function downloadMyData() {
 
   if (!user) return { error: 'Not authenticated' }
 
-  // Collect all user data
-  const [profileResult, toolsResult, requestsResult, ratingsResult] = await Promise.all([
-    supabase
-      .from('profiles')
-      .select('id, display_name, location, bio, avatar_url, created_at')
-      .eq('id', user.id)
-      .single(),
-    supabase.from('tools').select('*').eq('owner_id', user.id),
-    supabase
-      .from('borrow_requests')
-      .select('*')
-      .or(`borrower_id.eq.${user.id},owner_id.eq.${user.id}`),
-    supabase.from('ratings').select('*').eq('rater_id', user.id),
-  ])
+  // Collect all user data (usage_events requires admin client due to RLS)
+  const adminSupabase = createAdminClient()
+  const [profileResult, toolsResult, requestsResult, ratingsResult, usageResult] =
+    await Promise.all([
+      supabase
+        .from('profiles')
+        .select('id, display_name, location, bio, avatar_url, created_at')
+        .eq('id', user.id)
+        .single(),
+      supabase.from('tools').select('*').eq('owner_id', user.id),
+      supabase
+        .from('borrow_requests')
+        .select('*')
+        .or(`borrower_id.eq.${user.id},owner_id.eq.${user.id}`),
+      supabase.from('ratings').select('*').eq('rater_id', user.id),
+      adminSupabase
+        .from('usage_events')
+        .select('event_type, event_name, page_path, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false }),
+    ])
 
   const exportData = {
     profile: profileResult.data,
     tools: toolsResult.data ?? [],
     borrow_requests: requestsResult.data ?? [],
     ratings_given: ratingsResult.data ?? [],
+    usage_events: usageResult.data ?? [],
     exported_at: new Date().toISOString(),
   }
 

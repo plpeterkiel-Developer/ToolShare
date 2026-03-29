@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { getIncomingRequests, getOutgoingRequests } from '@/lib/queries/requests'
 import { RequestTabs } from '@/components/requests/RequestTabs'
+import { trackPageView } from '@/lib/tracking'
 
 interface RequestsPageProps {
   params: Promise<{ locale: string }>
@@ -22,6 +23,8 @@ export default async function RequestsPage({ params }: RequestsPageProps) {
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/requests`)
   }
+
+  trackPageView('/requests', 'requests', user.id)
 
   const [incoming, outgoing] = await Promise.all([
     getIncomingRequests(user.id),
