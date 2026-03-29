@@ -375,6 +375,34 @@ export interface Database {
           },
         ]
       }
+      usage_events: {
+        Row: {
+          id: string
+          event_type: string
+          event_name: string
+          page_path: string | null
+          user_id: string | null
+          metadata: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          event_type: string
+          event_name: string
+          page_path?: string | null
+          user_id?: string | null
+          metadata?: Json
+          created_at?: string
+        }
+        Update: {
+          event_type?: string
+          event_name?: string
+          page_path?: string | null
+          user_id?: string | null
+          metadata?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

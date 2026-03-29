@@ -10,6 +10,7 @@ import { RatingsList } from '@/components/ratings/RatingsList'
 import { GdprPanel } from '@/components/gdpr/GdprPanel'
 import { Avatar } from '@/components/ui/Avatar'
 import type { Profile } from '@/types/database.types'
+import { trackPageView } from '@/lib/tracking'
 
 interface ProfilePageProps {
   params: Promise<{ locale: string }>
@@ -29,6 +30,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/profile`)
   }
+
+  trackPageView('/profile', 'profile', user.id)
 
   // Fetch full profile (includes pickup_address for own profile view)
   // Use a typed cast to work around the Supabase never-type issue present in this codebase

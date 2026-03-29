@@ -14,6 +14,7 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
 
   const links = [
     { href: `/${locale}/admin`, label: t('dashboard') },
+    { href: `/${locale}/admin/analytics`, label: t('analytics') },
     { href: `/${locale}/admin/users`, label: t('users') },
     { href: `/${locale}/admin/communities`, label: t('communities') },
     { href: `/${locale}/admin/tools`, label: t('tools') },

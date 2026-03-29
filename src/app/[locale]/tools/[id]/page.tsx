@@ -11,6 +11,7 @@ import { DeleteToolButton } from '@/components/tools/DeleteToolButton'
 import { Badge } from '@/components/ui/Badge'
 import { Avatar } from '@/components/ui/Avatar'
 import type { ToolAvailability, ToolCondition } from '@/types/database.types'
+import { trackPageView } from '@/lib/tracking'
 
 interface ToolDetailPageProps {
   params: Promise<{ locale: string; id: string }>
@@ -29,6 +30,8 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  trackPageView('/tools/[id]', 'tool_detail', user?.id)
 
   const isOwner = user?.id === tool.owner_id
 

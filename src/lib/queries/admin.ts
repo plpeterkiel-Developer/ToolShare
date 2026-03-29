@@ -146,6 +146,81 @@ export async function getCommunityMembers(communityId: string) {
   }))
 }
 
+// ── Usage analytics ─────────────────────────────────────────────
+
+export interface UsageEventRow {
+  event_type: string
+  event_name: string
+  page_path: string | null
+}
+
+export interface UsageStats {
+  topPages: { event_name: string; page_path: string; count: number }[]
+  topActions: { event_name: string; count: number }[]
+  totalEvents: number
+}
+
+// Navigation depth map — how many clicks from home each page is
+const PAGE_DEPTH: Record<string, number> = {
+  home: 0,
+  tools_browse: 1,
+  about: 1,
+  faq: 1,
+  feedback_page: 1,
+  requests: 1,
+  profile: 1,
+  tool_detail: 2,
+  tool_create_page: 2,
+  profile_public: 2,
+  gdpr: 2,
+  tool_edit_page: 3,
+}
+
+export function getPageDepth(eventName: string): number {
+  return PAGE_DEPTH[eventName] ?? -1
+}
+
+export async function getUsageAnalytics(days = 30): Promise<UsageStats> {
+  const supabase = createAdminClient()
+  const since = new Date(Date.now() - days * 86400000).toISOString()
+
+  const { data, error } = await supabase
+    .from('usage_events')
+    .select('event_type, event_name, page_path')
+    .gte('created_at', since)
+
+  if (error) throw error
+
+  const rows = (data ?? []) as UsageEventRow[]
+
+  // Aggregate page views
+  const pageMap = new Map<string, { page_path: string; count: number }>()
+  const actionMap = new Map<string, number>()
+
+  for (const row of rows) {
+    if (row.event_type === 'page_view') {
+      const existing = pageMap.get(row.event_name)
+      if (existing) {
+        existing.count++
+      } else {
+        pageMap.set(row.event_name, { page_path: row.page_path ?? '', count: 1 })
+      }
+    } else if (row.event_type === 'action') {
+      actionMap.set(row.event_name, (actionMap.get(row.event_name) ?? 0) + 1)
+    }
+  }
+
+  const topPages = Array.from(pageMap.entries())
+    .map(([event_name, { page_path, count }]) => ({ event_name, page_path, count }))
+    .sort((a, b) => b.count - a.count)
+
+  const topActions = Array.from(actionMap.entries())
+    .map(([event_name, count]) => ({ event_name, count }))
+    .sort((a, b) => b.count - a.count)
+
+  return { topPages, topActions, totalEvents: rows.length }
+}
+
 export async function getAllUsersForMemberSelect() {
   const supabase = createAdminClient()
 

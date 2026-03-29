@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { FeedbackForm } from '@/components/feedback/FeedbackForm'
+import { trackPageView } from '@/lib/tracking'
 
 interface FeedbackPageProps {
   params: Promise<{ locale: string }>
@@ -17,6 +18,8 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  trackPageView('/feedback', 'feedback_page', user?.id)
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8 flex flex-col gap-8">
