@@ -36,23 +36,23 @@ export class AuthPage {
     password: string
     location?: string
   }): Promise<void> {
-    await this.page.fill('[data-testid="signup-display-name"]', params.displayName)
-    await this.page.fill('[data-testid="signup-email"]', params.email)
-    await this.page.fill('[data-testid="signup-password"]', params.password)
-    await this.page.fill('[data-testid="signup-confirm-password"]', params.password)
+    await this.page.fill('[data-testid="display-name-input"]', params.displayName)
+    await this.page.fill('[data-testid="email-input"]', params.email)
+    await this.page.fill('[data-testid="password-input"]', params.password)
+    await this.page.fill('[data-testid="confirm-password-input"]', params.password)
     if (params.location) {
-      await this.page.fill('[data-testid="signup-location"]', params.location)
+      await this.page.fill('[data-testid="location-input"]', params.location)
     }
   }
 
   async submitSignupForm(): Promise<void> {
-    await this.page.click('[data-testid="signup-submit"]')
+    await this.page.click('[data-testid="register-submit"]')
   }
 
   async clickLogout(): Promise<void> {
     // Open mobile/desktop menu if needed
     const logoutBtn = this.page.locator('[data-testid="logout-button"]')
-    const mobileMenuBtn = this.page.locator('[data-testid="mobile-menu-button"]')
+    const mobileMenuBtn = this.page.locator('[data-testid="sidebar-toggle"]')
 
     if (await mobileMenuBtn.isVisible()) {
       await mobileMenuBtn.click()
@@ -68,12 +68,12 @@ export class AuthPage {
 
   async isLoggedIn(): Promise<boolean> {
     // Check for a link that only appears when authenticated
-    const profileLink = this.page.locator('[data-testid="nav-profile"]')
+    const profileLink = this.page.locator('[data-testid="nav-profile-name"]')
     return profileLink.isVisible()
   }
 
   async getNavDisplayName(): Promise<string | null> {
-    const el = this.page.locator('[data-testid="nav-display-name"]')
+    const el = this.page.locator('[data-testid="nav-profile-name"]')
     if (await el.isVisible()) return el.textContent()
     return null
   }

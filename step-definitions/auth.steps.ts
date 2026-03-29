@@ -105,9 +105,8 @@ Then('I should be redirected to a dashboard or home page', async function (this:
 
 Then('I should see my display name in the navigation', async function (this: CustomWorld) {
   // The navbar shows something user-specific when logged in
-  const navContent = await this.page.locator('header').textContent()
-  // At minimum the profile/logout links should appear
-  expect(navContent).toMatch(/profile|logout|log out|my profile/i)
+  const profileName = this.page.locator('[data-testid="nav-profile-name"]')
+  await expect(profileName).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })
 
 Then('I should be redirected to the home page', async function (this: CustomWorld) {
@@ -116,7 +115,7 @@ Then('I should be redirected to the home page', async function (this: CustomWorl
 
 Then('I should see the login link in the navigation', async function (this: CustomWorld) {
   const loginLink = this.page
-    .locator('header a[href*="/auth/login"], header [data-testid="nav-login"]')
+    .locator('aside a[href*="/auth/login"], nav a[href*="/auth/login"]')
     .first()
   await expect(loginLink).toBeVisible({ timeout: DEFAULT_TIMEOUT })
 })

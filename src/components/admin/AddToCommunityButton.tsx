@@ -24,7 +24,7 @@ export function AddToCommunityButton({ userId, communities }: AddToCommunityButt
     setError(null)
 
     const result = await addCommunityMember(selectedCommunityId, userId)
-    if (result?.error) {
+    if (result && 'error' in result) {
       setError(result.error === 'User is already a member' ? t('alreadyMember') : result.error)
     } else {
       setOpen(false)
