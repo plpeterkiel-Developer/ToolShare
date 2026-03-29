@@ -1,4 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
+import { isDev } from '@/lib/env'
+import { logger } from '@/lib/logger'
 import type { Json } from '@/types/database.types'
 
 /**
@@ -7,6 +9,9 @@ import type { Json } from '@/types/database.types'
 export function trackPageView(pagePath: string, eventName: string, userId?: string | null) {
   void (async () => {
     try {
+      if (isDev) {
+        logger.debug('Track page view', { pagePath, eventName, userId })
+      }
       const supabase = await createClient()
       await supabase.from('usage_events').insert({
         event_type: 'page_view',
@@ -14,8 +19,11 @@ export function trackPageView(pagePath: string, eventName: string, userId?: stri
         page_path: pagePath,
         user_id: userId ?? null,
       })
-    } catch {
-      // Tracking must never break the page
+    } catch (err) {
+      logger.warn('Tracking page view failed', {
+        eventName,
+        error: err instanceof Error ? err.message : String(err),
+      })
     }
   })()
 }
@@ -30,6 +38,9 @@ export function trackAction(
 ) {
   void (async () => {
     try {
+      if (isDev) {
+        logger.debug('Track action', { eventName, userId, metadata })
+      }
       const supabase = await createClient()
       await supabase.from('usage_events').insert({
         event_type: 'action',
@@ -37,8 +48,11 @@ export function trackAction(
         user_id: userId ?? null,
         metadata: metadata ?? {},
       })
-    } catch {
-      // Tracking must never break the action
+    } catch (err) {
+      logger.warn('Tracking action failed', {
+        eventName,
+        error: err instanceof Error ? err.message : String(err),
+      })
     }
   })()
 }

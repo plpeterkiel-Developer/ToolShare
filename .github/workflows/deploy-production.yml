@@ -1,0 +1,50 @@
+name: Deploy Production
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      NEXT_PUBLIC_APP_ENV: production
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build for production
+        run: npm run build
+
+      # TODO: Replace with your hosting platform's deploy command
+      # Examples:
+      #   Vercel:  npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+      #   Fly.io:  flyctl deploy --app toolshare-prod
+      - name: Deploy (placeholder)
+        run: echo "Add your deploy command here"
+
+      - name: Verify health check
+        if: vars.PRODUCTION_DEPLOY_URL
+        run: |
+          sleep 10
+          curl -f "${{ vars.PRODUCTION_DEPLOY_URL }}/api/health" || exit 1
