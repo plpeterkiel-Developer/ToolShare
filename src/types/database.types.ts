@@ -29,6 +29,7 @@ export interface Database {
           name?: string
           description?: string | null
         }
+        Relationships: []
       }
       community_members: {
         Row: {
@@ -41,7 +42,27 @@ export interface Database {
           profile_id: string
           joined_at?: string
         }
-        Update: never
+        Update: {
+          community_id?: string
+          profile_id?: string
+          joined_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'community_members_community_id_fkey'
+            columns: ['community_id']
+            isOneToOne: false
+            referencedRelation: 'communities'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'community_members_profile_id_fkey'
+            columns: ['profile_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
       }
       admins: {
         Row: {
@@ -57,6 +78,36 @@ export interface Database {
         Update: {
           email?: string
         }
+        Relationships: []
+      }
+      feedback: {
+        Row: {
+          id: string
+          user_id: string
+          type: string
+          message: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          type: string
+          message: string
+          created_at?: string
+        }
+        Update: {
+          type?: string
+          message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'feedback_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -111,6 +162,7 @@ export interface Database {
           updated_at?: string
           test_run_id?: string | null
         }
+        Relationships: []
       }
       tools: {
         Row: {
@@ -152,6 +204,22 @@ export interface Database {
           updated_at?: string
           test_run_id?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: 'tools_owner_id_fkey'
+            columns: ['owner_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'tools_community_id_fkey'
+            columns: ['community_id']
+            isOneToOne: false
+            referencedRelation: 'communities'
+            referencedColumns: ['id']
+          },
+        ]
       }
       borrow_requests: {
         Row: {
@@ -188,6 +256,29 @@ export interface Database {
           updated_at?: string
           test_run_id?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: 'borrow_requests_tool_id_fkey'
+            columns: ['tool_id']
+            isOneToOne: false
+            referencedRelation: 'tools'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'borrow_requests_borrower_id_fkey'
+            columns: ['borrower_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'borrow_requests_owner_id_fkey'
+            columns: ['owner_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
       }
       ratings: {
         Row: {
@@ -208,7 +299,33 @@ export interface Database {
           comment?: string | null
           created_at?: string
         }
-        Update: never
+        Update: {
+          score?: number
+          comment?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ratings_request_id_fkey'
+            columns: ['request_id']
+            isOneToOne: false
+            referencedRelation: 'borrow_requests'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ratings_rater_id_fkey'
+            columns: ['rater_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ratings_ratee_id_fkey'
+            columns: ['ratee_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
       }
       reports: {
         Row: {
@@ -234,7 +351,45 @@ export interface Database {
         Update: {
           resolved?: boolean
         }
+        Relationships: [
+          {
+            foreignKeyName: 'reports_reporter_id_fkey'
+            columns: ['reporter_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'reports_reported_user_id_fkey'
+            columns: ['reported_user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'reports_reported_tool_id_fkey'
+            columns: ['reported_tool_id']
+            isOneToOne: false
+            referencedRelation: 'tools'
+            referencedColumns: ['id']
+          },
+        ]
       }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      tool_condition: ToolCondition
+      tool_availability: ToolAvailability
+      request_status: RequestStatus
+      report_reason: ReportReason
+    }
+    CompositeTypes: {
+      [_ in never]: never
     }
   }
 }
