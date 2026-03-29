@@ -8,6 +8,10 @@ import RequestApproved from '@/lib/email/templates/request-approved'
 import RequestDenied from '@/lib/email/templates/request-denied'
 import RequestCancelled from '@/lib/email/templates/request-cancelled'
 import { trackAction } from '@/lib/tracking'
+import { logger } from '@/lib/logger'
+import { routing } from '@/i18n/routing'
+
+const DEFAULT_LOCALE = routing.defaultLocale
 
 export async function createBorrowRequest(formData: FormData) {
   const supabase = await createClient()
@@ -87,12 +91,14 @@ export async function createBorrowRequest(formData: FormData) {
           startDate: startDate ?? '',
           endDate: endDate ?? '',
           message: message ?? '',
-          requestsUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/da/requests`,
+          requestsUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/${DEFAULT_LOCALE}/requests`,
         }),
       })
     }
-  } catch {
-    // Email failure should not block the request creation
+  } catch (err) {
+    logger.warn('Email notification failed (request created)', {
+      error: err instanceof Error ? err.message : String(err),
+    })
   }
 
   revalidatePath('/requests')
@@ -147,12 +153,14 @@ export async function approveRequest(requestId: string) {
           pickupAddress:
             (req.owner as { pickup_address: string | null })?.pickup_address ??
             'Contact the owner for pick-up details',
-          requestsUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/da/requests`,
+          requestsUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/${DEFAULT_LOCALE}/requests`,
         }),
       })
     }
-  } catch {
-    // Email failure should not block the approval
+  } catch (err) {
+    logger.warn('Email notification failed (request approved)', {
+      error: err instanceof Error ? err.message : String(err),
+    })
   }
 
   revalidatePath('/requests')
@@ -201,8 +209,10 @@ export async function denyRequest(requestId: string, reason?: string) {
         }),
       })
     }
-  } catch {
-    // Email failure should not block the denial
+  } catch (err) {
+    logger.warn('Email notification failed (request denied)', {
+      error: err instanceof Error ? err.message : String(err),
+    })
   }
 
   revalidatePath('/requests')
@@ -257,8 +267,10 @@ export async function cancelRequest(requestId: string) {
         }),
       })
     }
-  } catch {
-    // Email failure should not block the cancellation
+  } catch (err) {
+    logger.warn('Email notification failed (request cancelled)', {
+      error: err instanceof Error ? err.message : String(err),
+    })
   }
 
   revalidatePath('/requests')

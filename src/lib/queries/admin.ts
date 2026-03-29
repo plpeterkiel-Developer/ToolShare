@@ -25,25 +25,20 @@ export async function getAdminDashboardStats() {
 export async function getAllUsers() {
   const supabase = createAdminClient()
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const [{ data, error }, { data: authData }] = await Promise.all([
+    supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+    supabase.auth.admin.listUsers(),
+  ])
 
   if (error) throw error
 
-  // Fetch emails from auth for each user
-  const usersWithEmail = await Promise.all(
-    (data ?? []).map(async (profile) => {
-      const { data: authUser } = await supabase.auth.admin.getUserById(profile.id)
-      return {
-        ...profile,
-        email: authUser?.user?.email ?? null,
-      }
-    })
-  )
+  // Build email lookup map from batch auth fetch (avoids N+1 queries)
+  const emailMap = new Map((authData?.users ?? []).map((u) => [u.id, u.email ?? null]))
 
-  return usersWithEmail
+  return (data ?? []).map((profile) => ({
+    ...profile,
+    email: emailMap.get(profile.id) ?? null,
+  }))
 }
 
 export async function getAllTools() {

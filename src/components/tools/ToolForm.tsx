@@ -30,7 +30,7 @@ const CATEGORIES = [
   'Other',
 ]
 
-export function ToolForm({ initialData, mode, toolId, communities = [] }: ToolFormProps) {
+export function ToolForm({ initialData, locale, mode, toolId, communities = [] }: ToolFormProps) {
   const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(initialData?.image_url ?? '')
@@ -70,6 +70,7 @@ export function ToolForm({ initialData, mode, toolId, communities = [] }: ToolFo
     setLoading(true)
 
     const formData = new FormData(e.currentTarget)
+    formData.set('locale', locale)
     if (imageUrl) {
       formData.set('image_url', imageUrl)
     }

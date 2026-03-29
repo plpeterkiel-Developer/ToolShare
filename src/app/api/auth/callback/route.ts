@@ -5,7 +5,10 @@ import { type NextRequest, NextResponse } from 'next/server'
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/da'
+
+  // Validate redirect target: must be a relative path (no open redirect)
+  const rawNext = searchParams.get('next') ?? '/da'
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/da'
 
   if (code) {
     const cookieStore = await cookies()
@@ -32,5 +35,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/da/auth/login?error=auth_failed`)
+  // Extract locale from the validated next path, or fall back to default
+  const locale = next.split('/')[1] || 'da'
+  return NextResponse.redirect(`${origin}/${locale}/auth/login?error=auth_failed`)
 }

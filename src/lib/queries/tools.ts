@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import type { ToolWithOwner, ToolWithOwnerAndCommunity } from '@/types/database.types'
 
+const OWNER_FIELDS = 'id, display_name, location, latitude, longitude, avatar_url, bio'
+
 interface GetToolsParams {
   search?: string
   category?: string
@@ -41,9 +43,7 @@ export async function getTools({
 
   let query = supabase
     .from('tools')
-    .select(
-      '*, owner:profiles!owner_id(id, display_name, location, latitude, longitude, avatar_url, is_suspended, warning_count, last_active_at, created_at, updated_at, test_run_id, gdpr_erasure_requested_at, bio)'
-    )
+    .select(`*, owner:profiles!owner_id(${OWNER_FIELDS})`)
     .eq('availability', 'available')
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1)
@@ -109,9 +109,7 @@ async function getToolsWithinRadius({
   const ownerIds = [...new Set(rpcRows.map((r) => r.owner_id as string))]
   const { data: owners, error: ownerError } = await supabase
     .from('profiles')
-    .select(
-      'id, display_name, location, latitude, longitude, avatar_url, is_suspended, warning_count, last_active_at, created_at, updated_at, test_run_id, gdpr_erasure_requested_at, bio'
-    )
+    .select(OWNER_FIELDS)
     .in('id', ownerIds)
 
   if (ownerError) throw new Error(ownerError.message)
@@ -140,9 +138,7 @@ export async function getToolById(id: string) {
 
   const { data, error } = await supabase
     .from('tools')
-    .select(
-      '*, owner:profiles!owner_id(id, display_name, location, latitude, longitude, avatar_url, is_suspended, warning_count, last_active_at, created_at, updated_at, test_run_id, gdpr_erasure_requested_at, bio), community:communities(id, name)'
-    )
+    .select(`*, owner:profiles!owner_id(${OWNER_FIELDS}), community:communities(id, name)`)
     .eq('id', id)
     .single()
 
@@ -155,9 +151,7 @@ export async function getToolsByOwner(ownerId: string) {
 
   const { data, error } = await supabase
     .from('tools')
-    .select(
-      '*, owner:profiles!owner_id(id, display_name, location, latitude, longitude, avatar_url, is_suspended, warning_count, last_active_at, created_at, updated_at, test_run_id, gdpr_erasure_requested_at, bio)'
-    )
+    .select(`*, owner:profiles!owner_id(${OWNER_FIELDS})`)
     .eq('owner_id', ownerId)
     .order('created_at', { ascending: false })
 
@@ -170,9 +164,7 @@ export async function getRecentAvailableTools(limit = 6) {
 
   const { data, error } = await supabase
     .from('tools')
-    .select(
-      '*, owner:profiles!owner_id(id, display_name, location, latitude, longitude, avatar_url, is_suspended, warning_count, last_active_at, created_at, updated_at, test_run_id, gdpr_erasure_requested_at, bio)'
-    )
+    .select(`*, owner:profiles!owner_id(${OWNER_FIELDS})`)
     .eq('availability', 'available')
     .is('community_id', null)
     .order('created_at', { ascending: false })

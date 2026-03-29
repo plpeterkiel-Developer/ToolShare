@@ -21,7 +21,7 @@ export function DeleteToolButton({ toolId, locale }: DeleteToolButtonProps) {
   async function handleDelete() {
     setError(undefined)
     setLoading(true)
-    const result = await deleteTool(toolId)
+    const result = await deleteTool(toolId, locale)
     if (result?.error) {
       setError(result.error)
       setLoading(false)
