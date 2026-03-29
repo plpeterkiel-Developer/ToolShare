@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
@@ -10,6 +10,7 @@ import { downloadMyData, requestErasure } from '@/lib/actions/gdpr'
 
 export function GdprPanel() {
   const { addToast } = useToast()
+  const locale = useLocale()
   const t = useTranslations('gdpr')
   const tCommon = useTranslations('common')
   const [downloadLoading, setDownloadLoading] = useState(false)
@@ -135,7 +136,7 @@ export function GdprPanel() {
         <p className="text-sm text-gray-600">{t('rectifyDataDesc')}</p>
         <div>
           <Link
-            href="/profile"
+            href={`/${locale}/profile`}
             data-testid="gdpr-rectify-link"
             className="inline-flex items-center gap-1 text-sm font-medium text-green-700 hover:text-green-800 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 rounded"
           >

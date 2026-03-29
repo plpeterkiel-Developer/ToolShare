@@ -20,6 +20,7 @@ export async function createTool(formData: FormData) {
   const condition = (formData.get('condition') as ToolCondition) ?? 'good'
   const imageUrl = formData.get('image_url') as string | null
   const communityId = formData.get('community_id') as string | null
+  const locale = (formData.get('locale') as string) || 'da'
 
   if (!name?.trim()) return { error: 'Name is required' }
   if (!category?.trim()) return { error: 'Category is required' }
@@ -54,7 +55,7 @@ export async function createTool(formData: FormData) {
   if (error) return { error: error.message }
 
   revalidatePath('/tools')
-  redirect(`/da/tools/${data.id}`)
+  redirect(`/${locale}/tools/${data.id}`)
 }
 
 export async function updateTool(toolId: string, formData: FormData) {
@@ -72,6 +73,7 @@ export async function updateTool(toolId: string, formData: FormData) {
   const imageUrl = formData.get('image_url') as string | null
   const availability = formData.get('availability') as ToolAvailability
   const communityId = formData.get('community_id') as string | null
+  const locale = (formData.get('locale') as string) || 'da'
 
   if (!name?.trim()) return { error: 'Name is required' }
 
@@ -106,10 +108,10 @@ export async function updateTool(toolId: string, formData: FormData) {
 
   revalidatePath(`/tools/${toolId}`)
   revalidatePath('/tools')
-  redirect(`/da/tools/${toolId}`)
+  redirect(`/${locale}/tools/${toolId}`)
 }
 
-export async function deleteTool(toolId: string) {
+export async function deleteTool(toolId: string, locale = 'da') {
   const supabase = await createClient()
   const {
     data: { user },
@@ -137,5 +139,5 @@ export async function deleteTool(toolId: string) {
 
   revalidatePath('/tools')
   revalidatePath('/profile')
-  redirect('/da/tools')
+  redirect(`/${locale}/tools`)
 }

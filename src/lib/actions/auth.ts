@@ -8,6 +8,7 @@ export async function login(formData: FormData) {
 
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+  const locale = (formData.get('locale') as string) || 'da'
 
   const { error } = await supabase.auth.signInWithPassword({ email, password })
 
@@ -15,7 +16,7 @@ export async function login(formData: FormData) {
     return { error: error.message }
   }
 
-  redirect('/da')
+  redirect(`/${locale}`)
 }
 
 export async function signup(formData: FormData) {
@@ -41,10 +42,10 @@ export async function signup(formData: FormData) {
   redirect(`/${locale}/auth/confirm`)
 }
 
-export async function logout() {
+export async function logout(locale = 'da') {
   const supabase = await createClient()
   await supabase.auth.signOut()
-  redirect('/da/auth/login')
+  redirect(`/${locale}/auth/login`)
 }
 
 export async function loginWithGoogle() {

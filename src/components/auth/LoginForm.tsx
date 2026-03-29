@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { login, loginWithGoogle, loginWithFacebook } from '@/lib/actions/auth'
@@ -17,12 +17,14 @@ export function LoginForm({ initialError }: LoginFormProps) {
   const [loading, setLoading] = useState(false)
   const [oauthLoading, setOauthLoading] = useState<'google' | 'facebook' | null>(null)
   const t = useTranslations('auth.login')
+  const locale = useLocale()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(undefined)
     setLoading(true)
     const formData = new FormData(e.currentTarget)
+    formData.set('locale', locale)
     const result = await login(formData)
     if (result?.error) {
       setError(result.error)
