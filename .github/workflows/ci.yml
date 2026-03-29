@@ -37,6 +37,7 @@ jobs:
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_APP_ENV: test
     steps:
       - uses: actions/checkout@v4
 
@@ -60,6 +61,7 @@ jobs:
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_ENV: test
     steps:
       - uses: actions/checkout@v4
 
@@ -91,3 +93,41 @@ jobs:
           name: smoke-test-results
           path: test-results/
           retention-days: 7
+
+  deploy-test:
+    name: Deploy to Test
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: test
+    env:
+      NEXT_PUBLIC_APP_ENV: test
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build for test environment
+        run: npm run build
+
+      # TODO: Replace with your hosting platform's deploy command
+      # Examples:
+      #   Vercel:  npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+      #   Fly.io:  flyctl deploy --app toolshare-test
+      - name: Deploy (placeholder)
+        run: echo "Add your deploy command here"
+
+      - name: Verify health check
+        if: vars.TEST_DEPLOY_URL
+        run: |
+          sleep 10
+          curl -f "${{ vars.TEST_DEPLOY_URL }}/api/health" || echo "Health check failed — verify deployment manually"
