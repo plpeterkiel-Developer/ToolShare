@@ -12,7 +12,25 @@ export async function Footer({ locale }: FooterProps) {
     <footer className="border-t border-stone-200 bg-transparent">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-sm text-stone-500 sm:flex-row sm:px-6 lg:px-8">
         <p>{t('copyright')}</p>
-        <nav aria-label="Footer navigation">
+        <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <Link
+            href={`/${locale}/about`}
+            className="hover:text-stone-900 underline underline-offset-2 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded"
+          >
+            {t('aboutLink')}
+          </Link>
+          <Link
+            href={`/${locale}/faq`}
+            className="hover:text-stone-900 underline underline-offset-2 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded"
+          >
+            {t('faqLink')}
+          </Link>
+          <Link
+            href={`/${locale}/feedback`}
+            className="hover:text-stone-900 underline underline-offset-2 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded"
+          >
+            {t('feedbackLink')}
+          </Link>
           <Link
             href={`/${locale}/gdpr`}
             className="hover:text-stone-900 underline underline-offset-2 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 rounded"
