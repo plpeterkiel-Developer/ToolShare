@@ -99,6 +99,7 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
               required
               data-testid="start-date-input"
               min={new Date().toISOString().split('T')[0]}
+              defaultValue={new Date().toISOString().split('T')[0]}
             />
             <Input
               id="end-date"
@@ -108,6 +109,7 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
               required
               data-testid="end-date-input"
               min={new Date().toISOString().split('T')[0]}
+              defaultValue={new Date().toISOString().split('T')[0]}
             />
             <Textarea
               id="borrow-message"
