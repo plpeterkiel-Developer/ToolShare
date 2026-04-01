@@ -21,7 +21,7 @@ Given('tools have been seeded in the database', async function (this: CustomWorl
 })
 
 Given('I am logged in as the tool owner', async function (this: CustomWorld) {
-  const email = `owner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const email = `owner-${this.testRunId}@test.toolshare.app`
   await createTestUser(this.supabaseAdmin, email, 'TestPass123!', this.testRunId)
   this.currentUserEmail = email
 
@@ -38,7 +38,7 @@ Given('I am logged in as the tool owner', async function (this: CustomWorld) {
 
 Given('I am logged in as a different user', async function (this: CustomWorld) {
   // Owner of the existing seeded tools
-  const ownerEmail = `owner2-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const ownerEmail = `owner2-${this.testRunId}@test.toolshare.app`
   await createTestUser(this.supabaseAdmin, ownerEmail, 'TestPass123!', this.testRunId)
 
   const seeded = await seedTools(
@@ -50,14 +50,14 @@ Given('I am logged in as a different user', async function (this: CustomWorld) {
   this.registerSeededTool('Other Person Tool', seeded[0].id)
 
   // Now create and log in as a different user who does NOT own the tool
-  const email = `visitor-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const email = `visitor-${this.testRunId}@test.toolshare.app`
   await createTestUser(this.supabaseAdmin, email, 'TestPass123!', this.testRunId)
   this.currentUserEmail = email
   await this.loginAs(email, 'TestPass123!')
 })
 
 Given('I have a tool listed called {string}', async function (this: CustomWorld, toolName: string) {
-  const email = this.currentUserEmail || `owner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const email = this.currentUserEmail || `owner-${this.testRunId}@test.toolshare.app`
   const seeded = await seedTools(
     this.supabaseAdmin,
     [{ name: toolName, category: 'Hand Tools', availability: 'available' }],
@@ -74,7 +74,7 @@ Given(
     if (!toolId) throw new Error(`No seeded tool found with name "${toolName}"`)
 
     // Create a borrower and insert a pending request directly via admin
-    const borrowerEmail = `borrower-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+    const borrowerEmail = `borrower-${this.testRunId}@test.toolshare.app`
     const { id: borrowerId } = await createTestUser(
       this.supabaseAdmin,
       borrowerEmail,
@@ -192,7 +192,9 @@ When('I confirm the deletion', async function (this: CustomWorld) {
 // ─── Thens ───────────────────────────────────────────────────────────────────
 
 Then('I should see the tools listing page', async function (this: CustomWorld) {
-  await expect(this.page.locator('[data-testid="tools-heading"]')).toBeVisible({ timeout: DEFAULT_TIMEOUT })
+  await expect(this.page.locator('[data-testid="tools-heading"]')).toBeVisible({
+    timeout: DEFAULT_TIMEOUT,
+  })
 })
 
 Then('I should see at least one tool card', async function (this: CustomWorld) {
@@ -220,7 +222,9 @@ Then("I should see the owner's name", async function (this: CustomWorld) {
 })
 
 Then('I should see the edit button', async function (this: CustomWorld) {
-  await expect(this.page.locator('[data-testid="edit-tool-link"]')).toBeVisible({ timeout: DEFAULT_TIMEOUT })
+  await expect(this.page.locator('[data-testid="edit-tool-link"]')).toBeVisible({
+    timeout: DEFAULT_TIMEOUT,
+  })
 })
 
 Then('I should see the delete button', async function (this: CustomWorld) {
@@ -270,7 +274,9 @@ Then('I should see a validation error for the name field', async function (this:
 })
 
 Then('I should see the unavailable badge', async function (this: CustomWorld) {
-  await expect(this.page.locator('text=Unavailable').first()).toBeVisible({ timeout: DEFAULT_TIMEOUT })
+  await expect(this.page.locator('text=Unavailable').first()).toBeVisible({
+    timeout: DEFAULT_TIMEOUT,
+  })
 })
 
 Then('the tool should still exist', async function (this: CustomWorld) {

@@ -21,11 +21,37 @@ export async function createTestUser(
     user_metadata: { test_run_id: testRunId },
   })
 
-  if (error || !data.user) {
-    throw new Error(`Failed to create test user ${email}: ${error?.message}`)
-  }
+  let userId: string
 
-  const userId = data.user.id
+  if (error && error.message?.includes('already been registered')) {
+    // User exists from a previous run. Append a unique suffix and create a fresh user instead.
+    const uniqueEmail = email.replace('@', `-${Date.now()}@`)
+    const { data: retryData, error: retryError } = await supabaseAdmin.auth.admin.createUser({
+      email: uniqueEmail,
+      password,
+      email_confirm: true,
+      user_metadata: { test_run_id: testRunId, original_email: email },
+    })
+    if (retryError || !retryData?.user) {
+      throw new Error(`Failed to create test user ${uniqueEmail}: ${retryError?.message}`)
+    }
+    userId = retryData.user.id
+    // Update password and metadata for this test run
+    await supabaseAdmin.auth.admin.updateUserById(userId, {
+      password,
+      user_metadata: { test_run_id: testRunId },
+    })
+    // Clean leftover data
+    await supabaseAdmin
+      .from('borrow_requests')
+      .delete()
+      .or(`borrower_id.eq.${userId},owner_id.eq.${userId}`)
+    await supabaseAdmin.from('tools').delete().eq('owner_id', userId)
+  } else if (error || !data?.user) {
+    throw new Error(`Failed to create test user ${email}: ${error?.message}`)
+  } else {
+    userId = data.user.id
+  }
 
   // Upsert profile row
   const displayName = email.split('@')[0]

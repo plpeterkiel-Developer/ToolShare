@@ -1,5 +1,7 @@
-import { Before, After, ITestCaseHookParameter } from '@cucumber/cucumber'
+import { Before, After, setDefaultTimeout, ITestCaseHookParameter } from '@cucumber/cucumber'
 import { CustomWorld } from './world'
+
+setDefaultTimeout(30_000)
 
 Before(async function (this: CustomWorld) {
   await this.init()
@@ -35,21 +37,9 @@ async function cleanupTestData(world: CustomWorld): Promise<void> {
     // Delete profiles created in this test run
     await supabaseAdmin.from('profiles').delete().eq('test_run_id', testRunId)
 
-    // Delete auth users whose metadata contains this test_run_id.
-    // We list users and filter by metadata since Supabase Admin API
-    // doesn't support filtering by metadata directly.
-    const { data: usersPage } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000,
-    })
-
-    const testUsers = (usersPage?.users ?? []).filter(
-      (u) => u.user_metadata?.test_run_id === testRunId
-    )
-
-    for (const user of testUsers) {
-      await supabaseAdmin.auth.admin.deleteUser(user.id)
-    }
+    // Auth users are NOT deleted — Supabase soft-deletes cause "already registered"
+    // errors on recreate. Test users are reused via createTestUser which handles
+    // existing users by updating their password and metadata.
   } catch (err) {
     // Cleanup errors should not fail the test suite
     console.error('Cleanup error:', err)

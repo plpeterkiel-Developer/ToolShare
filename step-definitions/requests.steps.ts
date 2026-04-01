@@ -7,7 +7,7 @@ import { createTestUser, seedTools, seedBorrowRequest } from '../features/suppor
 // ─── Givens ──────────────────────────────────────────────────────────────────
 
 Given('I am logged in as a borrower', async function (this: CustomWorld) {
-  const borrowerEmail = `borrower-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const borrowerEmail = `borrower-${this.testRunId}@test.toolshare.app`
   this.sharedEmail = borrowerEmail
   const { id } = await createTestUser(
     this.supabaseAdmin,
@@ -21,7 +21,7 @@ Given('I am logged in as a borrower', async function (this: CustomWorld) {
 })
 
 Given('there is an available tool owned by a different user', async function (this: CustomWorld) {
-  this.ownerEmail = `toolowner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  this.ownerEmail = `toolowner-${this.testRunId}@test.toolshare.app`
   const seeded = await seedTools(
     this.supabaseAdmin,
     [{ name: 'Borrowable Hammer', category: 'Hand Tools', availability: 'available' }],
@@ -50,7 +50,7 @@ Given('there is a pending borrow request for my tool', async function (this: Cus
   this.registerSeededTool('Requested Tool', toolId)
 
   // Create borrower
-  const bEmail = `borrower2-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const bEmail = `borrower2-${this.testRunId}@test.toolshare.app`
   const { id: borrowerId } = await createTestUser(
     this.supabaseAdmin,
     bEmail,
@@ -72,7 +72,7 @@ Given('there is a pending borrow request for my tool', async function (this: Cus
 Given('I have submitted a borrow request', async function (this: CustomWorld) {
   if (!this.currentUserId) throw new Error('No currentUserId — log in as borrower first')
 
-  const toolOwnerEmail = `reqowner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const toolOwnerEmail = `reqowner-${this.testRunId}@test.toolshare.app`
   const seeded = await seedTools(
     this.supabaseAdmin,
     [{ name: 'My Requested Tool', category: 'Gardening', availability: 'available' }],
@@ -93,8 +93,8 @@ Given('I have submitted a borrow request', async function (this: CustomWorld) {
 })
 
 Given('a borrow request has been approved for a tool', async function (this: CustomWorld) {
-  const approvedOwnerEmail = `approved-owner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
-  const approvedBorrowerEmail = `approved-borrower-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const approvedOwnerEmail = `approved-owner-${this.testRunId}@test.toolshare.app`
+  const approvedBorrowerEmail = `approved-borrower-${this.testRunId}@test.toolshare.app`
 
   const seeded = await seedTools(
     this.supabaseAdmin,
@@ -125,7 +125,7 @@ Given('a borrow request has been approved for a tool', async function (this: Cus
 Given('I have a pending outgoing borrow request', async function (this: CustomWorld) {
   if (!this.currentUserId) throw new Error('No currentUserId — log in as borrower first')
 
-  const toolOwnerEmail = `pendingowner-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const toolOwnerEmail = `pendingowner-${this.testRunId}@test.toolshare.app`
   const seeded = await seedTools(
     this.supabaseAdmin,
     [{ name: 'Pending Tool', category: 'Gardening', availability: 'available' }],

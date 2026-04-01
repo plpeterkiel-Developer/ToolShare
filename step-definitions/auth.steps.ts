@@ -7,9 +7,9 @@ import { createTestUser } from '../features/support/db-helpers'
 // ─── Givens ──────────────────────────────────────────────────────────────────
 
 Given('a registered user exists', async function (this: CustomWorld) {
-  const email = `user-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const email = `user-${this.testRunId}@test.toolshare.app`
   this.sharedEmail = email
-  this.sharedPassword = 'TestPass123!'
+  this.sharedPassword = 'TestPass123!' // pragma: allowlist secret
   await createTestUser(this.supabaseAdmin, email, this.sharedPassword, this.testRunId)
   this.currentUserEmail = email
 })
@@ -18,7 +18,7 @@ Given(
   'a user already exists with email {string}',
   async function (this: CustomWorld, email: string) {
     // Create a fresh one with this specific email for the duplicate test
-    const uniqueEmail = `${this.testRunId.slice(0, 8)}-${email}`
+    const uniqueEmail = `${this.testRunId}-${email}`
     await createTestUser(this.supabaseAdmin, uniqueEmail, 'TestPass123!', this.testRunId)
     // Store the unique email so the "fill with email" step can use it
     this.attach(`seeded_duplicate_email:${uniqueEmail}`)
@@ -26,9 +26,9 @@ Given(
 )
 
 Given('I am logged in as a registered user', async function (this: CustomWorld) {
-  const email = `user-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const email = `user-${this.testRunId}@test.toolshare.app`
   this.sharedEmail = email
-  this.sharedPassword = 'TestPass123!'
+  this.sharedPassword = 'TestPass123!' // pragma: allowlist secret
   await createTestUser(this.supabaseAdmin, email, this.sharedPassword, this.testRunId)
   this.currentUserEmail = email
   await this.loginAs(email, this.sharedPassword)
@@ -43,7 +43,7 @@ Given('I am not logged in', async function (this: CustomWorld) {
 
 When('I fill in the signup form with a new user', async function (this: CustomWorld) {
   const authPage = new AuthPage(this.page, this.baseUrl)
-  const email = `signup-${this.testRunId.slice(0, 8)}@test.toolshare.app`
+  const email = `signup-${this.testRunId}@test.toolshare.app`
   this.sharedEmail = email
   this.currentUserEmail = email
   await authPage.fillSignupForm({
@@ -59,11 +59,11 @@ When(
     const authPage = new AuthPage(this.page, this.baseUrl)
     // Retrieve the unique seeded email from the attachment hint
     // Since Cucumber attachments aren't easily retrievable, we use this.testRunId to reconstruct:
-    const uniqueEmail = `${this.testRunId.slice(0, 8)}-${_email}`
+    const uniqueEmail = `${this.testRunId}-${_email}`
     await authPage.fillSignupForm({
       displayName: 'Duplicate User',
       email: uniqueEmail,
-      password: 'TestPass123!',
+      password: 'TestPass123!', // pragma: allowlist secret
     })
   }
 )
