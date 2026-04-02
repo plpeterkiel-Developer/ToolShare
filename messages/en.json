@@ -17,7 +17,11 @@
     "closeSidebar": "Close menu",
     "navigation": "Main navigation",
     "pendingRequests": "{count, plural, one {# pending request} other {# pending requests}}",
-    "activeBorrows": "{count, plural, one {# active borrow} other {# active borrows}}"
+    "activeBorrows": "{count, plural, one {# active borrow} other {# active borrows}}",
+    "about": "About",
+    "faq": "FAQ",
+    "feedback": "Feedback",
+    "gdpr": "GDPR & Privacy"
   },
   "home": {
     "hero": {

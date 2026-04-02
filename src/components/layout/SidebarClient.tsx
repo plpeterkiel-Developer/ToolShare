@@ -157,6 +157,86 @@ function HomeIcon() {
   )
 }
 
+function AboutIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+      />
+    </svg>
+  )
+}
+
+function FaqIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+      />
+    </svg>
+  )
+}
+
+function FeedbackIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
+      />
+    </svg>
+  )
+}
+
+function GdprIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+      />
+    </svg>
+  )
+}
+
 function ChevronLeftIcon() {
   return (
     <svg
@@ -347,6 +427,13 @@ export function SidebarClient({
 
   const navLinks = user ? authNavLinks : guestNavLinks
 
+  const secondaryNavLinks = [
+    { href: `/${locale}/about`, icon: <AboutIcon />, label: t('about') },
+    { href: `/${locale}/faq`, icon: <FaqIcon />, label: t('faq') },
+    { href: `/${locale}/feedback`, icon: <FeedbackIcon />, label: t('feedback') },
+    { href: `/${locale}/gdpr`, icon: <GdprIcon />, label: t('gdpr') },
+  ]
+
   return (
     <>
       {/* Mobile top bar — logo + hamburger */}
@@ -394,6 +481,7 @@ export function SidebarClient({
           user={user}
           locale={locale}
           navLinks={navLinks}
+          secondaryNavLinks={secondaryNavLinks}
           activeBorrowsCount={activeBorrowsCount}
           isActive={isActive}
           onNavClick={close}
@@ -430,6 +518,7 @@ export function SidebarClient({
           user={user}
           locale={locale}
           navLinks={navLinks}
+          secondaryNavLinks={secondaryNavLinks}
           activeBorrowsCount={activeBorrowsCount}
           isActive={isActive}
           t={t}
@@ -451,6 +540,11 @@ interface SidebarContentProps {
     badge?: number
     badgeColor?: 'red' | 'green'
   }>
+  secondaryNavLinks: Array<{
+    href: string
+    icon: React.ReactNode
+    label: string
+  }>
   activeBorrowsCount: number
   isActive: (href: string, exact?: boolean) => boolean
   onNavClick?: () => void
@@ -462,6 +556,7 @@ function SidebarContent({
   user,
   locale,
   navLinks,
+  secondaryNavLinks,
   activeBorrowsCount,
   isActive,
   onNavClick,
@@ -541,6 +636,23 @@ function SidebarContent({
             </Link>
           </div>
         )}
+
+        {/* Secondary links (About, FAQ, etc.) */}
+        <div className="mt-auto pt-3 border-t border-stone-200">
+          <ul className="flex flex-col gap-1">
+            {secondaryNavLinks.map((link) => (
+              <NavItem
+                key={link.href}
+                href={link.href}
+                icon={link.icon}
+                label={link.label}
+                expanded={expanded}
+                isActive={isActive(link.href)}
+                onClick={onNavClick}
+              />
+            ))}
+          </ul>
+        </div>
       </nav>
 
       {/* Bottom section */}

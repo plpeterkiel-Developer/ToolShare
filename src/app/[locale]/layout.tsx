@@ -3,7 +3,6 @@ import { getMessages, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import Sidebar from '@/components/layout/Sidebar'
-import Footer from '@/components/layout/Footer'
 import { ToastProvider } from '@/components/ui/Toast'
 import { createClient } from '@/lib/supabase/server'
 
@@ -41,7 +40,6 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
             <main id="main-content" className="flex-1 pt-14 md:pt-0">
               {children}
             </main>
-            <Footer locale={locale} />
           </div>
         </div>
       </ToastProvider>

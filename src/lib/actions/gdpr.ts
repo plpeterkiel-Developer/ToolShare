@@ -72,15 +72,62 @@ export async function requestErasure() {
 
   if (!user) return { error: 'Not authenticated' }
 
-  const { error } = await supabase
+  const adminSupabase = createAdminClient()
+
+  // Cancel active borrow requests where user is borrower or owner
+  await adminSupabase
+    .from('borrow_requests')
+    .update({ status: 'cancelled' })
+    .or(`borrower_id.eq.${user.id},owner_id.eq.${user.id}`)
+    .in('status', ['pending', 'approved'])
+
+  // Notify borrowers with active requests on tools this user owns
+  const { data: affectedRequests } = await adminSupabase
+    .from('borrow_requests')
+    .select('borrower_id, tool:tools(name)')
+    .eq('owner_id', user.id)
+    .in('status', ['cancelled'])
+
+  if (affectedRequests?.length) {
+    const AccountDeletedEmail = (await import('@/lib/email/templates/account-deleted')).default
+    for (const req of affectedRequests) {
+      const { data: borrowerAuth } = await adminSupabase.auth.admin.getUserById(req.borrower_id)
+      const { data: borrowerProfile } = await adminSupabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', req.borrower_id)
+        .single()
+      const toolName = (req.tool as { name: string } | null)?.name ?? 'a tool'
+
+      if (borrowerAuth?.user?.email) {
+        await getResend().emails.send({
+          from: EMAIL_FROM,
+          to: borrowerAuth.user.email,
+          subject: `Your request has been cancelled – ${toolName}`,
+          react: AccountDeletedEmail({
+            borrowerName: borrowerProfile?.display_name ?? 'User',
+            toolName,
+          }),
+        })
+      }
+    }
+  }
+
+  // Mark erasure timestamp
+  const { error } = await adminSupabase
     .from('profiles')
     .update({ gdpr_erasure_requested_at: new Date().toISOString() })
     .eq('id', user.id)
 
   if (error) return { error: error.message }
 
-  // In a real deployment, a scheduled job checks gdpr_erasure_requested_at
-  // and anonymises the account within 30 days.
+  // TODO: Implement a scheduled job (Supabase Edge Function or cron) that
+  // processes gdpr_erasure_requested_at records, anonymises reviews
+  // (set author to 'Deleted account'), removes tools, and deletes the
+  // Supabase Auth user within 30 days.
+
+  // Sign out the user
+  await supabase.auth.signOut()
 
   revalidatePath('/profile')
   return { success: true }

@@ -17,7 +17,11 @@
     "closeSidebar": "Luk menu",
     "navigation": "Hovednavigation",
     "pendingRequests": "{count, plural, one {# ventende forespørgsel} other {# ventende forespørgsler}}",
-    "activeBorrows": "{count, plural, one {# aktivt lån} other {# aktive lån}}"
+    "activeBorrows": "{count, plural, one {# aktivt lån} other {# aktive lån}}",
+    "about": "Om os",
+    "faq": "FAQ",
+    "feedback": "Feedback",
+    "gdpr": "GDPR og privatliv"
   },
   "home": {
     "hero": {

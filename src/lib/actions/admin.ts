@@ -3,6 +3,9 @@
 import { revalidatePath } from 'next/cache'
 import { isCurrentUserAdmin } from '@/lib/admin'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getResend, EMAIL_FROM } from '@/lib/email/resend'
+import UserWarningEmail from '@/lib/email/templates/user-warning'
+import UserSuspendedEmail from '@/lib/email/templates/user-suspended'
 
 async function requireAdmin() {
   const admin = await isCurrentUserAdmin()
@@ -10,14 +13,35 @@ async function requireAdmin() {
   return null
 }
 
-export async function suspendUser(userId: string) {
+export async function suspendUser(userId: string, reason = 'Violation of community guidelines') {
   const denied = await requireAdmin()
   if (denied) return denied
 
   const supabase = createAdminClient()
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('display_name')
+    .eq('id', userId)
+    .single()
+
   const { error } = await supabase.from('profiles').update({ is_suspended: true }).eq('id', userId)
 
   if (error) return { error: error.message }
+
+  // Send suspension email
+  const { data: authUser } = await supabase.auth.admin.getUserById(userId)
+  if (authUser?.user?.email) {
+    await getResend().emails.send({
+      from: EMAIL_FROM,
+      to: authUser.user.email,
+      subject: 'Your account has been suspended – ToolShare',
+      react: UserSuspendedEmail({
+        userName: profile?.display_name ?? 'User',
+        reason,
+      }),
+    })
+  }
 
   revalidatePath('/admin/users')
   return { success: true }
@@ -36,16 +60,16 @@ export async function unsuspendUser(userId: string) {
   return { success: true }
 }
 
-export async function warnUser(userId: string) {
+export async function warnUser(userId: string, reason = 'Community guidelines violation') {
   const denied = await requireAdmin()
   if (denied) return denied
 
   const supabase = createAdminClient()
 
-  // Get current warning count
+  // Get current warning count and email
   const { data: profile } = await supabase
     .from('profiles')
-    .select('warning_count')
+    .select('warning_count, display_name')
     .eq('id', userId)
     .single()
 
@@ -57,6 +81,20 @@ export async function warnUser(userId: string) {
     .eq('id', userId)
 
   if (error) return { error: error.message }
+
+  // Send warning email
+  const { data: authUser } = await supabase.auth.admin.getUserById(userId)
+  if (authUser?.user?.email) {
+    await getResend().emails.send({
+      from: EMAIL_FROM,
+      to: authUser.user.email,
+      subject: 'Warning from ToolShare',
+      react: UserWarningEmail({
+        userName: profile.display_name ?? 'User',
+        reason,
+      }),
+    })
+  }
 
   revalidatePath('/admin/users')
   return { success: true }
