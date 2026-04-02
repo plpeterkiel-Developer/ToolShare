@@ -408,7 +408,33 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      tools_within_radius: {
+        Args: {
+          p_lat: number
+          p_lng: number
+          p_radius_km?: number
+          p_search?: string | null
+          p_category?: string | null
+          p_limit?: number
+          p_offset?: number
+          p_user_id?: string | null
+        }
+        Returns: {
+          id: string
+          owner_id: string
+          name: string
+          description: string | null
+          category: string
+          condition: string
+          image_url: string | null
+          availability: string
+          created_at: string
+          updated_at: string
+          test_run_id: string | null
+          distance_km: number
+          community_id: string | null
+        }[]
+      }
     }
     Enums: {
       tool_condition: ToolCondition

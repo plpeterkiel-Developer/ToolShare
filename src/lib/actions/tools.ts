@@ -14,6 +14,14 @@ export async function createTool(formData: FormData) {
 
   if (!user) return { error: 'Not authenticated' }
 
+  // Block suspended users
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('is_suspended')
+    .eq('id', user.id)
+    .single()
+  if (profile?.is_suspended) return { error: 'Your account has been suspended' }
+
   const name = formData.get('name') as string
   const description = formData.get('description') as string
   const category = formData.get('category') as string

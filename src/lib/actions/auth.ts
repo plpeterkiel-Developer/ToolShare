@@ -49,12 +49,15 @@ export async function logout(locale = 'da') {
 }
 
 export async function loginWithGoogle() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  if (!siteUrl) return { error: 'OAuth is not configured. NEXT_PUBLIC_SITE_URL is missing.' }
+
   const supabase = await createClient()
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: process.env.NEXT_PUBLIC_SITE_URL + '/api/auth/callback',
+      redirectTo: siteUrl + '/api/auth/callback',
     },
   })
 
@@ -67,12 +70,15 @@ export async function loginWithGoogle() {
 }
 
 export async function loginWithFacebook() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  if (!siteUrl) return { error: 'OAuth is not configured. NEXT_PUBLIC_SITE_URL is missing.' }
+
   const supabase = await createClient()
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'facebook',
     options: {
-      redirectTo: process.env.NEXT_PUBLIC_SITE_URL + '/api/auth/callback',
+      redirectTo: siteUrl + '/api/auth/callback',
     },
   })
 

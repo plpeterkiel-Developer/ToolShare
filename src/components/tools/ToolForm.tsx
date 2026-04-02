@@ -8,6 +8,7 @@ import { Select } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 import { ToolImageUpload } from '@/components/tools/ToolImageUpload'
 import { createTool, updateTool } from '@/lib/actions/tools'
+import { TOOL_CATEGORIES } from '@/lib/utils/constants'
 import type { Tool, Community } from '@/types/database.types'
 
 export interface ToolFormProps {
@@ -18,25 +19,28 @@ export interface ToolFormProps {
   communities?: Community[]
 }
 
-const CATEGORIES = [
-  'Power Tools',
-  'Hand Tools',
-  'Garden Tools',
-  'Measuring Tools',
-  'Automotive',
-  'Plumbing',
-  'Electrical',
-  'Woodworking',
-  'Other',
-]
-
 export function ToolForm({ initialData, locale, mode, toolId, communities = [] }: ToolFormProps) {
   const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(initialData?.image_url ?? '')
   const t = useTranslations('tools')
 
-  const categoryOptions = CATEGORIES.map((c) => ({ value: c, label: c }))
+  const tCat = useTranslations('tools.categories')
+
+  const CATEGORY_KEY_MAP: Record<string, string> = {
+    'Power Tools': 'powerTools',
+    'Hand Tools': 'handTools',
+    Gardening: 'gardening',
+    Measuring: 'measuring',
+    Cleaning: 'cleaning',
+    Automotive: 'automotive',
+    Other: 'other',
+  }
+
+  const categoryOptions = TOOL_CATEGORIES.map((c) => ({
+    value: c,
+    label: CATEGORY_KEY_MAP[c] ? tCat(CATEGORY_KEY_MAP[c]) : c,
+  }))
 
   const conditionOptions = [
     { value: 'good', label: t('condition.good') },

@@ -21,10 +21,22 @@ export async function createBorrowRequest(formData: FormData) {
 
   if (!user) return { error: 'Not authenticated' }
 
+  // Block suspended users
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('is_suspended')
+    .eq('id', user.id)
+    .single()
+  if (profile?.is_suspended) return { error: 'Your account has been suspended' }
+
   const toolId = formData.get('tool_id') as string
   const message = formData.get('message') as string | null
   const startDate = formData.get('start_date') as string | null
   const endDate = formData.get('end_date') as string | null
+
+  if (startDate && endDate && endDate < startDate) {
+    return { error: 'End date must be on or after start date' }
+  }
 
   trackAction('borrow_request_create', user.id, { toolId })
 
