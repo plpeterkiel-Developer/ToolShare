@@ -3,8 +3,11 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { routing } from '@/i18n/routing'
 import type { ToolAvailability, ToolCondition } from '@/types/database.types'
 import { trackAction } from '@/lib/tracking'
+
+const DEFAULT_LOCALE = routing.defaultLocale
 
 export async function createTool(formData: FormData) {
   const supabase = await createClient()
@@ -28,7 +31,7 @@ export async function createTool(formData: FormData) {
   const condition = (formData.get('condition') as ToolCondition) ?? 'good'
   const imageUrl = formData.get('image_url') as string | null
   const communityId = formData.get('community_id') as string | null
-  const locale = (formData.get('locale') as string) || 'da'
+  const locale = (formData.get('locale') as string) || DEFAULT_LOCALE
 
   if (!name?.trim()) return { error: 'Name is required' }
   if (!category?.trim()) return { error: 'Category is required' }
@@ -81,7 +84,7 @@ export async function updateTool(toolId: string, formData: FormData) {
   const imageUrl = formData.get('image_url') as string | null
   const availability = formData.get('availability') as ToolAvailability
   const communityId = formData.get('community_id') as string | null
-  const locale = (formData.get('locale') as string) || 'da'
+  const locale = (formData.get('locale') as string) || DEFAULT_LOCALE
 
   if (!name?.trim()) return { error: 'Name is required' }
 
@@ -119,7 +122,7 @@ export async function updateTool(toolId: string, formData: FormData) {
   redirect(`/${locale}/tools/${toolId}`)
 }
 
-export async function deleteTool(toolId: string, locale = 'da') {
+export async function deleteTool(toolId: string, locale: string = DEFAULT_LOCALE) {
   const supabase = await createClient()
   const {
     data: { user },
