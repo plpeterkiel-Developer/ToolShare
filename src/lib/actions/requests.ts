@@ -9,6 +9,8 @@ import RequestDenied from '@/lib/email/templates/request-denied'
 import RequestCancelled from '@/lib/email/templates/request-cancelled'
 import { trackAction } from '@/lib/tracking'
 import { logger } from '@/lib/logger'
+import { rateLimit } from '@/lib/rate-limit'
+import { borrowLimiter } from '@/lib/rate-limiters'
 import { routing } from '@/i18n/routing'
 
 const DEFAULT_LOCALE = routing.defaultLocale
@@ -28,6 +30,9 @@ export async function createBorrowRequest(formData: FormData) {
     .eq('id', user.id)
     .single()
   if (profile?.is_suspended) return { error: 'Your account has been suspended' }
+
+  const { success: withinLimit } = await rateLimit(borrowLimiter, user.id)
+  if (!withinLimit) return { error: 'Too many requests. Please try again later.' }
 
   const toolId = formData.get('tool_id') as string
   const message = formData.get('message') as string | null
@@ -304,7 +309,7 @@ export async function markReturned(requestId: string) {
     .update({ status: 'returned' })
     .eq('id', requestId)
     .eq('owner_id', user.id)
-    .eq('status', 'approved')
+    .in('status', ['approved', 'overdue'])
 
   if (error) return { error: error.message }
 

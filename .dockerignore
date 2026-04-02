@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.github
+.gitignore
+.env*
+!.env.example
+test-results
+coverage
+features
+step-definitions
+*.md
+.sentryclirc
+.vercel
+.DS_Store
+.husky

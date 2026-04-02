@@ -119,12 +119,37 @@ jobs:
       - name: Build for test environment
         run: npm run build
 
-      # TODO: Replace with your hosting platform's deploy command
-      # Examples:
-      #   Vercel:  npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
-      #   Fly.io:  flyctl deploy --app toolshare-test
-      - name: Deploy (placeholder)
-        run: echo "Add your deploy command here"
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build with Vercel
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy to Preview
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # --- Alternative: Fly.io ---
+      # - uses: superfly/flyctl-actions/setup-flyctl@master
+      # - run: flyctl deploy --app toolshare-test
+      #   env:
+      #     FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      #
+      # --- Alternative: Railway ---
+      # - run: npx @railway/cli deploy --service toolshare
+      #   env:
+      #     RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
       - name: Verify health check
         if: vars.TEST_DEPLOY_URL
