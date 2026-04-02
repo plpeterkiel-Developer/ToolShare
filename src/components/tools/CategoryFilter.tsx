@@ -75,11 +75,11 @@ export function CategoryFilter({ categories, selectedCategory }: CategoryFilterP
             data-testid={`category-${category}`}
             onClick={() => selectCategory(category)}
             className={[
-              'rounded-full px-3 py-2 text-sm font-medium transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2',
+              'rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
               isActive
-                ? 'bg-green-600 text-white'
-                : 'border border-gray-300 bg-white text-gray-600 hover:bg-gray-50',
+                ? 'bg-green-800 text-white'
+                : 'border border-stone-200 bg-white text-stone-600 hover:bg-stone-50 hover:border-stone-300',
             ].join(' ')}
           >
             {CATEGORY_KEY_MAP[category] ? tCat(CATEGORY_KEY_MAP[category]) : category}

@@ -22,7 +22,7 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.sentry-cdn.com",
+      "script-src 'self' 'unsafe-inline' https://js.sentry-cdn.com",
       "style-src 'self' 'unsafe-inline'",
       `img-src 'self' data: blob: ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''} https://images.unsplash.com https://*.tile.openstreetmap.org https://unpkg.com`,
       "font-src 'self'",

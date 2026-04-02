@@ -59,6 +59,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
+  // 4. Block suspended users from protected routes
+  if (user && isProtectedPath(request.nextUrl.pathname)) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_suspended')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.is_suspended) {
+      const locale = request.nextUrl.pathname.split('/')[1] || 'da'
+      const loginUrl = new URL(`/${locale}/auth/login`, request.url)
+      loginUrl.searchParams.set('error', 'suspended')
+      return NextResponse.redirect(loginUrl)
+    }
+  }
+
   return response
 }
 

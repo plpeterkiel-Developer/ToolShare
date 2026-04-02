@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getTools } from '@/lib/queries/tools'
 import { ToolGrid } from '@/components/tools/ToolGrid'
@@ -80,21 +81,23 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
       </div>
 
       {/* Search + filter row */}
-      <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-start">
-        <div className="flex-1">
-          <SearchBar defaultValue={q} placeholder={t('search')} />
+      <Suspense>
+        <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-start">
+          <div className="flex-1">
+            <SearchBar defaultValue={q} placeholder={t('search')} />
+          </div>
+          <CategoryFilter categories={[...TOOL_CATEGORIES]} selectedCategory={category} />
         </div>
-        <CategoryFilter categories={[...TOOL_CATEGORIES]} selectedCategory={category} />
-      </div>
 
-      {/* Location filter */}
-      <div className="mb-8">
-        <LocationFilter
-          defaultLat={hasLocation ? lat : undefined}
-          defaultLng={hasLocation ? lng : undefined}
-          userRadius={userRadius}
-        />
-      </div>
+        {/* Location filter */}
+        <div className="mb-8">
+          <LocationFilter
+            defaultLat={hasLocation ? lat : undefined}
+            defaultLng={hasLocation ? lng : undefined}
+            userRadius={userRadius}
+          />
+        </div>
+      </Suspense>
 
       {/* Active filters summary */}
       {(q || category || hasLocation) && (
