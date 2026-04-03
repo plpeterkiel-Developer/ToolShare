@@ -15,7 +15,7 @@ export async function BookingsButton({ userId, locale }: BookingsButtonProps) {
   return (
     <Link
       href={`/${locale}/requests`}
-      className="relative inline-flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur px-8 py-3.5 text-base font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
+      className="relative inline-flex w-56 items-center justify-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur px-8 py-3.5 text-base font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -33,11 +33,11 @@ export async function BookingsButton({ userId, locale }: BookingsButtonProps) {
         />
       </svg>
       {t('bookings')}
-      {pending > 0 && (
-        <span className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white">
-          {pending}
-        </span>
-      )}
+      <span
+        className={`absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold text-white ${pending > 0 ? 'bg-red-500' : 'bg-stone-500'}`}
+      >
+        {pending}
+      </span>
     </Link>
   )
 }

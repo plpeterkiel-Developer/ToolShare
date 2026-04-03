@@ -43,16 +43,9 @@ export default async function HomePage({ params }: HomePageProps) {
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href={`/${locale}/tools`}
-              data-testid="cta-browse"
-              className="inline-flex items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
-            >
-              {t('hero.cta')}
-            </Link>
-            <Link
               href={`/${locale}/tools/new`}
               data-testid="cta-add-tool"
-              className="inline-flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur px-8 py-3.5 text-base font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
+              className="inline-flex w-56 items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
             >
               {t('hero.ctaSecondary')}
             </Link>
