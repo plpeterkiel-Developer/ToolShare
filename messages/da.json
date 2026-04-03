@@ -91,7 +91,9 @@
       "cancel": "Annuller",
       "community": "Begræns til fællesskab",
       "communityHint": "Kun medlemmer af dette fællesskab kan se dette værktøj",
-      "noRestriction": "Alle (ingen begrænsning)"
+      "noRestriction": "Alle (ingen begrænsning)",
+      "nameRequired": "Navn er påkrævet",
+      "categoryRequired": "Kategori er påkrævet"
     },
     "detail": {
       "ownedBy": "Ejet af",

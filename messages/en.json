@@ -91,7 +91,9 @@
       "cancel": "Cancel",
       "community": "Restrict to community",
       "communityHint": "Only members of this community will see this tool",
-      "noRestriction": "Everyone (no restriction)"
+      "noRestriction": "Everyone (no restriction)",
+      "nameRequired": "Name is required",
+      "categoryRequired": "Category is required"
     },
     "detail": {
       "ownedBy": "Owned by",
