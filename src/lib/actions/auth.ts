@@ -65,21 +65,3 @@ export async function loginWithGoogle() {
   const url = data.url
   redirect(url)
 }
-
-export async function loginWithFacebook() {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'facebook',
-    options: {
-      redirectTo: process.env.NEXT_PUBLIC_SITE_URL + '/api/auth/callback',
-    },
-  })
-
-  if (error) {
-    return { error: error.message }
-  }
-
-  const url = data.url
-  redirect(url)
-}
