@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { createClient } from '@/lib/supabase/server'
+import { getUser } from '@/lib/supabase/server'
 import { getUserCommunities } from '@/lib/queries/communities'
 import { ToolForm } from '@/components/tools/ToolForm'
 import { trackPageView } from '@/lib/tracking'
@@ -15,10 +15,7 @@ export default async function NewToolPage({ params }: NewToolPageProps) {
 
   const t = await getTranslations('tools')
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/tools/new`)

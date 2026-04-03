@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getUser } from '@/lib/supabase/server'
 import { getToolsByOwner } from '@/lib/queries/tools'
 import { getRatingsForUser } from '@/lib/queries/ratings'
 import { ProfileForm } from '@/components/profile/ProfileForm'
@@ -22,10 +22,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   const t = await getTranslations('profile')
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/profile`)
@@ -35,6 +32,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   // Fetch full profile (includes pickup_address for own profile view)
   // Use a typed cast to work around the Supabase never-type issue present in this codebase
+  const supabase = await createClient()
   const { data: rawProfile } = await supabase
     .from('profiles')
     .select('*')

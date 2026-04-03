@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getUser } from '@/lib/supabase/server'
 import type { PublicProfile } from '@/types/database.types'
 
 export async function getProfile(id: string): Promise<PublicProfile | null> {
@@ -18,9 +18,5 @@ export async function getProfile(id: string): Promise<PublicProfile | null> {
 }
 
 export async function getCurrentUser() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  return user
+  return getUser()
 }

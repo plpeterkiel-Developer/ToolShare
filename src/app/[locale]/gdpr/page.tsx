@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { createClient } from '@/lib/supabase/server'
+import { getUser } from '@/lib/supabase/server'
 import { GdprPanel } from '@/components/gdpr/GdprPanel'
 import { trackPageView } from '@/lib/tracking'
 
@@ -14,10 +14,7 @@ export default async function GdprPage({ params }: GdprPageProps) {
 
   const t = await getTranslations('gdpr')
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/gdpr`)

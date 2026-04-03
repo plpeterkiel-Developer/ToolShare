@@ -6,7 +6,7 @@ import { CategoryFilter } from '@/components/tools/CategoryFilter'
 import { LocationFilter } from '@/components/tools/LocationFilter'
 import { TOOL_CATEGORIES } from '@/lib/utils/constants'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getUser } from '@/lib/supabase/server'
 import { trackPageView } from '@/lib/tracking'
 
 interface ToolsPageProps {
@@ -28,16 +28,14 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
 
   const t = await getTranslations('tools')
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   trackPageView('/tools', 'tools_browse', user?.id)
 
   // Get the user's preferred search radius from their profile (default 2 km)
   let userRadius = 2
   if (user) {
+    const supabase = await createClient()
     const { data: profile } = await supabase
       .from('profiles')
       .select('search_radius')

@@ -1,13 +1,14 @@
+import { after } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { isDev } from '@/lib/env'
 import { logger } from '@/lib/logger'
 import type { Json } from '@/types/database.types'
 
 /**
- * Fire-and-forget page view tracking. Call from server page components.
+ * Deferred page view tracking. Runs after the response is sent.
  */
 export function trackPageView(pagePath: string, eventName: string, userId?: string | null) {
-  void (async () => {
+  after(async () => {
     try {
       if (isDev) {
         logger.debug('Track page view', { pagePath, eventName, userId })
@@ -25,18 +26,18 @@ export function trackPageView(pagePath: string, eventName: string, userId?: stri
         error: err instanceof Error ? err.message : String(err),
       })
     }
-  })()
+  })
 }
 
 /**
- * Fire-and-forget action tracking. Call from server actions.
+ * Deferred action tracking. Runs after the response is sent.
  */
 export function trackAction(
   eventName: string,
   userId?: string | null,
   metadata?: Record<string, Json>
 ) {
-  void (async () => {
+  after(async () => {
     try {
       if (isDev) {
         logger.debug('Track action', { eventName, userId, metadata })
@@ -54,5 +55,5 @@ export function trackAction(
         error: err instanceof Error ? err.message : String(err),
       })
     }
-  })()
+  })
 }
