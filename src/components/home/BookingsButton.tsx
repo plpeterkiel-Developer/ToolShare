@@ -15,11 +15,11 @@ export async function BookingsButton({ userId, locale }: BookingsButtonProps) {
   return (
     <Link
       href={`/${locale}/requests`}
-      className="relative inline-flex items-center gap-2 rounded-xl border border-stone-300 bg-white px-5 py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 transition-colors shadow-sm"
+      className="relative inline-flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur px-8 py-3.5 text-base font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5 text-stone-500"
+        className="h-5 w-5 text-white"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"

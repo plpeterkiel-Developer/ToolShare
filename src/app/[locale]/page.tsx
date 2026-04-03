@@ -56,22 +56,18 @@ export default async function HomePage({ params }: HomePageProps) {
             >
               {t('hero.ctaSecondary')}
             </Link>
+            {user && (
+              <Suspense>
+                <BookingsButton userId={user.id} locale={locale} />
+              </Suspense>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Search + bookings bar */}
+      {/* Search bar */}
       <section className="mx-auto w-full max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="flex-1">
-            <HomeSearchBar locale={locale} />
-          </div>
-          {user && (
-            <Suspense>
-              <BookingsButton userId={user.id} locale={locale} />
-            </Suspense>
-          )}
-        </div>
+        <HomeSearchBar locale={locale} />
       </section>
 
       {/* Recent tools section */}
