@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/Textarea'
 import { Select } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 import { ToolImageUpload } from '@/components/tools/ToolImageUpload'
-import { createTool, updateTool } from '@/lib/actions/tools'
+import { updateTool } from '@/lib/actions/tools'
 import type { Tool, Community } from '@/types/database.types'
 
 export interface ToolFormProps {
@@ -106,15 +106,17 @@ export function ToolForm({ initialData, locale, mode, toolId, communities = [] }
         return
       }
 
-      // Navigate immediately, save in background
-      router.push(`/${locale}/tools`)
-      createTool(formData).then((result) => {
-        if (result?.error) {
-          addToast('error', result.error)
+      // Navigate immediately, save in background via fetch (survives navigation)
+      const successMsg = t('createdSuccess')
+      fetch('/api/tools', { method: 'POST', body: formData }).then(async (res) => {
+        const data = await res.json()
+        if (!res.ok || data.error) {
+          addToast('error', data.error || 'Failed to create tool')
         } else {
-          addToast('success', t('createdSuccess'))
+          addToast('success', successMsg)
         }
       })
+      router.push(`/${locale}/tools`)
     }
   }
 
