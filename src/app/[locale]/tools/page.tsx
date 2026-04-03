@@ -4,6 +4,7 @@ import { ToolGrid } from '@/components/tools/ToolGrid'
 import { SearchBar } from '@/components/tools/SearchBar'
 import { CategoryFilter } from '@/components/tools/CategoryFilter'
 import { LocationFilter } from '@/components/tools/LocationFilter'
+import { ToolCreatedToast } from '@/components/tools/ToolCreatedToast'
 import { TOOL_CATEGORIES } from '@/lib/utils/constants'
 import Link from 'next/link'
 import { createClient, getUser } from '@/lib/supabase/server'
@@ -17,6 +18,7 @@ interface ToolsPageProps {
     lat?: string
     lng?: string
     radius?: string
+    created?: string
   }>
 }
 
@@ -24,7 +26,7 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
   const { locale } = await params
   setRequestLocale(locale)
 
-  const { q, category, lat: latStr, lng: lngStr, radius: radiusStr } = await searchParams
+  const { q, category, lat: latStr, lng: lngStr, radius: radiusStr, created } = await searchParams
 
   const t = await getTranslations('tools')
 
@@ -61,6 +63,7 @@ export default async function ToolsPage({ params, searchParams }: ToolsPageProps
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      {created && <ToolCreatedToast />}
       {/* Page header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <h1 data-testid="tools-heading" className="text-2xl font-bold text-stone-900">

@@ -43,6 +43,7 @@
     "noTools": "No tools found",
     "noToolsHint": "Try a different search or category",
     "addTool": "Add a Tool",
+    "createdSuccess": "Tool created!",
     "available": "Available",
     "onLoan": "On Loan",
     "unavailable": "Unavailable",

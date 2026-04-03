@@ -55,7 +55,7 @@ export async function createTool(formData: FormData) {
   if (error) return { error: error.message }
 
   revalidatePath('/tools')
-  redirect(`/${locale}/tools/${data.id}`)
+  redirect(`/${locale}/tools?created=true`)
 }
 
 export async function updateTool(toolId: string, formData: FormData) {
