@@ -36,6 +36,7 @@ export function ToolForm({ initialData, locale, mode, toolId, communities = [] }
   const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(initialData?.image_url ?? '')
+  const [imageUploading, setImageUploading] = useState(false)
   const t = useTranslations('tools')
   const router = useRouter()
   const { addToast } = useToast()
@@ -196,16 +197,25 @@ export function ToolForm({ initialData, locale, mode, toolId, communities = [] }
           </div>
         )}
 
-        <ToolImageUpload currentUrl={initialData?.image_url} onUpload={(url) => setImageUrl(url)} />
+        <ToolImageUpload
+          currentUrl={initialData?.image_url}
+          onUpload={(url) => setImageUrl(url)}
+          onUploadingChange={setImageUploading}
+        />
 
         <Button
           type="submit"
           variant="primary"
           loading={loading}
+          disabled={imageUploading}
           data-testid="tool-form-submit"
           className="w-full sm:w-auto"
         >
-          {mode === 'edit' ? t('form.submitEdit') : t('form.submitCreate')}
+          {imageUploading
+            ? t('form.uploadingImage')
+            : mode === 'edit'
+              ? t('form.submitEdit')
+              : t('form.submitCreate')}
         </Button>
       </form>
     </div>

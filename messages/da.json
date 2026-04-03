@@ -92,6 +92,7 @@
       "community": "Begræns til fællesskab",
       "communityHint": "Kun medlemmer af dette fællesskab kan se dette værktøj",
       "noRestriction": "Alle (ingen begrænsning)",
+      "uploadingImage": "Uploader billede...",
       "nameRequired": "Navn er påkrævet",
       "categoryRequired": "Kategori er påkrævet"
     },

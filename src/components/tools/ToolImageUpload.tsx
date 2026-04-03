@@ -9,9 +9,10 @@ import { Spinner } from '@/components/ui/Spinner'
 export interface ToolImageUploadProps {
   currentUrl?: string | null
   onUpload: (url: string) => void
+  onUploadingChange?: (uploading: boolean) => void
 }
 
-export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) {
+export function ToolImageUpload({ currentUrl, onUpload, onUploadingChange }: ToolImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(currentUrl ?? null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -36,6 +37,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
 
     setError(null)
     setUploading(true)
+    onUploadingChange?.(true)
 
     // Local preview
     const objectUrl = URL.createObjectURL(file)
@@ -47,6 +49,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
       if (!userData.user) {
         setError(t('loginRequired'))
         setUploading(false)
+        onUploadingChange?.(false)
         return
       }
 
@@ -60,6 +63,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
       if (uploadError) {
         setError(uploadError.message)
         setUploading(false)
+        onUploadingChange?.(false)
         return
       }
 
@@ -69,6 +73,7 @@ export function ToolImageUpload({ currentUrl, onUpload }: ToolImageUploadProps) 
       setError(err instanceof Error ? err.message : t('uploadFailed'))
     } finally {
       setUploading(false)
+      onUploadingChange?.(false)
     }
   }
 

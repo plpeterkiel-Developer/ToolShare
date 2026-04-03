@@ -92,6 +92,7 @@
       "community": "Restrict to community",
       "communityHint": "Only members of this community will see this tool",
       "noRestriction": "Everyone (no restriction)",
+      "uploadingImage": "Uploading image...",
       "nameRequired": "Name is required",
       "categoryRequired": "Category is required"
     },
