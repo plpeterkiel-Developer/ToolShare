@@ -30,6 +30,9 @@
       "cta": "Gennemse værktøjer",
       "ctaSecondary": "Tilføj et værktøj"
     },
+    "searchPlaceholder": "Søg efter et værktøj...",
+    "searchButton": "Søg",
+    "bookings": "Bookinger",
     "recentTools": "Seneste tilgængelige værktøjer",
     "noToolsYet": "Ingen værktøjer tilgængelige endnu",
     "noToolsYetHint": "Vær den første til at tilføje et værktøj til fællesskabet",

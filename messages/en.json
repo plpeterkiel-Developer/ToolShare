@@ -30,6 +30,9 @@
       "cta": "Browse Tools",
       "ctaSecondary": "Add a Tool"
     },
+    "searchPlaceholder": "Search for a tool...",
+    "searchButton": "Search",
+    "bookings": "Bookings",
     "recentTools": "Recently Available Tools",
     "noToolsYet": "No tools available yet",
     "noToolsYetHint": "Be the first to add a tool to the community",
