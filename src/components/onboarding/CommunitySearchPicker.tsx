@@ -11,11 +11,14 @@ interface CommunitySearchPickerProps {
   pendingCommunityIds: string[]
   /** Community IDs the user is already a member of. */
   memberCommunityIds: string[]
+  /** Optional element rendered between the search input and the results list. */
+  belowSearchBar?: React.ReactNode
 }
 
 export function CommunitySearchPicker({
   pendingCommunityIds,
   memberCommunityIds,
+  belowSearchBar,
 }: CommunitySearchPickerProps) {
   const t = useTranslations('onboarding')
   const router = useRouter()
@@ -73,6 +76,8 @@ export function CommunitySearchPicker({
           {error}
         </p>
       )}
+
+      {belowSearchBar && <div>{belowSearchBar}</div>}
 
       <ul
         data-testid="community-search-results"

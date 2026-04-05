@@ -48,14 +48,8 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
           <CommunitySearchPicker
             pendingCommunityIds={pendingCommunityIds}
             memberCommunityIds={memberCommunityIds}
+            belowSearchBar={<RequestNewCommunityForm />}
           />
-        </section>
-
-        <section aria-labelledby="request-new-heading" className="space-y-3">
-          <h2 id="request-new-heading" className="sr-only">
-            {t('requestNewTitle')}
-          </h2>
-          <RequestNewCommunityForm />
         </section>
       </div>
     </div>

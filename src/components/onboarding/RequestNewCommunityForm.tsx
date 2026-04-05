@@ -11,6 +11,7 @@ export function RequestNewCommunityForm() {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [address, setAddress] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -20,7 +21,7 @@ export function RequestNewCommunityForm() {
     e.preventDefault()
     setError(null)
     setSubmitting(true)
-    const res = await requestNewCommunity(name, description || null)
+    const res = await requestNewCommunity(name, description || null, address || null)
     setSubmitting(false)
     if ('error' in res && res.error) {
       setError(res.error)
@@ -29,6 +30,7 @@ export function RequestNewCommunityForm() {
     setSuccess(true)
     setName('')
     setDescription('')
+    setAddress('')
     startTransition(() => router.refresh())
   }
 
@@ -37,10 +39,10 @@ export function RequestNewCommunityForm() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-sm font-medium text-green-700 hover:text-green-800 hover:underline"
         data-testid="open-request-new-community"
+        className="inline-flex w-full items-center justify-center rounded-lg border border-green-700 bg-white px-4 py-2.5 text-sm font-medium text-green-700 hover:bg-green-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 sm:w-auto"
       >
-        {t('cannotFindCta')}
+        {t('addCommunityCta')}
       </button>
     )
   }
@@ -67,6 +69,19 @@ export function RequestNewCommunityForm() {
           placeholder={t('requestNewNamePlaceholder')}
           className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-2 text-base focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"
           data-testid="new-community-name"
+        />
+      </label>
+
+      <label className="block">
+        <span className="text-sm font-medium text-stone-700">{t('requestNewAddressLabel')}</span>
+        <input
+          type="text"
+          maxLength={255}
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder={t('requestNewAddressPlaceholder')}
+          className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-2 text-base focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"
+          data-testid="new-community-address"
         />
       </label>
 

@@ -81,6 +81,7 @@ export interface CreationRequestRow {
   id: string
   requested_name: string
   description: string | null
+  address: string | null
   status: string
   decision_reason: string | null
   created_at: string
@@ -92,7 +93,7 @@ export async function getUserCreationRequests(userId: string): Promise<CreationR
   const { data, error } = await supabase
     .from('community_creation_requests')
     .select(
-      'id, requested_name, description, status, decision_reason, created_at, resulting_community_id'
+      'id, requested_name, description, address, status, decision_reason, created_at, resulting_community_id'
     )
     .eq('requested_by', userId)
     .order('created_at', { ascending: false })
@@ -144,6 +145,7 @@ export interface CreationRequestAdminRow {
   id: string
   requested_name: string
   description: string | null
+  address: string | null
   status: string
   decision_reason: string | null
   created_at: string
@@ -173,7 +175,7 @@ export async function getAllCommunityCreationRequests(
   let query = supabase
     .from('community_creation_requests')
     .select(
-      'id, requested_name, description, status, decision_reason, created_at, decided_at, resulting_community_id, requester:profiles!community_creation_requests_requested_by_fkey(id, display_name)'
+      'id, requested_name, description, address, status, decision_reason, created_at, decided_at, resulting_community_id, requester:profiles!community_creation_requests_requested_by_fkey(id, display_name)'
     )
     .order('created_at', { ascending: false })
 

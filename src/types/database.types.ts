@@ -92,18 +92,21 @@ export type Database = {
       }
       communities: {
         Row: {
+          address: string | null
           created_at: string
           description: string | null
           id: string
           name: string
         }
         Insert: {
+          address?: string | null
           created_at?: string
           description?: string | null
           id?: string
           name: string
         }
         Update: {
+          address?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -146,6 +149,7 @@ export type Database = {
       }
       community_creation_requests: {
         Row: {
+          address: string | null
           created_at: string
           decided_at: string | null
           decided_by: string | null
@@ -158,6 +162,7 @@ export type Database = {
           status: Database['public']['Enums']['community_request_status']
         }
         Insert: {
+          address?: string | null
           created_at?: string
           decided_at?: string | null
           decided_by?: string | null
@@ -170,6 +175,7 @@ export type Database = {
           status?: Database['public']['Enums']['community_request_status']
         }
         Update: {
+          address?: string | null
           created_at?: string
           decided_at?: string | null
           decided_by?: string | null
