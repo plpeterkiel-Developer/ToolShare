@@ -252,7 +252,7 @@ export async function approveCommunityCreation(
   const supabase = createAdminClient()
   const { data: request } = await supabase
     .from('community_creation_requests')
-    .select('id, requested_name, description, address, requested_by, status')
+    .select('id, requested_name, description, address, city, requested_by, status')
     .eq('id', requestId)
     .single()
   if (!request) return { error: 'Request not found' }
@@ -265,7 +265,12 @@ export async function approveCommunityCreation(
   // Create community
   const { data: community, error: createErr } = await supabase
     .from('communities')
-    .insert({ name: finalName, description: finalDescription, address: request.address })
+    .insert({
+      name: finalName,
+      description: finalDescription,
+      address: request.address,
+      city: request.city,
+    })
     .select('id, name')
     .single()
   if (createErr || !community) return { error: createErr?.message ?? 'Failed to create community' }

@@ -93,6 +93,7 @@ export type Database = {
       communities: {
         Row: {
           address: string | null
+          city: string | null
           created_at: string
           description: string | null
           id: string
@@ -100,6 +101,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          city?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -107,6 +109,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          city?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -150,6 +153,7 @@ export type Database = {
       community_creation_requests: {
         Row: {
           address: string | null
+          city: string | null
           created_at: string
           decided_at: string | null
           decided_by: string | null
@@ -163,6 +167,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          city?: string | null
           created_at?: string
           decided_at?: string | null
           decided_by?: string | null
@@ -176,6 +181,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          city?: string | null
           created_at?: string
           decided_at?: string | null
           decided_by?: string | null

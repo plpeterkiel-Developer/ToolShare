@@ -8,6 +8,7 @@ interface CommunityCreationRequestedProps {
   requestedName: string
   description?: string | null
   address?: string | null
+  city?: string | null
   adminUrl: string
 }
 
@@ -18,6 +19,7 @@ export function CommunityCreationRequestedEmail({
   requestedName,
   description,
   address,
+  city,
   adminUrl,
 }: CommunityCreationRequestedProps) {
   return (
@@ -40,6 +42,12 @@ export function CommunityCreationRequestedEmail({
           <>
             <span style={emailStyles.label}>Description</span>
             <p style={{ ...emailStyles.value, whiteSpace: 'pre-wrap' }}>{description}</p>
+          </>
+        ) : null}
+        {city ? (
+          <>
+            <span style={emailStyles.label}>City</span>
+            <p style={emailStyles.value}>{city}</p>
           </>
         ) : null}
         {address ? (

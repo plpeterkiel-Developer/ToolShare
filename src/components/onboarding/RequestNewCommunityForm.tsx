@@ -12,6 +12,7 @@ export function RequestNewCommunityForm() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [address, setAddress] = useState('')
+  const [city, setCity] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -21,7 +22,7 @@ export function RequestNewCommunityForm() {
     e.preventDefault()
     setError(null)
     setSubmitting(true)
-    const res = await requestNewCommunity(name, description || null, address || null)
+    const res = await requestNewCommunity(name, description || null, address || null, city || null)
     setSubmitting(false)
     if ('error' in res && res.error) {
       setError(res.error)
@@ -31,6 +32,7 @@ export function RequestNewCommunityForm() {
     setName('')
     setDescription('')
     setAddress('')
+    setCity('')
     startTransition(() => router.refresh())
   }
 
@@ -69,6 +71,19 @@ export function RequestNewCommunityForm() {
           placeholder={t('requestNewNamePlaceholder')}
           className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-2 text-base focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"
           data-testid="new-community-name"
+        />
+      </label>
+
+      <label className="block">
+        <span className="text-sm font-medium text-stone-700">{t('requestNewCityLabel')}</span>
+        <input
+          type="text"
+          maxLength={100}
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          placeholder={t('requestNewCityPlaceholder')}
+          className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-2 text-base focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"
+          data-testid="new-community-city"
         />
       </label>
 

@@ -98,7 +98,11 @@ export function CommunityCreationRequestsTable({ requests }: Props) {
               ) : (
                 <>
                   <p className="font-semibold text-stone-900">{req.requested_name}</p>
-                  {req.address && <p className="mt-1 text-sm text-stone-700">📍 {req.address}</p>}
+                  {(req.city || req.address) && (
+                    <p className="mt-1 text-sm text-stone-700">
+                      📍 {[req.city, req.address].filter(Boolean).join(', ')}
+                    </p>
+                  )}
                   {req.description && (
                     <p className="mt-1 whitespace-pre-wrap text-sm text-stone-600">
                       {req.description}

@@ -131,7 +131,8 @@ export async function cancelJoinRequest(requestId: string) {
 export async function requestNewCommunity(
   name: string,
   description?: string | null,
-  address?: string | null
+  address?: string | null,
+  city?: string | null
 ) {
   const supabase = await createClient()
   const {
@@ -146,6 +147,10 @@ export async function requestNewCommunity(
   if (trimmedAddress && trimmedAddress.length > 255) {
     return { error: 'Address is too long' }
   }
+  const trimmedCity = city?.trim() || null
+  if (trimmedCity && trimmedCity.length > 100) {
+    return { error: 'City is too long' }
+  }
 
   const { data: request, error } = await supabase
     .from('community_creation_requests')
@@ -153,6 +158,7 @@ export async function requestNewCommunity(
       requested_name: trimmedName,
       description: description?.trim() || null,
       address: trimmedAddress,
+      city: trimmedCity,
       requested_by: user.id,
     })
     .select('id')
@@ -180,6 +186,7 @@ export async function requestNewCommunity(
           requestedName: trimmedName,
           description: description?.trim() || null,
           address: trimmedAddress,
+          city: trimmedCity,
           adminUrl,
         }),
       })
