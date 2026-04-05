@@ -42,13 +42,23 @@ export default async function HomePage({ params }: HomePageProps) {
             {t('hero.subtitle')}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
-              href={`/${locale}/tools/new`}
-              data-testid="cta-add-tool"
-              className="inline-flex w-56 items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
-            >
-              {t('hero.ctaSecondary')}
-            </Link>
+            {user ? (
+              <Link
+                href={`/${locale}/tools/new`}
+                data-testid="cta-add-tool"
+                className="inline-flex w-56 items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
+              >
+                {t('hero.ctaSecondary')}
+              </Link>
+            ) : (
+              <Link
+                href={`/${locale}/auth/login`}
+                data-testid="cta-login"
+                className="inline-flex w-56 items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
+              >
+                {t('hero.ctaLogin')}
+              </Link>
+            )}
             {user && (
               <Suspense>
                 <BookingsButton userId={user.id} locale={locale} />

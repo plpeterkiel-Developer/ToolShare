@@ -28,7 +28,8 @@
       "title": "Share your garden tools with the neighbourhood",
       "subtitle": "Borrow what you need. Lend what you don't use. Free community.",
       "cta": "Browse Tools",
-      "ctaSecondary": "Add a Tool"
+      "ctaSecondary": "Add a Tool",
+      "ctaLogin": "Log In"
     },
     "searchPlaceholder": "Search for a tool...",
     "searchButton": "Search",

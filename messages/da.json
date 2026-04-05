@@ -28,7 +28,8 @@
       "title": "Del dine haveværktøjer med naboskabet",
       "subtitle": "Lån det du mangler. Lån det ud du kan undvære. Gratis fællesskab.",
       "cta": "Gennemse værktøjer",
-      "ctaSecondary": "Tilføj et værktøj"
+      "ctaSecondary": "Tilføj et værktøj",
+      "ctaLogin": "Log ind"
     },
     "searchPlaceholder": "Søg efter et værktøj...",
     "searchButton": "Søg",

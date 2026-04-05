@@ -565,7 +565,7 @@ function SidebarContent({
   return (
     <>
       {/* Logo */}
-      <div className="flex items-center border-b border-stone-200 py-4">
+      <div className="flex items-center border-b border-stone-200 px-2 py-4">
         <Link
           href={`/${locale}`}
           onClick={onNavClick}
