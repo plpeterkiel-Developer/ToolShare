@@ -2,9 +2,8 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getRecentAvailableTools } from '@/lib/queries/tools'
-import { getUserCommunityIds, getUserPendingJoinRequests } from '@/lib/queries/communities'
+import { getUserCommunityIds } from '@/lib/queries/communities'
 import { getUser } from '@/lib/supabase/server'
-import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner'
 import { ToolGrid } from '@/components/tools/ToolGrid'
 import { HomeSearchBar } from '@/components/home/HomeSearchBar'
 import { BookingsButton } from '@/components/home/BookingsButton'
@@ -13,6 +12,9 @@ import { trackPageView } from '@/lib/tracking'
 interface HomePageProps {
   params: Promise<{ locale: string }>
 }
+
+const AMBER_CTA_CLASS =
+  'inline-flex w-56 items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200'
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params
@@ -24,19 +26,15 @@ export default async function HomePage({ params }: HomePageProps) {
 
   trackPageView('/', 'home', user?.id)
 
-  const [recentTools, memberCommunityIds, joinRequests] = await Promise.all([
+  const [recentTools, memberCommunityIds] = await Promise.all([
     getRecentAvailableTools(6),
     user ? getUserCommunityIds(user.id) : Promise.resolve([]),
-    user ? getUserPendingJoinRequests(user.id) : Promise.resolve([]),
   ])
 
-  const showOnboardingBanner = !!user && memberCommunityIds.length === 0
+  const hasMembership = memberCommunityIds.length > 0
 
   return (
     <div className="flex flex-col">
-      {showOnboardingBanner && (
-        <OnboardingBanner locale={locale} hasPendingRequest={joinRequests.length > 0} />
-      )}
       {/* Hero section */}
       <section
         data-testid="hero-section"
@@ -53,27 +51,35 @@ export default async function HomePage({ params }: HomePageProps) {
             {t('hero.subtitle')}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            {user ? (
-              <Link
-                href={`/${locale}/tools/new`}
-                data-testid="cta-add-tool"
-                className="inline-flex w-56 items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
-              >
-                {t('hero.ctaSecondary')}
-              </Link>
-            ) : (
+            {!user ? (
               <Link
                 href={`/${locale}/auth/login`}
                 data-testid="cta-login"
-                className="inline-flex w-56 items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
+                className={AMBER_CTA_CLASS}
               >
                 {t('hero.ctaLogin')}
               </Link>
-            )}
-            {user && (
-              <Suspense>
-                <BookingsButton userId={user.id} locale={locale} />
-              </Suspense>
+            ) : !hasMembership ? (
+              <Link
+                href={`/${locale}/onboarding`}
+                data-testid="cta-find-community"
+                className={AMBER_CTA_CLASS}
+              >
+                {t('hero.ctaFindCommunity')}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href={`/${locale}/tools/new`}
+                  data-testid="cta-add-tool"
+                  className={AMBER_CTA_CLASS}
+                >
+                  {t('hero.ctaSecondary')}
+                </Link>
+                <Suspense>
+                  <BookingsButton userId={user.id} locale={locale} />
+                </Suspense>
+              </>
             )}
           </div>
         </div>

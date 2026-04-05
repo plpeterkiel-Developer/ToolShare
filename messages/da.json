@@ -30,7 +30,8 @@
       "subtitle": "Lån det du mangler. Lån det ud du kan undvære. Gratis fællesskab.",
       "cta": "Gennemse værktøjer",
       "ctaSecondary": "Tilføj et værktøj",
-      "ctaLogin": "Log ind"
+      "ctaLogin": "Log ind",
+      "ctaFindCommunity": "Find fællesskab"
     },
     "searchPlaceholder": "Søg efter et værktøj...",
     "searchButton": "Søg",
