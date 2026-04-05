@@ -10,6 +10,8 @@ import RequestDenied from '@/lib/email/templates/request-denied'
 import RequestCancelled from '@/lib/email/templates/request-cancelled'
 import { trackAction } from '@/lib/tracking'
 import { logger } from '@/lib/logger'
+import { rateLimit } from '@/lib/rate-limit'
+import { borrowLimiter } from '@/lib/rate-limiters'
 import { routing } from '@/i18n/routing'
 import { requireMembership } from '@/lib/admin'
 
@@ -23,6 +25,18 @@ export async function createBorrowRequest(formData: FormData) {
 
   if (!user) return { error: 'Not authenticated' }
 
+  // Block suspended users
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('is_suspended')
+    .eq('id', user.id)
+    .single()
+  if (profile?.is_suspended) return { error: 'Your account has been suspended' }
+
+  const { success: withinLimit } = await rateLimit(borrowLimiter, user.id)
+  if (!withinLimit) return { error: 'Too many requests. Please try again later.' }
+
+  // Soft gate: require community membership
   const membershipGuard = await requireMembership()
   if (membershipGuard) return membershipGuard
 
@@ -30,6 +44,10 @@ export async function createBorrowRequest(formData: FormData) {
   const message = formData.get('message') as string | null
   const startDate = formData.get('start_date') as string | null
   const endDate = formData.get('end_date') as string | null
+
+  if (startDate && endDate && endDate < startDate) {
+    return { error: 'End date must be on or after start date' }
+  }
 
   trackAction('borrow_request_create', user.id, { toolId })
 
@@ -312,7 +330,7 @@ export async function markReturned(requestId: string) {
     .update({ status: 'returned' })
     .eq('id', requestId)
     .eq('owner_id', user.id)
-    .eq('status', 'approved')
+    .in('status', ['approved', 'overdue'])
 
   if (error) return { error: error.message }
 

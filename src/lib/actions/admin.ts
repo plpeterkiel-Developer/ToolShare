@@ -4,11 +4,11 @@ import { revalidatePath } from 'next/cache'
 import { isCurrentUserAdmin } from '@/lib/admin'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getResend, EMAIL_FROM } from '@/lib/email/resend'
+import { logger } from '@/lib/logger'
 import UserWarningEmail from '@/lib/email/templates/user-warning'
 import UserSuspendedEmail from '@/lib/email/templates/user-suspended'
 import CommunityCreationApproved from '@/lib/email/templates/community-creation-approved'
 import CommunityCreationDenied from '@/lib/email/templates/community-creation-denied'
-import { logger } from '@/lib/logger'
 import { getUser } from '@/lib/supabase/server'
 import { routing } from '@/i18n/routing'
 
@@ -38,16 +38,22 @@ export async function suspendUser(userId: string, reason = 'Violation of communi
   if (error) return { error: error.message }
 
   // Send suspension email
-  const { data: authUser } = await supabase.auth.admin.getUserById(userId)
-  if (authUser?.user?.email) {
-    await getResend().emails.send({
-      from: EMAIL_FROM,
-      to: authUser.user.email,
-      subject: 'Your account has been suspended – ToolShare',
-      react: UserSuspendedEmail({
-        userName: profile?.display_name ?? 'User',
-        reason,
-      }),
+  try {
+    const { data: authUser } = await supabase.auth.admin.getUserById(userId)
+    if (authUser?.user?.email) {
+      await getResend().emails.send({
+        from: EMAIL_FROM,
+        to: authUser.user.email,
+        subject: 'Your account has been suspended – ToolShare',
+        react: UserSuspendedEmail({
+          userName: profile?.display_name ?? 'User',
+          reason,
+        }),
+      })
+    }
+  } catch (err) {
+    logger.warn('Email notification failed (user suspended)', {
+      error: err instanceof Error ? err.message : String(err),
     })
   }
 
@@ -91,16 +97,22 @@ export async function warnUser(userId: string, reason = 'Community guidelines vi
   if (error) return { error: error.message }
 
   // Send warning email
-  const { data: authUser } = await supabase.auth.admin.getUserById(userId)
-  if (authUser?.user?.email) {
-    await getResend().emails.send({
-      from: EMAIL_FROM,
-      to: authUser.user.email,
-      subject: 'Warning from ToolShare',
-      react: UserWarningEmail({
-        userName: profile.display_name ?? 'User',
-        reason,
-      }),
+  try {
+    const { data: authUser } = await supabase.auth.admin.getUserById(userId)
+    if (authUser?.user?.email) {
+      await getResend().emails.send({
+        from: EMAIL_FROM,
+        to: authUser.user.email,
+        subject: 'Warning from ToolShare',
+        react: UserWarningEmail({
+          userName: profile.display_name ?? 'User',
+          reason,
+        }),
+      })
+    }
+  } catch (err) {
+    logger.warn('Email notification failed (user warning)', {
+      error: err instanceof Error ? err.message : String(err),
     })
   }
 

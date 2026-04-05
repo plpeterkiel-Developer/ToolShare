@@ -159,6 +159,7 @@
     "form": {
       "startDate": "Startdato",
       "endDate": "Slutdato",
+      "endBeforeStart": "Slutdato skal være på eller efter startdato",
       "message": "Besked til ejeren (valgfri)",
       "messagePlaceholder": "Fortæl ejeren, hvad du skal bruge det til",
       "submit": "Send forespørgsel"
@@ -380,6 +381,14 @@
       "joinedAt": "Tilsluttet",
       "backToList": "Tilbage til foreninger"
     }
+  },
+  "errors": {
+    "notFoundTitle": "Siden blev ikke fundet",
+    "notFoundDescription": "Siden du leder efter, findes ikke eller er blevet flyttet.",
+    "notFoundAction": "Gå til forsiden",
+    "errorTitle": "Noget gik galt",
+    "errorDescription": "Der opstod en uventet fejl. Prøv venligst igen.",
+    "errorAction": "Prøv igen"
   },
   "common": {
     "loading": "Indlæser...",

@@ -121,10 +121,16 @@ export async function requestErasure() {
 
   if (error) return { error: error.message }
 
-  // TODO: Implement a scheduled job (Supabase Edge Function or cron) that
-  // processes gdpr_erasure_requested_at records, anonymises reviews
-  // (set author to 'Deleted account'), removes tools, and deletes the
-  // Supabase Auth user within 30 days.
+  // IMPORTANT — GDPR Article 17 compliance (right to erasure):
+  // A scheduled job (Supabase Edge Function or pg_cron) MUST be deployed
+  // before launch to process records where gdpr_erasure_requested_at is set.
+  // The job should run daily and, for each flagged profile:
+  //   1. Anonymise ratings (set rater display to "Deleted account")
+  //   2. Delete all tools owned by the user
+  //   3. Delete the user's profile row
+  //   4. Delete the Supabase Auth user via admin.deleteUser()
+  // Erasure must complete within 30 days of the request date.
+  // See: https://gdpr-info.eu/art-17-gdpr/
 
   // Sign out the user
   await supabase.auth.signOut()

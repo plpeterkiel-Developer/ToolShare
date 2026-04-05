@@ -60,6 +60,19 @@ Production deploys are triggered by:
 
 See `.github/workflows/deploy-production.yml`.
 
+## Deployment Secrets (Vercel)
+
+Both CI and production deploy workflows use Vercel. Add these secrets in **Settings > Secrets and variables > Actions**:
+
+| Secret              | Description                                                                      |
+| ------------------- | -------------------------------------------------------------------------------- |
+| `VERCEL_TOKEN`      | Personal access token from [Vercel dashboard](https://vercel.com/account/tokens) |
+| `VERCEL_ORG_ID`     | Found in `.vercel/project.json` after running `vercel link`                      |
+| `VERCEL_PROJECT_ID` | Found in `.vercel/project.json` after running `vercel link`                      |
+| `CRON_SECRET`       | Random secret for authenticating cron job requests                               |
+
+To switch from Vercel to another platform (Fly.io, Railway), see the commented alternatives in the workflow files.
+
 ## Running BDD Tests
 
 BDD tests use their own config file `.env.test`:

@@ -100,15 +100,6 @@ export function SignUpForm() {
           data-testid="confirm-password-input"
           error={fieldErrors.confirmPassword}
         />
-        <Input
-          id="location"
-          name="location"
-          type="text"
-          label={t('location')}
-          autoComplete="address-level2"
-          data-testid="location-input"
-          error={fieldErrors.location}
-        />
         <Button
           type="submit"
           variant="primary"

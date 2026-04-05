@@ -36,6 +36,14 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
     const formData = new FormData(e.currentTarget)
     formData.set('tool_id', tool.id)
 
+    const startDate = formData.get('start_date') as string
+    const endDate = formData.get('end_date') as string
+    if (startDate && endDate && endDate < startDate) {
+      setError(t('form.endBeforeStart'))
+      setLoading(false)
+      return
+    }
+
     const result = await createBorrowRequest(formData)
     if (result && 'error' in result && result.error) {
       setError(result.error)
