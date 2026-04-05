@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ToolShare
 
-## Getting Started
+A community-based tool-sharing platform for neighbourhoods. Users list garden and household tools they own, browse what their neighbours have, and borrow items for free.
 
-First, run the development server:
+Live at **[tool-share.eu](https://tool-share.eu)**.
+
+## Tech stack
+
+- **Next.js 16** (App Router, React Server Components)
+- **TypeScript** with strict types
+- **Supabase** (Postgres, Auth, Storage, RLS)
+- **next-intl** for English + Danish locales
+- **Tailwind CSS** for styling
+- **Resend** + React Email for transactional mail
+- **Sentry** for error tracking
+- **Cucumber + Playwright** for BDD/e2e tests
+- **Vercel** for hosting (Fluid Compute)
+
+## Features
+
+- Tool listings with search, category filters, and geographic radius search
+- Borrow-request workflow: request → owner approves/denies → return
+- Community-based access: tools can be public or restricted to a community; users join via approved request
+- Two-tier admin: **super admin** manages the platform, **community admin** manages one or more communities
+- User ratings, moderation reports, GDPR data export + erasure, admin analytics
+
+## Getting started
 
 ```bash
+# 1. Clone + install
+git clone https://github.com/plpeterkiel-developer/toolshare.git
+cd toolshare
+npm install
+
+# 2. Configure env (see docs/environments.md)
+cp .env.example .env.local
+# Fill in Supabase + optional Resend/Sentry keys
+
+# 3. Run the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command                   | What it does                                    |
+| ------------------------- | ----------------------------------------------- |
+| `npm run dev`             | Start dev server with Turbopack                 |
+| `npm run build`           | Production build                                |
+| `npm start`               | Start production server                         |
+| `npm run lint`            | ESLint + Next.js rules                          |
+| `npm run test:e2e`        | Run Cucumber BDD scenarios against a dev server |
+| `npm run test:e2e:headed` | Same, with visible Playwright browser           |
 
-## Learn More
+## Database
 
-To learn more about Next.js, take a look at the following resources:
+Migrations live in `supabase/migrations/`. Apply them to a linked Supabase project:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+SUPABASE_ACCESS_TOKEN=<sbp_...> npx supabase db push
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Separate Supabase projects are used for production and test (see `docs/environments.md`).
 
-## Deploy on Vercel
+## Documentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [`docs/environments.md`](docs/environments.md) — environment config, deployment, CI
+- [`docs/communities.md`](docs/communities.md) — community onboarding, join/creation requests, admin hierarchy
+- BDD feature specs in `features/**/*.feature`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Opens PRs into `main` via feature branches. Vercel creates a preview deployment for every branch. All preview deploys use the **test** Supabase project; production uses a separate one.

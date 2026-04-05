@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { createClient } from '@/lib/supabase/server'
+import { getUser } from '@/lib/supabase/server'
 import { getIncomingRequests, getOutgoingRequests } from '@/lib/queries/requests'
 import { RequestTabs } from '@/components/requests/RequestTabs'
 import { trackPageView } from '@/lib/tracking'
@@ -15,10 +15,7 @@ export default async function RequestsPage({ params }: RequestsPageProps) {
 
   const t = await getTranslations('requests')
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/requests`)

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { createClient } from '@/lib/supabase/server'
+import { getUser } from '@/lib/supabase/server'
 import { FeedbackForm } from '@/components/feedback/FeedbackForm'
 import { trackPageView } from '@/lib/tracking'
 
@@ -14,10 +14,7 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
 
   const t = await getTranslations('feedback')
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   trackPageView('/feedback', 'feedback_page', user?.id)
 

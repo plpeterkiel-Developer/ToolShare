@@ -94,11 +94,11 @@ async function getToolsWithinRadius({
     p_lat: lat,
     p_lng: lng,
     p_radius_km: radiusKm,
-    p_search: search ?? null,
-    p_category: category ?? null,
+    p_search: search ?? undefined,
+    p_category: category ?? undefined,
     p_limit: limit,
     p_offset: offset,
-    p_user_id: userId ?? null,
+    p_user_id: userId ?? undefined,
   })
 
   if (rpcError) throw new Error(rpcError.message)

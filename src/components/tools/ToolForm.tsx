@@ -1,13 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { useToast } from '@/components/ui/Toast'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Select } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 import { ToolImageUpload } from '@/components/tools/ToolImageUpload'
-import { createTool, updateTool } from '@/lib/actions/tools'
+import { updateTool } from '@/lib/actions/tools'
 import { TOOL_CATEGORIES } from '@/lib/utils/constants'
 import type { Tool, Community } from '@/types/database.types'
 
@@ -23,7 +25,10 @@ export function ToolForm({ initialData, locale, mode, toolId, communities = [] }
   const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(initialData?.image_url ?? '')
+  const [imageUploading, setImageUploading] = useState(false)
   const t = useTranslations('tools')
+  const router = useRouter()
+  const { addToast } = useToast()
 
   const tCat = useTranslations('tools.categories')
 
@@ -85,17 +90,38 @@ export function ToolForm({ initialData, locale, mode, toolId, communities = [] }
       formData.delete('community_id')
     }
 
-    let result: { error?: string } | undefined
-
     if (mode === 'edit' && toolId) {
-      result = await updateTool(toolId, formData)
+      const result = await updateTool(toolId, formData)
+      if (result?.error) {
+        setError(result.error)
+        setLoading(false)
+      }
     } else {
-      result = await createTool(formData)
-    }
+      // Client-side validation before background save
+      const name = formData.get('name') as string
+      const category = formData.get('category') as string
+      if (!name?.trim()) {
+        setError(t('form.nameRequired'))
+        setLoading(false)
+        return
+      }
+      if (!category?.trim()) {
+        setError(t('form.categoryRequired'))
+        setLoading(false)
+        return
+      }
 
-    if (result?.error) {
-      setError(result.error)
-      setLoading(false)
+      // Navigate immediately, save in background via fetch (survives navigation)
+      const successMsg = t('createdSuccess')
+      fetch('/api/tools', { method: 'POST', body: formData }).then(async (res) => {
+        const data = await res.json()
+        if (!res.ok || data.error) {
+          addToast('error', data.error || 'Failed to create tool')
+        } else {
+          addToast('success', successMsg)
+        }
+      })
+      router.push(`/${locale}/tools`)
     }
   }
 
@@ -175,16 +201,25 @@ export function ToolForm({ initialData, locale, mode, toolId, communities = [] }
           </div>
         )}
 
-        <ToolImageUpload currentUrl={initialData?.image_url} onUpload={(url) => setImageUrl(url)} />
+        <ToolImageUpload
+          currentUrl={initialData?.image_url}
+          onUpload={(url) => setImageUrl(url)}
+          onUploadingChange={setImageUploading}
+        />
 
         <Button
           type="submit"
           variant="primary"
           loading={loading}
+          disabled={imageUploading}
           data-testid="tool-form-submit"
           className="w-full sm:w-auto"
         >
-          {mode === 'edit' ? t('form.submitEdit') : t('form.submitCreate')}
+          {imageUploading
+            ? t('form.uploadingImage')
+            : mode === 'edit'
+              ? t('form.submitEdit')
+              : t('form.submitCreate')}
         </Button>
       </form>
     </div>

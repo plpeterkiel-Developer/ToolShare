@@ -40,7 +40,7 @@ Each environment needs its own instances of:
 
 ### Deployment
 
-The CI pipeline automatically deploys to the test environment when code is pushed to `main`. Update the deploy step in `.github/workflows/ci.yml` with your hosting platform command.
+Preview deployments are created automatically by **Vercel's Git integration** on every push to a non-`main` branch — each preview uses the test Supabase project. Pushing to `main` triggers a **production** deployment to tool-share.eu. The GitHub Actions workflow in `.github/workflows/ci.yml` runs lint + tests on each push; Vercel handles the deploys.
 
 ## Production Environment
 
@@ -64,12 +64,12 @@ See `.github/workflows/deploy-production.yml`.
 
 Both CI and production deploy workflows use Vercel. Add these secrets in **Settings > Secrets and variables > Actions**:
 
-| Secret               | Description                                                      |
-| -------------------- | ---------------------------------------------------------------- |
-| `VERCEL_TOKEN`       | Personal access token from [Vercel dashboard](https://vercel.com/account/tokens) |
-| `VERCEL_ORG_ID`      | Found in `.vercel/project.json` after running `vercel link`      |
-| `VERCEL_PROJECT_ID`  | Found in `.vercel/project.json` after running `vercel link`      |
-| `CRON_SECRET`        | Random secret for authenticating cron job requests               |
+| Secret              | Description                                                                      |
+| ------------------- | -------------------------------------------------------------------------------- |
+| `VERCEL_TOKEN`      | Personal access token from [Vercel dashboard](https://vercel.com/account/tokens) |
+| `VERCEL_ORG_ID`     | Found in `.vercel/project.json` after running `vercel link`                      |
+| `VERCEL_PROJECT_ID` | Found in `.vercel/project.json` after running `vercel link`                      |
+| `CRON_SECRET`       | Random secret for authenticating cron job requests                               |
 
 To switch from Vercel to another platform (Fly.io, Railway), see the commented alternatives in the workflow files.
 

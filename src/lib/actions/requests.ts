@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getResend, EMAIL_FROM } from '@/lib/email/resend'
 import RequestReceived from '@/lib/email/templates/request-received'
 import RequestApproved from '@/lib/email/templates/request-approved'
@@ -12,6 +13,7 @@ import { logger } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
 import { borrowLimiter } from '@/lib/rate-limiters'
 import { routing } from '@/i18n/routing'
+import { requireMembership } from '@/lib/admin'
 
 const DEFAULT_LOCALE = routing.defaultLocale
 
@@ -33,6 +35,10 @@ export async function createBorrowRequest(formData: FormData) {
 
   const { success: withinLimit } = await rateLimit(borrowLimiter, user.id)
   if (!withinLimit) return { error: 'Too many requests. Please try again later.' }
+
+  // Soft gate: require community membership
+  const membershipGuard = await requireMembership()
+  if (membershipGuard) return membershipGuard
 
   const toolId = formData.get('tool_id') as string
   const message = formData.get('message') as string | null
@@ -94,7 +100,7 @@ export async function createBorrowRequest(formData: FormData) {
       .select('display_name')
       .eq('id', user.id)
       .single()
-    const { data: ownerAuthUser } = await supabase.auth.admin.getUserById(tool.owner_id)
+    const { data: ownerAuthUser } = await createAdminClient().auth.admin.getUserById(tool.owner_id)
 
     if (ownerAuthUser?.user?.email) {
       await getResend().emails.send({
@@ -132,11 +138,11 @@ export async function approveRequest(requestId: string) {
 
   trackAction('borrow_request_approve', user.id, { requestId })
 
-  // Fetch request + tool + borrower profile + owner pickup address (service role needed for pickup_address)
+  // Fetch request + tool (with community) + borrower profile + owner profile
   const { data: req } = await supabase
     .from('borrow_requests')
     .select(
-      '*, tool:tools(name), borrower:profiles!borrower_id(display_name), owner:profiles!owner_id(display_name, pickup_address)'
+      '*, tool:tools(name, community_id), borrower:profiles!borrower_id(display_name), owner:profiles!owner_id(display_name, pickup_address)'
     )
     .eq('id', requestId)
     .eq('owner_id', user.id)
@@ -155,8 +161,23 @@ export async function approveRequest(requestId: string) {
 
   // Send approval email with pickup address to borrower
   try {
-    const { data: borrowerAuthUser } = await supabase.auth.admin.getUserById(req.borrower_id)
+    const { data: borrowerAuthUser } = await createAdminClient().auth.admin.getUserById(
+      req.borrower_id
+    )
     if (borrowerAuthUser?.user?.email) {
+      // Per-community pickup: look up community_members.pickup_address for this
+      // owner + tool's community. Fall back to the owner's profile address.
+      const toolCommunityId = (req.tool as { community_id: string | null })?.community_id
+      let pickupAddress = (req.owner as { pickup_address: string | null })?.pickup_address ?? null
+      if (toolCommunityId) {
+        const { data: membership } = await createAdminClient()
+          .from('community_members')
+          .select('pickup_address')
+          .eq('community_id', toolCommunityId)
+          .eq('profile_id', req.owner_id)
+          .maybeSingle()
+        if (membership?.pickup_address) pickupAddress = membership.pickup_address
+      }
       await getResend().emails.send({
         from: EMAIL_FROM,
         to: borrowerAuthUser.user.email,
@@ -167,9 +188,7 @@ export async function approveRequest(requestId: string) {
           toolName: (req.tool as { name: string })?.name ?? '',
           startDate: req.start_date ?? '',
           endDate: req.end_date ?? '',
-          pickupAddress:
-            (req.owner as { pickup_address: string | null })?.pickup_address ??
-            'Contact the owner for pick-up details',
+          pickupAddress: pickupAddress ?? 'Contact the owner for pick-up details',
           requestsUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/${DEFAULT_LOCALE}/requests`,
         }),
       })
@@ -213,7 +232,9 @@ export async function denyRequest(requestId: string, reason?: string) {
 
   // Email borrower
   try {
-    const { data: borrowerAuthUser } = await supabase.auth.admin.getUserById(req.borrower_id)
+    const { data: borrowerAuthUser } = await createAdminClient().auth.admin.getUserById(
+      req.borrower_id
+    )
     if (borrowerAuthUser?.user?.email) {
       await getResend().emails.send({
         from: EMAIL_FROM,
@@ -271,7 +292,7 @@ export async function cancelRequest(requestId: string) {
       .select('display_name')
       .eq('id', user.id)
       .single()
-    const { data: ownerAuthUser } = await supabase.auth.admin.getUserById(req.owner_id)
+    const { data: ownerAuthUser } = await createAdminClient().auth.admin.getUserById(req.owner_id)
     if (ownerAuthUser?.user?.email) {
       await getResend().emails.send({
         from: EMAIL_FROM,

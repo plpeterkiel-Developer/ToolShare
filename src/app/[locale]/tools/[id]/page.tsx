@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getToolById } from '@/lib/queries/tools'
 import { getPendingRequestsForTool } from '@/lib/queries/requests'
 import { getUserCommunityIds } from '@/lib/queries/communities'
-import { createClient } from '@/lib/supabase/server'
+import { getUser } from '@/lib/supabase/server'
 import { BorrowRequestButton } from '@/components/requests/BorrowRequestButton'
 import { DeleteToolButton } from '@/components/tools/DeleteToolButton'
 import { Badge } from '@/components/ui/Badge'
@@ -26,10 +26,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   const tool = await getToolById(id)
   if (!tool) notFound()
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   trackPageView('/tools/[id]', 'tool_detail', user?.id)
 

@@ -57,10 +57,19 @@ export async function loginWithGoogle() {
 
   const supabase = await createClient()
 
+  // Derive origin from the request so preview deployments redirect to their own
+  // preview URL, not the hardcoded site URL (which would send the user to prod
+  // on every preview login). Falls back to NEXT_PUBLIC_SITE_URL if headers are
+  // unavailable (e.g. unusual proxy chain).
+  const { headers } = await import('next/headers')
+  const h = await headers()
+  const fromHeader = h.get('origin') ?? h.get('referer')?.match(/^https?:\/\/[^/]+/)?.[0] ?? null
+  const origin = fromHeader ?? process.env.NEXT_PUBLIC_SITE_URL ?? ''
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: siteUrl + '/api/auth/callback',
+      redirectTo: `${origin}/api/auth/callback`,
     },
   })
 

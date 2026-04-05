@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getToolById } from '@/lib/queries/tools'
 import { getUserCommunities } from '@/lib/queries/communities'
-import { createClient } from '@/lib/supabase/server'
+import { getUser } from '@/lib/supabase/server'
 import { ToolForm } from '@/components/tools/ToolForm'
 import { trackPageView } from '@/lib/tracking'
 
@@ -16,10 +16,7 @@ export default async function EditToolPage({ params }: EditToolPageProps) {
 
   const t = await getTranslations('tools')
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     redirect(`/${locale}/auth/login?next=/${locale}/tools/${id}/edit`)

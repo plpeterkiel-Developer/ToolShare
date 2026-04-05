@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { routing } from '@/i18n/routing'
 import type { ToolAvailability, ToolCondition } from '@/types/database.types'
 import { trackAction } from '@/lib/tracking'
+import { requireMembership } from '@/lib/admin'
 
 const DEFAULT_LOCALE = routing.defaultLocale
 
@@ -24,6 +25,10 @@ export async function createTool(formData: FormData) {
     .eq('id', user.id)
     .single()
   if (profile?.is_suspended) return { error: 'Your account has been suspended' }
+
+  // Soft gate: require community membership
+  const membershipGuard = await requireMembership()
+  if (membershipGuard) return membershipGuard
 
   const name = formData.get('name') as string
   const description = formData.get('description') as string
@@ -66,7 +71,7 @@ export async function createTool(formData: FormData) {
   if (error) return { error: error.message }
 
   revalidatePath('/tools')
-  redirect(`/${locale}/tools/${data.id}`)
+  return { success: true }
 }
 
 export async function updateTool(toolId: string, formData: FormData) {

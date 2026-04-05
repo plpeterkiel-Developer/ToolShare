@@ -11,8 +11,9 @@ export interface SidebarProps {
 
 export async function Sidebar({ user, locale }: SidebarProps) {
   const t = await getTranslations('nav')
-  const admin = user ? await isCurrentUserAdmin() : false
-  const counts = user ? await getRequestCounts(user.id) : { pendingIncoming: 0, activeBorrows: 0 }
+  const [admin, counts] = user
+    ? await Promise.all([isCurrentUserAdmin(), getRequestCounts(user.id)])
+    : [false, { pendingIncoming: 0, activeBorrows: 0 }]
 
   return (
     <>

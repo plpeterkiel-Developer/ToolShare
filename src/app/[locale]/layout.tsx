@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
@@ -5,8 +6,9 @@ import { notFound } from 'next/navigation'
 import { Geist } from 'next/font/google'
 import { routing } from '@/i18n/routing'
 import Sidebar from '@/components/layout/Sidebar'
+import { SidebarSkeleton } from '@/components/layout/SidebarSkeleton'
 import { ToastProvider } from '@/components/ui/Toast'
-import { createClient } from '@/lib/supabase/server'
+import { getUser } from '@/lib/supabase/server'
 
 const geist = Geist({
   variable: '--font-geist-sans',
@@ -45,12 +47,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   setRequestLocale(locale)
 
-  const messages = await getMessages()
-
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const [messages, user] = await Promise.all([getMessages(), getUser()])
 
   return (
     <html lang={locale} className={`${geist.variable} h-full`}>
@@ -58,7 +55,9 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <NextIntlClientProvider messages={messages}>
           <ToastProvider>
             <div className="flex min-h-screen">
-              <Sidebar user={user} locale={locale} />
+              <Suspense fallback={<SidebarSkeleton />}>
+                <Sidebar user={user} locale={locale} />
+              </Suspense>
               <div className="flex flex-1 flex-col min-w-0 bg-[#fafaf5]">
                 <main id="main-content" className="flex-1 pt-14 md:pt-0">
                   {children}

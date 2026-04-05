@@ -45,7 +45,7 @@ export function BorrowRequestButton({ tool, currentUserId }: BorrowRequestButton
     }
 
     const result = await createBorrowRequest(formData)
-    if (result?.error) {
+    if (result && 'error' in result && result.error) {
       setError(result.error)
       setLoading(false)
       return

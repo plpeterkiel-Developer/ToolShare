@@ -1,12 +1,20 @@
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getRecentAvailableTools } from '@/lib/queries/tools'
+import { getUserCommunityIds } from '@/lib/queries/communities'
+import { getUser } from '@/lib/supabase/server'
 import { ToolGrid } from '@/components/tools/ToolGrid'
+import { HomeSearchBar } from '@/components/home/HomeSearchBar'
+import { BookingsButton } from '@/components/home/BookingsButton'
 import { trackPageView } from '@/lib/tracking'
 
 interface HomePageProps {
   params: Promise<{ locale: string }>
 }
+
+const AMBER_CTA_CLASS =
+  'inline-flex w-56 items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200'
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params
@@ -14,9 +22,16 @@ export default async function HomePage({ params }: HomePageProps) {
 
   const t = await getTranslations('home')
 
-  trackPageView('/', 'home')
+  const user = await getUser()
 
-  const recentTools = await getRecentAvailableTools(6)
+  trackPageView('/', 'home', user?.id)
+
+  const [recentTools, memberCommunityIds] = await Promise.all([
+    getRecentAvailableTools(6),
+    user ? getUserCommunityIds(user.id) : Promise.resolve([]),
+  ])
+
+  const hasMembership = memberCommunityIds.length > 0
 
   return (
     <div className="flex flex-col">
@@ -36,28 +51,49 @@ export default async function HomePage({ params }: HomePageProps) {
             {t('hero.subtitle')}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
-              href={`/${locale}/tools`}
-              data-testid="cta-browse"
-              className="inline-flex items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
-            >
-              {t('hero.cta')}
-            </Link>
-            <Link
-              href={`/${locale}/tools/new`}
-              data-testid="cta-add-tool"
-              className="inline-flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur px-8 py-3.5 text-base font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900 transition-all duration-200"
-            >
-              {t('hero.ctaSecondary')}
-            </Link>
+            {!user ? (
+              <Link
+                href={`/${locale}/auth/login`}
+                data-testid="cta-login"
+                className={AMBER_CTA_CLASS}
+              >
+                {t('hero.ctaLogin')}
+              </Link>
+            ) : !hasMembership ? (
+              <Link
+                href={`/${locale}/onboarding`}
+                data-testid="cta-find-community"
+                className={AMBER_CTA_CLASS}
+              >
+                {t('hero.ctaFindCommunity')}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href={`/${locale}/tools/new`}
+                  data-testid="cta-add-tool"
+                  className={AMBER_CTA_CLASS}
+                >
+                  {t('hero.ctaSecondary')}
+                </Link>
+                <Suspense>
+                  <BookingsButton userId={user.id} locale={locale} />
+                </Suspense>
+              </>
+            )}
           </div>
         </div>
+      </section>
+
+      {/* Search bar */}
+      <section className="mx-auto w-full max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
+        <HomeSearchBar locale={locale} />
       </section>
 
       {/* Recent tools section */}
       <section
         data-testid="recent-tools-section"
-        className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8"
+        className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
       >
         <h2 className="mb-8 text-2xl font-bold text-stone-900">{t('recentTools')}</h2>
         <ToolGrid
