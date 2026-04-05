@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
+import { compressImageToMaxSize } from '@/lib/images/compress'
 import { Spinner } from '@/components/ui/Spinner'
 
 export interface ToolImageUploadProps {
@@ -23,16 +24,25 @@ export function ToolImageUpload({ currentUrl, onUpload, onUploadingChange }: Too
     const file = e.target.files?.[0]
     if (!file) return
 
-    const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
-    if (file.size > MAX_SIZE) {
-      setError(t('tooLarge'))
-      return
-    }
-
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
     if (!allowed.includes(file.type)) {
       setError(t('unsupported'))
       return
+    }
+
+    const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
+    let uploadFile = file
+    if (file.size > MAX_SIZE) {
+      try {
+        uploadFile = await compressImageToMaxSize(file, MAX_SIZE)
+      } catch {
+        setError(t('tooLarge'))
+        return
+      }
+      if (uploadFile.size > MAX_SIZE) {
+        setError(t('tooLarge'))
+        return
+      }
     }
 
     setError(null)
@@ -40,7 +50,7 @@ export function ToolImageUpload({ currentUrl, onUpload, onUploadingChange }: Too
     onUploadingChange?.(true)
 
     // Local preview
-    const objectUrl = URL.createObjectURL(file)
+    const objectUrl = URL.createObjectURL(uploadFile)
     setPreview(objectUrl)
 
     try {
@@ -53,12 +63,18 @@ export function ToolImageUpload({ currentUrl, onUpload, onUploadingChange }: Too
         return
       }
 
-      const ext = file.name.split('.').pop() ?? 'jpg'
+      const mimeToExt: Record<string, string> = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/webp': 'webp',
+        'image/gif': 'gif',
+      }
+      const ext = mimeToExt[uploadFile.type] ?? 'jpg'
       const path = `${userData.user.id}/${crypto.randomUUID()}.${ext}`
 
       const { error: uploadError } = await supabase.storage
         .from('tool-images')
-        .upload(path, file, { upsert: false })
+        .upload(path, uploadFile, { upsert: false })
 
       if (uploadError) {
         setError(uploadError.message)
