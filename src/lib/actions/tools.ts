@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { ToolAvailability, ToolCondition } from '@/types/database.types'
 import { trackAction } from '@/lib/tracking'
+import { requireMembership } from '@/lib/admin'
 
 export async function createTool(formData: FormData) {
   const supabase = await createClient()
@@ -13,6 +14,9 @@ export async function createTool(formData: FormData) {
   } = await supabase.auth.getUser()
 
   if (!user) return { error: 'Not authenticated' }
+
+  const membershipGuard = await requireMembership()
+  if (membershipGuard) return membershipGuard
 
   const name = formData.get('name') as string
   const description = formData.get('description') as string

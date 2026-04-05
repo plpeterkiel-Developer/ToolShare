@@ -17,6 +17,7 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
     { href: `/${locale}/admin/analytics`, label: t('analytics') },
     { href: `/${locale}/admin/users`, label: t('users') },
     { href: `/${locale}/admin/communities`, label: t('communities') },
+    { href: `/${locale}/admin/community-requests`, label: t('communityRequests') },
     { href: `/${locale}/admin/tools`, label: t('tools') },
     { href: `/${locale}/admin/reports`, label: t('reports') },
     { href: `/${locale}/admin/requests`, label: t('requests') },

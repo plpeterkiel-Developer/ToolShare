@@ -23,7 +23,7 @@ export async function submitFeedback(formData: FormData) {
 
   const { error } = await supabase.from('feedback').insert({
     user_id: user.id,
-    type,
+    type: type as 'feedback' | 'bug' | 'suggestion',
     message,
   })
 

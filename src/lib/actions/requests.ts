@@ -10,6 +10,7 @@ import RequestCancelled from '@/lib/email/templates/request-cancelled'
 import { trackAction } from '@/lib/tracking'
 import { logger } from '@/lib/logger'
 import { routing } from '@/i18n/routing'
+import { requireMembership } from '@/lib/admin'
 
 const DEFAULT_LOCALE = routing.defaultLocale
 
@@ -20,6 +21,9 @@ export async function createBorrowRequest(formData: FormData) {
   } = await supabase.auth.getUser()
 
   if (!user) return { error: 'Not authenticated' }
+
+  const membershipGuard = await requireMembership()
+  if (membershipGuard) return membershipGuard
 
   const toolId = formData.get('tool_id') as string
   const message = formData.get('message') as string | null

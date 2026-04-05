@@ -2,7 +2,9 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getRecentAvailableTools } from '@/lib/queries/tools'
+import { getUserCommunityIds, getUserPendingJoinRequests } from '@/lib/queries/communities'
 import { getUser } from '@/lib/supabase/server'
+import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner'
 import { ToolGrid } from '@/components/tools/ToolGrid'
 import { HomeSearchBar } from '@/components/home/HomeSearchBar'
 import { BookingsButton } from '@/components/home/BookingsButton'
@@ -22,10 +24,19 @@ export default async function HomePage({ params }: HomePageProps) {
 
   trackPageView('/', 'home', user?.id)
 
-  const recentTools = await getRecentAvailableTools(6)
+  const [recentTools, memberCommunityIds, joinRequests] = await Promise.all([
+    getRecentAvailableTools(6),
+    user ? getUserCommunityIds(user.id) : Promise.resolve([]),
+    user ? getUserPendingJoinRequests(user.id) : Promise.resolve([]),
+  ])
+
+  const showOnboardingBanner = !!user && memberCommunityIds.length === 0
 
   return (
     <div className="flex flex-col">
+      {showOnboardingBanner && (
+        <OnboardingBanner locale={locale} hasPendingRequest={joinRequests.length > 0} />
+      )}
       {/* Hero section */}
       <section
         data-testid="hero-section"
