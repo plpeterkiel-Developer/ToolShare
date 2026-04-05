@@ -494,6 +494,12 @@
     "cancel": "Cancel",
     "cannotFindCta": "Can't find your community? Request a new one",
     "addCommunityCta": "Add community",
+    "pickupAddressLabel": "Your pickup address",
+    "pickupAddressHelp": "Where neighbours collect tools you lend within this community",
+    "sendJoinRequest": "Send request",
+    "joinRequestMessageLabel": "Message (optional)",
+    "communityInfoLegend": "Community",
+    "requesterPickupLegend": "Your pickup address",
     "requestNewCityLabel": "City",
     "requestNewCityPlaceholder": "e.g. Copenhagen",
     "requestNewAddressLabel": "Address",
@@ -544,6 +550,7 @@
     "denyReasonPlaceholder": "Reason (optional) — will be emailed to the requester",
     "confirmDeny": "Confirm deny",
     "editBeforeApprove": "Edit",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "requesterPickup": "Pickup"
   }
 }

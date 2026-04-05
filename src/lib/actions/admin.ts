@@ -252,7 +252,7 @@ export async function approveCommunityCreation(
   const supabase = createAdminClient()
   const { data: request } = await supabase
     .from('community_creation_requests')
-    .select('id, requested_name, description, address, city, requested_by, status')
+    .select('id, requested_name, description, address, city, pickup_address, requested_by, status')
     .eq('id', requestId)
     .single()
   if (!request) return { error: 'Request not found' }
@@ -287,12 +287,14 @@ export async function approveCommunityCreation(
     .eq('id', requestId)
 
   // Auto-add requester as member + community admin
-  await supabase
-    .from('community_members')
-    .upsert(
-      { community_id: community.id, profile_id: request.requested_by },
-      { onConflict: 'community_id,profile_id' }
-    )
+  await supabase.from('community_members').upsert(
+    {
+      community_id: community.id,
+      profile_id: request.requested_by,
+      pickup_address: request.pickup_address,
+    },
+    { onConflict: 'community_id,profile_id' }
+  )
   await supabase
     .from('community_admins')
     .upsert(

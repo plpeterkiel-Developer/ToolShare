@@ -55,6 +55,11 @@ export function CommunityJoinRequestsTable({ requests }: CommunityJoinRequestsTa
               <p className="font-medium text-stone-900">
                 {req.profile?.display_name ?? t('unknownUser')}
               </p>
+              {req.pickup_address && (
+                <p className="mt-1 text-sm text-stone-700">
+                  <span className="font-medium">{t('requesterPickup')}:</span> {req.pickup_address}
+                </p>
+              )}
               {req.message && (
                 <p className="mt-1 whitespace-pre-wrap text-sm text-stone-600">
                   &ldquo;{req.message}&rdquo;

@@ -9,6 +9,7 @@ interface CommunityCreationRequestedProps {
   description?: string | null
   address?: string | null
   city?: string | null
+  pickupAddress?: string | null
   adminUrl: string
 }
 
@@ -20,6 +21,7 @@ export function CommunityCreationRequestedEmail({
   description,
   address,
   city,
+  pickupAddress,
   adminUrl,
 }: CommunityCreationRequestedProps) {
   return (
@@ -54,6 +56,12 @@ export function CommunityCreationRequestedEmail({
           <>
             <span style={emailStyles.label}>Address</span>
             <p style={emailStyles.value}>{address}</p>
+          </>
+        ) : null}
+        {pickupAddress ? (
+          <>
+            <span style={emailStyles.label}>Requester Pickup</span>
+            <p style={emailStyles.value}>{pickupAddress}</p>
           </>
         ) : null}
         <span style={emailStyles.label}>Requested By</span>

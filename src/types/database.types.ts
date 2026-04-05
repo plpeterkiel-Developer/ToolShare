@@ -160,6 +160,7 @@ export type Database = {
           decision_reason: string | null
           description: string | null
           id: string
+          pickup_address: string | null
           requested_by: string
           requested_name: string
           resulting_community_id: string | null
@@ -174,6 +175,7 @@ export type Database = {
           decision_reason?: string | null
           description?: string | null
           id?: string
+          pickup_address?: string | null
           requested_by: string
           requested_name: string
           resulting_community_id?: string | null
@@ -188,6 +190,7 @@ export type Database = {
           decision_reason?: string | null
           description?: string | null
           id?: string
+          pickup_address?: string | null
           requested_by?: string
           requested_name?: string
           resulting_community_id?: string | null
@@ -225,6 +228,7 @@ export type Database = {
           decided_by: string | null
           id: string
           message: string | null
+          pickup_address: string | null
           profile_id: string
           status: Database['public']['Enums']['community_request_status']
         }
@@ -235,6 +239,7 @@ export type Database = {
           decided_by?: string | null
           id?: string
           message?: string | null
+          pickup_address?: string | null
           profile_id: string
           status?: Database['public']['Enums']['community_request_status']
         }
@@ -245,6 +250,7 @@ export type Database = {
           decided_by?: string | null
           id?: string
           message?: string | null
+          pickup_address?: string | null
           profile_id?: string
           status?: Database['public']['Enums']['community_request_status']
         }
@@ -276,16 +282,19 @@ export type Database = {
         Row: {
           community_id: string
           joined_at: string
+          pickup_address: string | null
           profile_id: string
         }
         Insert: {
           community_id: string
           joined_at?: string
+          pickup_address?: string | null
           profile_id: string
         }
         Update: {
           community_id?: string
           joined_at?: string
+          pickup_address?: string | null
           profile_id?: string
         }
         Relationships: [

@@ -120,11 +120,11 @@ export async function approveRequest(requestId: string) {
 
   trackAction('borrow_request_approve', user.id, { requestId })
 
-  // Fetch request + tool + borrower profile + owner pickup address (service role needed for pickup_address)
+  // Fetch request + tool (with community) + borrower profile + owner profile
   const { data: req } = await supabase
     .from('borrow_requests')
     .select(
-      '*, tool:tools(name), borrower:profiles!borrower_id(display_name), owner:profiles!owner_id(display_name, pickup_address)'
+      '*, tool:tools(name, community_id), borrower:profiles!borrower_id(display_name), owner:profiles!owner_id(display_name, pickup_address)'
     )
     .eq('id', requestId)
     .eq('owner_id', user.id)
@@ -147,6 +147,19 @@ export async function approveRequest(requestId: string) {
       req.borrower_id
     )
     if (borrowerAuthUser?.user?.email) {
+      // Per-community pickup: look up community_members.pickup_address for this
+      // owner + tool's community. Fall back to the owner's profile address.
+      const toolCommunityId = (req.tool as { community_id: string | null })?.community_id
+      let pickupAddress = (req.owner as { pickup_address: string | null })?.pickup_address ?? null
+      if (toolCommunityId) {
+        const { data: membership } = await createAdminClient()
+          .from('community_members')
+          .select('pickup_address')
+          .eq('community_id', toolCommunityId)
+          .eq('profile_id', req.owner_id)
+          .maybeSingle()
+        if (membership?.pickup_address) pickupAddress = membership.pickup_address
+      }
       await getResend().emails.send({
         from: EMAIL_FROM,
         to: borrowerAuthUser.user.email,
@@ -157,9 +170,7 @@ export async function approveRequest(requestId: string) {
           toolName: (req.tool as { name: string })?.name ?? '',
           startDate: req.start_date ?? '',
           endDate: req.end_date ?? '',
-          pickupAddress:
-            (req.owner as { pickup_address: string | null })?.pickup_address ??
-            'Contact the owner for pick-up details',
+          pickupAddress: pickupAddress ?? 'Contact the owner for pick-up details',
           requestsUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/${DEFAULT_LOCALE}/requests`,
         }),
       })

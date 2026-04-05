@@ -103,6 +103,12 @@ export function CommunityCreationRequestsTable({ requests }: Props) {
                       📍 {[req.city, req.address].filter(Boolean).join(', ')}
                     </p>
                   )}
+                  {req.pickup_address && (
+                    <p className="mt-1 text-sm text-stone-600">
+                      <span className="font-medium">{t('requesterPickup')}:</span>{' '}
+                      {req.pickup_address}
+                    </p>
+                  )}
                   {req.description && (
                     <p className="mt-1 whitespace-pre-wrap text-sm text-stone-600">
                       {req.description}

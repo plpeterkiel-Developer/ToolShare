@@ -25,6 +25,9 @@ export function CommunitySearchPicker({
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<Community[]>([])
   const [loading, setLoading] = useState(false)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [pickupAddress, setPickupAddress] = useState('')
+  const [message, setMessage] = useState('')
   const [submittingId, setSubmittingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [, startTransition] = useTransition()
@@ -44,15 +47,25 @@ export function CommunitySearchPicker({
     }
   }, [query])
 
-  const handleRequest = async (communityId: string) => {
+  const handleExpand = (communityId: string) => {
+    setExpandedId(communityId)
+    setPickupAddress('')
+    setMessage('')
+    setError(null)
+  }
+
+  const handleSendRequest = async (communityId: string) => {
     setError(null)
     setSubmittingId(communityId)
-    const res = await requestJoinCommunity(communityId)
+    const res = await requestJoinCommunity(communityId, message || null, pickupAddress || null)
     setSubmittingId(null)
     if ('error' in res && res.error) {
       setError(res.error)
       return
     }
+    setExpandedId(null)
+    setPickupAddress('')
+    setMessage('')
     startTransition(() => router.refresh())
   }
 
@@ -71,12 +84,6 @@ export function CommunitySearchPicker({
         />
       </label>
 
-      {error && (
-        <p role="alert" className="text-sm text-red-600">
-          {error}
-        </p>
-      )}
-
       {belowSearchBar && <div>{belowSearchBar}</div>}
 
       <ul
@@ -91,33 +98,92 @@ export function CommunitySearchPicker({
           results.map((c) => {
             const isMember = memberCommunityIds.includes(c.id)
             const isPending = pendingCommunityIds.includes(c.id)
+            const isExpanded = expandedId === c.id
             const isSubmitting = submittingId === c.id
             return (
-              <li key={c.id} className="flex items-center justify-between gap-4 px-4 py-3">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-stone-900">{c.name}</p>
-                  {c.description && (
-                    <p className="truncate text-sm text-stone-500">{c.description}</p>
+              <li key={c.id} className="px-4 py-3">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-stone-900">{c.name}</p>
+                    {c.description && (
+                      <p className="truncate text-sm text-stone-500">{c.description}</p>
+                    )}
+                  </div>
+                  {isMember ? (
+                    <span className="shrink-0 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                      {t('statusMember')}
+                    </span>
+                  ) : isPending ? (
+                    <span className="shrink-0 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
+                      {t('statusPending')}
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => (isExpanded ? setExpandedId(null) : handleExpand(c.id))}
+                      data-testid={`join-community-${c.id}`}
+                      className="shrink-0 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800"
+                    >
+                      {t('requestJoin')}
+                    </button>
                   )}
                 </div>
-                {isMember ? (
-                  <span className="shrink-0 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
-                    {t('statusMember')}
-                  </span>
-                ) : isPending ? (
-                  <span className="shrink-0 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
-                    {t('statusPending')}
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleRequest(c.id)}
-                    disabled={isSubmitting}
-                    data-testid={`join-community-${c.id}`}
-                    className="shrink-0 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 disabled:opacity-50"
-                  >
-                    {isSubmitting ? t('requesting') : t('requestJoin')}
-                  </button>
+                {isExpanded && !isMember && !isPending && (
+                  <div className="mt-3 space-y-3 rounded-lg bg-stone-50 p-3">
+                    <label className="block">
+                      <span className="text-sm font-medium text-stone-700">
+                        {t('pickupAddressLabel')}
+                      </span>
+                      <input
+                        type="text"
+                        maxLength={255}
+                        value={pickupAddress}
+                        onChange={(e) => setPickupAddress(e.target.value)}
+                        placeholder={t('requestNewAddressPlaceholder')}
+                        className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"
+                        data-testid={`join-pickup-${c.id}`}
+                      />
+                      <span className="mt-1 block text-xs text-stone-500">
+                        {t('pickupAddressHelp')}
+                      </span>
+                    </label>
+                    <label className="block">
+                      <span className="text-sm font-medium text-stone-700">
+                        {t('joinRequestMessageLabel')}
+                      </span>
+                      <textarea
+                        rows={2}
+                        maxLength={500}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"
+                        data-testid={`join-message-${c.id}`}
+                      />
+                    </label>
+                    {error && (
+                      <p role="alert" className="text-sm text-red-600">
+                        {error}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleSendRequest(c.id)}
+                        disabled={isSubmitting}
+                        className="rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 disabled:opacity-50"
+                        data-testid={`send-join-${c.id}`}
+                      >
+                        {isSubmitting ? t('requesting') : t('sendJoinRequest')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setExpandedId(null)}
+                        className="text-sm text-stone-600 hover:text-stone-900"
+                      >
+                        {t('cancel')}
+                      </button>
+                    </div>
+                  </div>
                 )}
               </li>
             )

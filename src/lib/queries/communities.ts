@@ -83,6 +83,7 @@ export interface CreationRequestRow {
   description: string | null
   address: string | null
   city: string | null
+  pickup_address: string | null
   status: string
   decision_reason: string | null
   created_at: string
@@ -94,7 +95,7 @@ export async function getUserCreationRequests(userId: string): Promise<CreationR
   const { data, error } = await supabase
     .from('community_creation_requests')
     .select(
-      'id, requested_name, description, address, city, status, decision_reason, created_at, resulting_community_id'
+      'id, requested_name, description, address, city, pickup_address, status, decision_reason, created_at, resulting_community_id'
     )
     .eq('requested_by', userId)
     .order('created_at', { ascending: false })
@@ -112,6 +113,7 @@ export interface CommunityJoinRequestAdminRow {
   community_id: string
   status: string
   message: string | null
+  pickup_address: string | null
   created_at: string
   decided_at: string | null
   profile: {
@@ -130,7 +132,7 @@ export async function getCommunityJoinRequests(
   let query = supabase
     .from('community_join_requests')
     .select(
-      'id, community_id, status, message, created_at, decided_at, profile:profiles!community_join_requests_profile_id_fkey(id, display_name, avatar_url)'
+      'id, community_id, status, message, pickup_address, created_at, decided_at, profile:profiles!community_join_requests_profile_id_fkey(id, display_name, avatar_url)'
     )
     .eq('community_id', communityId)
     .order('created_at', { ascending: false })
@@ -148,6 +150,7 @@ export interface CreationRequestAdminRow {
   description: string | null
   address: string | null
   city: string | null
+  pickup_address: string | null
   status: string
   decision_reason: string | null
   created_at: string
@@ -177,7 +180,7 @@ export async function getAllCommunityCreationRequests(
   let query = supabase
     .from('community_creation_requests')
     .select(
-      'id, requested_name, description, address, city, status, decision_reason, created_at, decided_at, resulting_community_id, requester:profiles!community_creation_requests_requested_by_fkey(id, display_name)'
+      'id, requested_name, description, address, city, pickup_address, status, decision_reason, created_at, decided_at, resulting_community_id, requester:profiles!community_creation_requests_requested_by_fkey(id, display_name)'
     )
     .order('created_at', { ascending: false })
 

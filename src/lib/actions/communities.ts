@@ -30,7 +30,11 @@ export async function searchCommunitiesAction(query: string) {
   }
 }
 
-export async function requestJoinCommunity(communityId: string, message?: string | null) {
+export async function requestJoinCommunity(
+  communityId: string,
+  message?: string | null,
+  pickupAddress?: string | null
+) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -56,12 +60,18 @@ export async function requestJoinCommunity(communityId: string, message?: string
     .maybeSingle()
   if (existingPending) return { error: 'You already have a pending request for this community' }
 
+  const trimmedPickup = pickupAddress?.trim() || null
+  if (trimmedPickup && trimmedPickup.length > 255) {
+    return { error: 'Pickup address is too long' }
+  }
+
   const { data: request, error } = await supabase
     .from('community_join_requests')
     .insert({
       community_id: communityId,
       profile_id: user.id,
       message: message?.trim() || null,
+      pickup_address: trimmedPickup,
     })
     .select('id')
     .single()
@@ -132,7 +142,8 @@ export async function requestNewCommunity(
   name: string,
   description?: string | null,
   address?: string | null,
-  city?: string | null
+  city?: string | null,
+  pickupAddress?: string | null
 ) {
   const supabase = await createClient()
   const {
@@ -151,6 +162,10 @@ export async function requestNewCommunity(
   if (trimmedCity && trimmedCity.length > 100) {
     return { error: 'City is too long' }
   }
+  const trimmedPickup = pickupAddress?.trim() || null
+  if (trimmedPickup && trimmedPickup.length > 255) {
+    return { error: 'Pickup address is too long' }
+  }
 
   const { data: request, error } = await supabase
     .from('community_creation_requests')
@@ -159,6 +174,7 @@ export async function requestNewCommunity(
       description: description?.trim() || null,
       address: trimmedAddress,
       city: trimmedCity,
+      pickup_address: trimmedPickup,
       requested_by: user.id,
     })
     .select('id')
@@ -187,6 +203,7 @@ export async function requestNewCommunity(
           description: description?.trim() || null,
           address: trimmedAddress,
           city: trimmedCity,
+          pickupAddress: trimmedPickup,
           adminUrl,
         }),
       })
@@ -213,7 +230,7 @@ export async function approveJoinRequest(requestId: string) {
   const adminDb = createAdminClient()
   const { data: request } = await adminDb
     .from('community_join_requests')
-    .select('id, community_id, profile_id, status')
+    .select('id, community_id, profile_id, status, pickup_address')
     .eq('id', requestId)
     .single()
   if (!request) return { error: 'Request not found' }
@@ -229,12 +246,14 @@ export async function approveJoinRequest(requestId: string) {
     .eq('id', requestId)
   if (updateErr) return { error: updateErr.message }
 
-  const { error: memberErr } = await adminDb
-    .from('community_members')
-    .upsert(
-      { community_id: request.community_id, profile_id: request.profile_id },
-      { onConflict: 'community_id,profile_id' }
-    )
+  const { error: memberErr } = await adminDb.from('community_members').upsert(
+    {
+      community_id: request.community_id,
+      profile_id: request.profile_id,
+      pickup_address: request.pickup_address,
+    },
+    { onConflict: 'community_id,profile_id' }
+  )
   if (memberErr) return { error: memberErr.message }
 
   // Notify requester
