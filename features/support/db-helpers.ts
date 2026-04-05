@@ -65,7 +65,54 @@ export async function createTestUser(
     throw new Error(`Failed to upsert profile for ${email}: ${profileError.message}`)
   }
 
+  // Soft-gate: ensure the user is a member of a community so tool/borrow-request
+  // creation passes RLS (migration 014_community_onboarding.sql). We reuse a
+  // single per-test-run community and upsert membership.
+  await ensureTestCommunityMembership(supabaseAdmin, userId, testRunId)
+
   return { id: userId, email }
+}
+
+/**
+ * Creates (or fetches) a test-run-scoped community and adds the user as a member.
+ * Idempotent — safe to call many times for the same testRunId.
+ */
+async function ensureTestCommunityMembership(
+  supabaseAdmin: SupabaseClient,
+  userId: string,
+  testRunId: string
+): Promise<void> {
+  const communityName = `test-community-${testRunId}`
+  // Find or create the test community
+  const { data: existing } = await supabaseAdmin
+    .from('communities')
+    .select('id')
+    .eq('name', communityName)
+    .maybeSingle()
+
+  let communityId = existing?.id
+  if (!communityId) {
+    const { data: created, error } = await supabaseAdmin
+      .from('communities')
+      .insert({ name: communityName, description: `Auto-created for test run ${testRunId}` })
+      .select('id')
+      .single()
+    if (error || !created) {
+      throw new Error(`Failed to create test community: ${error?.message}`)
+    }
+    communityId = created.id
+  }
+
+  // Upsert membership
+  const { error: memberError } = await supabaseAdmin
+    .from('community_members')
+    .upsert(
+      { community_id: communityId, profile_id: userId },
+      { onConflict: 'community_id,profile_id' }
+    )
+  if (memberError) {
+    throw new Error(`Failed to add user to test community: ${memberError.message}`)
+  }
 }
 
 export interface SeedToolInput {

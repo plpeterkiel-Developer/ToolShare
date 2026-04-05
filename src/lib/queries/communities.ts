@@ -155,6 +155,16 @@ export interface CreationRequestAdminRow {
   } | null
 }
 
+/** Count of pending community creation requests (for super-admin nav badge). */
+export async function countPendingCreationRequests(): Promise<number> {
+  const supabase = createAdminClient()
+  const { count } = await supabase
+    .from('community_creation_requests')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'pending')
+  return count ?? 0
+}
+
 /** Super-admin view of all community creation requests. */
 export async function getAllCommunityCreationRequests(
   status: 'pending' | 'approved' | 'denied' | 'cancelled' | 'all' = 'pending'
@@ -200,19 +210,4 @@ export async function getCommunityAdminsWithProfiles(
 
   if (error) throw new Error(error.message)
   return (data ?? []) as unknown as CommunityAdminWithProfile[]
-}
-
-/** Fetch user emails (auth) for a set of profile ids. Returns map { profileId: email }. */
-export async function getEmailsForProfiles(
-  profileIds: string[]
-): Promise<Map<string, string | null>> {
-  if (profileIds.length === 0) return new Map()
-  const supabase = createAdminClient()
-  const { data } = await supabase.auth.admin.listUsers()
-  const wanted = new Set(profileIds)
-  const map = new Map<string, string | null>()
-  for (const u of data?.users ?? []) {
-    if (wanted.has(u.id)) map.set(u.id, u.email ?? null)
-  }
-  return map
 }

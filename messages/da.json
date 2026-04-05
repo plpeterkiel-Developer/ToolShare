@@ -11,6 +11,7 @@
     "tools": "Værktøjer",
     "profile": "Profil",
     "admin": "Admin",
+    "myCommunities": "Mine fællesskaber",
     "home": "Hjem",
     "expandSidebar": "Udvid menu",
     "collapseSidebar": "Skjul menu",
@@ -503,6 +504,18 @@
     "bannerPending": "Din fællesskabsanmodning afventer godkendelse.",
     "bannerCta": "Find et fællesskab",
     "bannerPendingCta": "Se anmodning"
+  },
+  "myCommunities": {
+    "title": "Mine fællesskaber",
+    "subtitle": "Fællesskaber du er medlem af og dine afventende anmodninger.",
+    "findCommunityCta": "Find flere",
+    "memberOfTitle": "Medlem af",
+    "noMemberships": "Du er ikke medlem af noget fællesskab endnu.",
+    "manageCta": "Administrer",
+    "pendingTitle": "Afventer",
+    "pendingJoin": "Deltagelsesanmodning",
+    "pendingCreation": "Anmodning om fællesskabsoprettelse",
+    "statusPending": "Afventer"
   },
   "communityAdmin": {
     "managingLabel": "Administrerer fællesskab",

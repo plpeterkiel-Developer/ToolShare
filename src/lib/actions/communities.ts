@@ -76,30 +76,30 @@ export async function requestJoinCommunity(communityId: string, message?: string
       adminDb.from('profiles').select('display_name').eq('id', user.id).single(),
     ])
     if (community && admins && admins.length > 0) {
-      const { data: authUsers } = await adminDb.auth.admin.listUsers()
       const adminUrl = `${SITE_URL}/${DEFAULT_LOCALE}/communities/${communityId}/manage`
-      for (const admin of admins) {
-        const authUser = authUsers?.users.find((u) => u.id === admin.profile_id)
-        if (!authUser?.email) continue
-        const adminProfile = await adminDb
-          .from('profiles')
-          .select('display_name')
-          .eq('id', admin.profile_id)
-          .single()
-        await getResend().emails.send({
-          from: EMAIL_FROM,
-          to: authUser.email,
-          subject: `New join request for ${community.name}`,
-          react: CommunityJoinRequested({
-            adminName: adminProfile.data?.display_name ?? 'Community admin',
-            communityName: community.name,
-            requesterName: requesterProfile?.display_name ?? 'A user',
-            requesterEmail: user.email ?? '',
-            message: message?.trim() || null,
-            adminUrl,
-          }),
+      await Promise.all(
+        admins.map(async (admin) => {
+          const [authLookup, profileLookup] = await Promise.all([
+            adminDb.auth.admin.getUserById(admin.profile_id),
+            adminDb.from('profiles').select('display_name').eq('id', admin.profile_id).single(),
+          ])
+          const email = authLookup.data?.user?.email
+          if (!email) return
+          await getResend().emails.send({
+            from: EMAIL_FROM,
+            to: email,
+            subject: `New join request for ${community.name}`,
+            react: CommunityJoinRequested({
+              adminName: profileLookup.data?.display_name ?? 'Community admin',
+              communityName: community.name,
+              requesterName: requesterProfile?.display_name ?? 'A user',
+              requesterEmail: user.email ?? '',
+              message: message?.trim() || null,
+              adminUrl,
+            }),
+          })
         })
-      }
+      )
     }
   } catch (err) {
     logger.warn('Failed to send community join-request email', { err })
@@ -222,16 +222,16 @@ export async function approveJoinRequest(requestId: string) {
 
   // Notify requester
   try {
-    const [{ data: community }, { data: profile }, { data: authUsers }] = await Promise.all([
+    const [{ data: community }, { data: profile }, { data: authLookup }] = await Promise.all([
       adminDb.from('communities').select('id, name').eq('id', request.community_id).single(),
       adminDb.from('profiles').select('display_name').eq('id', request.profile_id).single(),
-      adminDb.auth.admin.listUsers(),
+      adminDb.auth.admin.getUserById(request.profile_id),
     ])
-    const requesterAuth = authUsers?.users.find((u) => u.id === request.profile_id)
-    if (community && requesterAuth?.email) {
+    const requesterEmail = authLookup?.user?.email
+    if (community && requesterEmail) {
       await getResend().emails.send({
         from: EMAIL_FROM,
-        to: requesterAuth.email,
+        to: requesterEmail,
         subject: `Welcome to ${community.name}`,
         react: CommunityJoinApproved({
           requesterName: profile?.display_name ?? 'there',
@@ -275,16 +275,16 @@ export async function denyJoinRequest(requestId: string, reason?: string | null)
 
   // Notify requester
   try {
-    const [{ data: community }, { data: profile }, { data: authUsers }] = await Promise.all([
+    const [{ data: community }, { data: profile }, { data: authLookup }] = await Promise.all([
       adminDb.from('communities').select('id, name').eq('id', request.community_id).single(),
       adminDb.from('profiles').select('display_name').eq('id', request.profile_id).single(),
-      adminDb.auth.admin.listUsers(),
+      adminDb.auth.admin.getUserById(request.profile_id),
     ])
-    const requesterAuth = authUsers?.users.find((u) => u.id === request.profile_id)
-    if (community && requesterAuth?.email) {
+    const requesterEmail = authLookup?.user?.email
+    if (community && requesterEmail) {
       await getResend().emails.send({
         from: EMAIL_FROM,
-        to: requesterAuth.email,
+        to: requesterEmail,
         subject: `Join request update: ${community.name}`,
         react: CommunityJoinDenied({
           requesterName: profile?.display_name ?? 'there',

@@ -6,7 +6,14 @@ import { routing } from './i18n/routing'
 const intlMiddleware = createIntlMiddleware(routing)
 
 // Routes that require authentication (after locale prefix)
-const PROTECTED_PATHS = ['/tools/new', '/profile', '/requests', '/admin']
+const PROTECTED_PATHS = [
+  '/tools/new',
+  '/profile',
+  '/requests',
+  '/admin',
+  '/onboarding',
+  '/my-communities',
+]
 
 function isProtectedPath(pathname: string): boolean {
   // Strip locale prefix: /da/tools/new → /tools/new

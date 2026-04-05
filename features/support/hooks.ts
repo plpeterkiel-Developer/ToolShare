@@ -37,6 +37,9 @@ async function cleanupTestData(world: CustomWorld): Promise<void> {
     // Delete profiles created in this test run
     await supabaseAdmin.from('profiles').delete().eq('test_run_id', testRunId)
 
+    // Delete the test-run-scoped community (cascades to community_members)
+    await supabaseAdmin.from('communities').delete().eq('name', `test-community-${testRunId}`)
+
     // Auth users are NOT deleted — Supabase soft-deletes cause "already registered"
     // errors on recreate. Test users are reused via createTestUser which handles
     // existing users by updating their password and metadata.

@@ -40,7 +40,7 @@ Each environment needs its own instances of:
 
 ### Deployment
 
-The CI pipeline automatically deploys to the test environment when code is pushed to `main`. Update the deploy step in `.github/workflows/ci.yml` with your hosting platform command.
+Preview deployments are created automatically by **Vercel's Git integration** on every push to a non-`main` branch — each preview uses the test Supabase project. Pushing to `main` triggers a **production** deployment to tool-share.eu. The GitHub Actions workflow in `.github/workflows/ci.yml` runs lint + tests on each push; Vercel handles the deploys.
 
 ## Production Environment
 

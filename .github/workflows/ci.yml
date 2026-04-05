@@ -116,15 +116,19 @@ jobs:
 
       - run: npm ci
 
-      - name: Build for test environment
-        run: npm run build
+      # Note: Vercel's Git integration also auto-deploys pushes to this repo.
+      # This workflow step gives GitHub Actions a gate for post-deploy checks.
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
 
-      # TODO: Replace with your hosting platform's deploy command
-      # Examples:
-      #   Vercel:  npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
-      #   Fly.io:  flyctl deploy --app toolshare-test
-      - name: Deploy (placeholder)
-        run: echo "Add your deploy command here"
+      - name: Pull Vercel environment (preview)
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build with Vercel
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy prebuilt to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Verify health check
         if: vars.TEST_DEPLOY_URL

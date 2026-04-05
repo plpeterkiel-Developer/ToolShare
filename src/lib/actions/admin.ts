@@ -297,15 +297,15 @@ export async function approveCommunityCreation(
 
   // Notify requester
   try {
-    const [{ data: profile }, { data: authUsers }] = await Promise.all([
+    const [{ data: profile }, { data: authLookup }] = await Promise.all([
       supabase.from('profiles').select('display_name').eq('id', request.requested_by).single(),
-      supabase.auth.admin.listUsers(),
+      supabase.auth.admin.getUserById(request.requested_by),
     ])
-    const requesterAuth = authUsers?.users.find((u) => u.id === request.requested_by)
-    if (requesterAuth?.email) {
+    const requesterEmail = authLookup?.user?.email
+    if (requesterEmail) {
       await getResend().emails.send({
         from: EMAIL_FROM,
-        to: requesterAuth.email,
+        to: requesterEmail,
         subject: `${community.name} is live`,
         react: CommunityCreationApproved({
           requesterName: profile?.display_name ?? 'there',
@@ -350,15 +350,15 @@ export async function denyCommunityCreation(requestId: string, reason?: string |
   if (updateErr) return { error: updateErr.message }
 
   try {
-    const [{ data: profile }, { data: authUsers }] = await Promise.all([
+    const [{ data: profile }, { data: authLookup }] = await Promise.all([
       supabase.from('profiles').select('display_name').eq('id', request.requested_by).single(),
-      supabase.auth.admin.listUsers(),
+      supabase.auth.admin.getUserById(request.requested_by),
     ])
-    const requesterAuth = authUsers?.users.find((u) => u.id === request.requested_by)
-    if (requesterAuth?.email) {
+    const requesterEmail = authLookup?.user?.email
+    if (requesterEmail) {
       await getResend().emails.send({
         from: EMAIL_FROM,
-        to: requesterAuth.email,
+        to: requesterEmail,
         subject: `Community request update: ${request.requested_name}`,
         react: CommunityCreationDenied({
           requesterName: profile?.display_name ?? 'there',

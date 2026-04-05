@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getResend, EMAIL_FROM } from '@/lib/email/resend'
 import RequestReceived from '@/lib/email/templates/request-received'
 import RequestApproved from '@/lib/email/templates/request-approved'
@@ -81,7 +82,7 @@ export async function createBorrowRequest(formData: FormData) {
       .select('display_name')
       .eq('id', user.id)
       .single()
-    const { data: ownerAuthUser } = await supabase.auth.admin.getUserById(tool.owner_id)
+    const { data: ownerAuthUser } = await createAdminClient().auth.admin.getUserById(tool.owner_id)
 
     if (ownerAuthUser?.user?.email) {
       await getResend().emails.send({
@@ -142,7 +143,9 @@ export async function approveRequest(requestId: string) {
 
   // Send approval email with pickup address to borrower
   try {
-    const { data: borrowerAuthUser } = await supabase.auth.admin.getUserById(req.borrower_id)
+    const { data: borrowerAuthUser } = await createAdminClient().auth.admin.getUserById(
+      req.borrower_id
+    )
     if (borrowerAuthUser?.user?.email) {
       await getResend().emails.send({
         from: EMAIL_FROM,
@@ -200,7 +203,9 @@ export async function denyRequest(requestId: string, reason?: string) {
 
   // Email borrower
   try {
-    const { data: borrowerAuthUser } = await supabase.auth.admin.getUserById(req.borrower_id)
+    const { data: borrowerAuthUser } = await createAdminClient().auth.admin.getUserById(
+      req.borrower_id
+    )
     if (borrowerAuthUser?.user?.email) {
       await getResend().emails.send({
         from: EMAIL_FROM,
@@ -258,7 +263,7 @@ export async function cancelRequest(requestId: string) {
       .select('display_name')
       .eq('id', user.id)
       .single()
-    const { data: ownerAuthUser } = await supabase.auth.admin.getUserById(req.owner_id)
+    const { data: ownerAuthUser } = await createAdminClient().auth.admin.getUserById(req.owner_id)
     if (ownerAuthUser?.user?.email) {
       await getResend().emails.send({
         from: EMAIL_FROM,

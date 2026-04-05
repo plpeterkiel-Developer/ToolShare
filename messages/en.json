@@ -11,6 +11,7 @@
     "tools": "Tools",
     "profile": "Profile",
     "admin": "Admin",
+    "myCommunities": "My Communities",
     "home": "Home",
     "expandSidebar": "Expand menu",
     "collapseSidebar": "Collapse menu",
@@ -503,6 +504,18 @@
     "bannerPending": "Your community request is awaiting approval.",
     "bannerCta": "Find a community",
     "bannerPendingCta": "View request"
+  },
+  "myCommunities": {
+    "title": "My communities",
+    "subtitle": "Communities you belong to and your pending requests.",
+    "findCommunityCta": "Find more",
+    "memberOfTitle": "Member of",
+    "noMemberships": "You're not a member of any community yet.",
+    "manageCta": "Manage",
+    "pendingTitle": "Pending",
+    "pendingJoin": "Join request",
+    "pendingCreation": "Community creation request",
+    "statusPending": "Pending"
   },
   "communityAdmin": {
     "managingLabel": "Managing community",

@@ -6,18 +6,23 @@ import { useTranslations } from 'next-intl'
 
 interface AdminSidebarProps {
   locale: string
+  pendingCreationRequestsCount?: number
 }
 
-export function AdminSidebar({ locale }: AdminSidebarProps) {
+export function AdminSidebar({ locale, pendingCreationRequestsCount = 0 }: AdminSidebarProps) {
   const pathname = usePathname()
   const t = useTranslations('admin.nav')
 
-  const links = [
+  const links: Array<{ href: string; label: string; badge?: number }> = [
     { href: `/${locale}/admin`, label: t('dashboard') },
     { href: `/${locale}/admin/analytics`, label: t('analytics') },
     { href: `/${locale}/admin/users`, label: t('users') },
     { href: `/${locale}/admin/communities`, label: t('communities') },
-    { href: `/${locale}/admin/community-requests`, label: t('communityRequests') },
+    {
+      href: `/${locale}/admin/community-requests`,
+      label: t('communityRequests'),
+      badge: pendingCreationRequestsCount,
+    },
     { href: `/${locale}/admin/tools`, label: t('tools') },
     { href: `/${locale}/admin/reports`, label: t('reports') },
     { href: `/${locale}/admin/requests`, label: t('requests') },
@@ -35,14 +40,22 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
               <Link
                 href={link.href}
                 className={[
-                  'block whitespace-nowrap rounded-xl px-3 py-2 text-sm transition-colors',
+                  'flex items-center justify-between gap-2 whitespace-nowrap rounded-xl px-3 py-2 text-sm transition-colors',
                   isActive
                     ? 'bg-green-50 text-green-800 font-medium'
                     : 'text-stone-600 hover:bg-stone-100 hover:text-green-800',
                 ].join(' ')}
                 aria-current={isActive ? 'page' : undefined}
               >
-                {link.label}
+                <span>{link.label}</span>
+                {link.badge && link.badge > 0 ? (
+                  <span
+                    className="inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-medium text-white"
+                    aria-label={`${link.badge} pending`}
+                  >
+                    {link.badge}
+                  </span>
+                ) : null}
               </Link>
             </li>
           )

@@ -90,17 +90,16 @@ async function getToolsWithinRadius({
 }) {
   const supabase = await createClient()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: rpcRows, error: rpcError } = (await (supabase.rpc as any)('tools_within_radius', {
+  const { data: rpcRows, error: rpcError } = await supabase.rpc('tools_within_radius', {
     p_lat: lat,
     p_lng: lng,
     p_radius_km: radiusKm,
-    p_search: search ?? null,
-    p_category: category ?? null,
+    p_search: search ?? undefined,
+    p_category: category ?? undefined,
     p_limit: limit,
     p_offset: offset,
-    p_user_id: userId ?? null,
-  })) as { data: Record<string, unknown>[] | null; error: { message: string } | null }
+    p_user_id: userId ?? undefined,
+  })
 
   if (rpcError) throw new Error(rpcError.message)
   if (!rpcRows || rpcRows.length === 0) return [] as ToolWithOwner[]
