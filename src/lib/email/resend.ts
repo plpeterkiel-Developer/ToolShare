@@ -4,6 +4,23 @@ import { logger } from '@/lib/logger'
 
 let _resend: Resend | null = null
 
+const DEFAULT_EMAIL_FROM = 'noreply@toolshare.local'
+
+export const EMAIL_FROM = process.env.EMAIL_FROM ?? DEFAULT_EMAIL_FROM
+
+if (EMAIL_FROM === DEFAULT_EMAIL_FROM || EMAIL_FROM.endsWith('.local')) {
+  if (isProd) {
+    throw new Error(
+      `EMAIL_FROM is set to "${EMAIL_FROM}" which uses an unverifiable domain. ` +
+        'Set EMAIL_FROM to an address on a domain verified in your Resend dashboard.'
+    )
+  }
+  logger.warn(
+    `EMAIL_FROM is "${EMAIL_FROM}" — emails will be rejected by Resend in production. ` +
+      'Set EMAIL_FROM to a verified domain.'
+  )
+}
+
 export function getResend() {
   if (!_resend) {
     const apiKey = process.env.RESEND_API_KEY
@@ -49,5 +66,3 @@ export function getResend() {
 
   return _resend
 }
-
-export const EMAIL_FROM = process.env.EMAIL_FROM ?? 'noreply@toolshare.local'

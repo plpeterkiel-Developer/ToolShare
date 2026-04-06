@@ -83,6 +83,62 @@ cp .env.test.example .env.test
 npm run test:e2e
 ```
 
+## Email (Resend) Setup
+
+ToolShare sends transactional emails (signup confirmation, magic links, password reset) via [Resend](https://resend.com). Supabase's built-in mailer is replaced by a custom **Auth Send Email Hook** that calls the app's `/api/auth/send-email` endpoint.
+
+### 1. Create a Resend account and get an API key
+
+1. Sign up at [resend.com](https://resend.com)
+2. Go to **API Keys** in the Resend dashboard
+3. Create a new API key (use a `Sending access` key for production)
+4. Copy the key — you'll need it for `RESEND_API_KEY`
+
+### 2. Verify your sender domain
+
+1. In the Resend dashboard, go to **Domains** → **Add Domain**
+2. Enter the domain you want to send from (e.g. `tool-share.eu`)
+3. Resend will show DNS records (MX, TXT/SPF, DKIM) to add to your domain
+4. Add these records in your DNS provider (e.g. Cloudflare, Vercel DNS, Route53)
+5. Click **Verify** in Resend — this can take a few minutes to propagate
+6. Once verified, you can send from any address on that domain (e.g. `noreply@tool-share.eu`)
+
+### 3. Set environment variables
+
+Add these to your hosting platform (e.g. Vercel Environment Variables):
+
+| Variable         | Example                 | Description                            |
+| ---------------- | ----------------------- | -------------------------------------- |
+| `RESEND_API_KEY` | `re_live_abc123...`     | Your Resend API key                    |
+| `EMAIL_FROM`     | `noreply@tool-share.eu` | Must be on a verified domain in Resend |
+
+The app will **refuse to start** in production if `EMAIL_FROM` is missing or uses an unverified `.local` domain.
+
+### 4. Configure Supabase Auth Send Email Hook
+
+This tells Supabase to call your app instead of using its built-in mailer:
+
+1. Go to your Supabase project dashboard → **Authentication** → **Hooks**
+2. Enable the **Send Email** hook
+3. Set the hook type to **HTTP Request**
+4. Set the URL to: `https://your-production-domain.com/api/auth/send-email`
+5. Generate a webhook signing secret (Supabase will provide one in `whsec_...` format)
+6. Copy the secret and set it as `SEND_EMAIL_HOOK_SECRET` in your hosting platform
+7. Save the hook configuration
+
+| Variable                 | Example           | Description                                       |
+| ------------------------ | ----------------- | ------------------------------------------------- |
+| `SEND_EMAIL_HOOK_SECRET` | `whsec_abc123...` | Must match the secret in the Supabase hook config |
+
+### 5. Verify it works
+
+1. Deploy the app with the new environment variables
+2. Sign up with a new email address (e.g. a `+` alias like `you+test@gmail.com`)
+3. Check your inbox for the confirmation email from `EMAIL_FROM`
+4. Click the confirmation link — you should be redirected to the app and logged in
+
+If no email arrives, check the server logs for `Resend error` or `Send email hook failed` messages.
+
 ## Health Check
 
 All environments expose `GET /api/health`:
