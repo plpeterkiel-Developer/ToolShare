@@ -70,7 +70,7 @@ function verifyWebhookSignature(body: string, headers: Headers): boolean {
  * Build the confirmation/action URL using token_hash (PKCE flow).
  */
 function buildActionUrl(emailData: SendEmailHookPayload['email_data']): string {
-  const siteUrl = emailData.site_url || process.env.NEXT_PUBLIC_SITE_URL || ''
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || emailData.site_url || ''
   const base = siteUrl.replace(/\/$/, '')
 
   const typeMap: Record<string, string> = {
