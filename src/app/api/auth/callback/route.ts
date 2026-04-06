@@ -38,12 +38,26 @@ export async function GET(request: NextRequest) {
       if (!error) {
         return NextResponse.redirect(`${origin}${next}`)
       }
+      // verifyOtp may set session cookies even when returning an error —
+      // check if the user is actually authenticated before showing an error
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user) {
+        return NextResponse.redirect(`${origin}${next}`)
+      }
     }
 
     // OAuth / PKCE code exchange flow
     if (code) {
       const { error } = await supabase.auth.exchangeCodeForSession(code)
       if (!error) {
+        return NextResponse.redirect(`${origin}${next}`)
+      }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user) {
         return NextResponse.redirect(`${origin}${next}`)
       }
     }
