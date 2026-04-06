@@ -156,7 +156,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({})
   } catch (err) {
-    logger.error('Send email hook failed', { error: err })
+    logger.error('Send email hook failed', {
+      error: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    })
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 }
