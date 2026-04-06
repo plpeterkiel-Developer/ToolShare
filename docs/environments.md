@@ -64,12 +64,15 @@ See `.github/workflows/deploy-production.yml`.
 
 Both CI and production deploy workflows use Vercel. Add these secrets in **Settings > Secrets and variables > Actions**:
 
-| Secret              | Description                                                                      |
-| ------------------- | -------------------------------------------------------------------------------- |
-| `VERCEL_TOKEN`      | Personal access token from [Vercel dashboard](https://vercel.com/account/tokens) |
-| `VERCEL_ORG_ID`     | Found in `.vercel/project.json` after running `vercel link`                      |
-| `VERCEL_PROJECT_ID` | Found in `.vercel/project.json` after running `vercel link`                      |
-| `CRON_SECRET`       | Random secret for authenticating cron job requests                               |
+| Secret                   | Description                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| `VERCEL_TOKEN`           | Personal access token from [Vercel dashboard](https://vercel.com/account/tokens) |
+| `VERCEL_ORG_ID`          | Found in `.vercel/project.json` after running `vercel link`                      |
+| `VERCEL_PROJECT_ID`      | Found in `.vercel/project.json` after running `vercel link`                      |
+| `CRON_SECRET`            | Random secret for authenticating cron job requests                               |
+| `RESEND_API_KEY`         | Resend API key (`re_live_…` for production)                                      |
+| `EMAIL_FROM`             | Sender address on a Resend-verified domain (e.g. `noreply@tool-share.eu`)        |
+| `SEND_EMAIL_HOOK_SECRET` | Supabase Auth Send Email Hook signing secret (`whsec_…`)                         |
 
 To switch from Vercel to another platform (Fly.io, Railway), see the commented alternatives in the workflow files.
 
@@ -85,59 +88,124 @@ npm run test:e2e
 
 ## Email (Resend) Setup
 
-ToolShare sends transactional emails (signup confirmation, magic links, password reset) via [Resend](https://resend.com). Supabase's built-in mailer is replaced by a custom **Auth Send Email Hook** that calls the app's `/api/auth/send-email` endpoint.
+ToolShare sends transactional emails (signup confirmation, magic links, password reset) via [Resend](https://resend.com). Supabase's built-in mailer is **not used** — instead, a custom **Auth Send Email Hook** tells Supabase to call the app's `/api/auth/send-email` endpoint, which sends emails through Resend.
 
-### 1. Create a Resend account and get an API key
+All five steps below must be completed for email to work in production.
 
-1. Sign up at [resend.com](https://resend.com)
-2. Go to **API Keys** in the Resend dashboard
-3. Create a new API key (use a `Sending access` key for production)
-4. Copy the key — you'll need it for `RESEND_API_KEY`
+### Step 1: Create a Resend account and API key
 
-### 2. Verify your sender domain
+1. Go to [resend.com](https://resend.com) and create an account
+2. Navigate to **API Keys** ([resend.com/api-keys](https://resend.com/api-keys))
+3. Click **Create API Key**
+   - Name: e.g. `toolshare-production`
+   - Permission: **Sending access**
+   - Domain: leave as "All domains" (or restrict to your verified domain)
+4. Copy the key immediately — it is only shown once
 
-1. In the Resend dashboard, go to **Domains** → **Add Domain**
-2. Enter the domain you want to send from (e.g. `tool-share.eu`)
-3. Resend will show DNS records (MX, TXT/SPF, DKIM) to add to your domain
-4. Add these records in your DNS provider (e.g. Cloudflare, Vercel DNS, Route53)
-5. Click **Verify** in Resend — this can take a few minutes to propagate
-6. Once verified, you can send from any address on that domain (e.g. `noreply@tool-share.eu`)
+The key format is `re_live_...` for production. Resend also offers `re_test_...` keys for testing, but note that test keys can **only send to the account owner's email address**.
 
-### 3. Set environment variables
+### Step 2: Verify your sender domain in Resend
 
-Add these to your hosting platform (e.g. Vercel Environment Variables):
+Resend will reject all emails sent from an unverified domain. You must verify the domain you want to use in `EMAIL_FROM`.
 
-| Variable         | Example                 | Description                            |
-| ---------------- | ----------------------- | -------------------------------------- |
-| `RESEND_API_KEY` | `re_live_abc123...`     | Your Resend API key                    |
-| `EMAIL_FROM`     | `noreply@tool-share.eu` | Must be on a verified domain in Resend |
+1. Navigate to **Domains** ([resend.com/domains](https://resend.com/domains))
+2. Click **Add Domain**
+3. Enter your domain: `tool-share.eu`
+4. Resend displays DNS records you need to add. There are typically three:
 
-The app will **refuse to start** in production if `EMAIL_FROM` is missing or uses an unverified `.local` domain.
+   | Type      | Purpose         | Example name                      | Example value                              |
+   | --------- | --------------- | --------------------------------- | ------------------------------------------ |
+   | **MX**    | Bounce handling | `feedback.tool-share.eu`          | `feedback-smtp.resend.com` (priority `10`) |
+   | **TXT**   | SPF             | `tool-share.eu`                   | `v=spf1 include:resend.com ~all`           |
+   | **CNAME** | DKIM            | `resend._domainkey.tool-share.eu` | _(value provided by Resend)_               |
 
-### 4. Configure Supabase Auth Send Email Hook
+   > The exact record names and values are shown in the Resend dashboard — copy them from there.
 
-This tells Supabase to call your app instead of using its built-in mailer:
+5. Add these records in your DNS provider (e.g. Cloudflare, Vercel DNS, Namecheap):
+   - Log in to your DNS provider
+   - Go to the DNS management page for `tool-share.eu`
+   - Add each record exactly as Resend specifies
+6. Back in Resend, click **Verify**
+   - DNS propagation can take anywhere from a few minutes up to 48 hours
+   - Status will change from "Pending" to "Verified" once complete
+   - Until verified, all sends from this domain will fail
 
-1. Go to your Supabase project dashboard → **Authentication** → **Hooks**
-2. Enable the **Send Email** hook
-3. Set the hook type to **HTTP Request**
-4. Set the URL to: `https://your-production-domain.com/api/auth/send-email`
-5. Generate a webhook signing secret (Supabase will provide one in `whsec_...` format)
-6. Copy the secret and set it as `SEND_EMAIL_HOOK_SECRET` in your hosting platform
-7. Save the hook configuration
+### Step 3: Set environment variables
 
-| Variable                 | Example           | Description                                       |
-| ------------------------ | ----------------- | ------------------------------------------------- |
-| `SEND_EMAIL_HOOK_SECRET` | `whsec_abc123...` | Must match the secret in the Supabase hook config |
+Three variables are needed for email to work:
 
-### 5. Verify it works
+| Variable                 | Example value           | Description                                             |
+| ------------------------ | ----------------------- | ------------------------------------------------------- |
+| `RESEND_API_KEY`         | `re_live_abc123...`     | API key from Step 1                                     |
+| `EMAIL_FROM`             | `noreply@tool-share.eu` | Sender address — domain must be verified in Resend      |
+| `SEND_EMAIL_HOOK_SECRET` | `whsec_abc123...`       | Webhook signing secret from Supabase (set up in Step 4) |
 
-1. Deploy the app with the new environment variables
-2. Sign up with a new email address (e.g. a `+` alias like `you+test@gmail.com`)
-3. Check your inbox for the confirmation email from `EMAIL_FROM`
-4. Click the confirmation link — you should be redirected to the app and logged in
+These must be set in **two places**:
 
-If no email arrives, check the server logs for `Resend error` or `Send email hook failed` messages.
+#### A. Vercel Dashboard (runtime)
+
+These are the values the running app reads at request time.
+
+1. Go to [vercel.com](https://vercel.com) → your ToolShare project
+2. Navigate to **Settings** → **Environment Variables**
+3. Add each variable above for the **Production** environment
+4. Click **Save**
+
+> You do **not** need to redeploy after adding Vercel env vars — they take effect on the next function invocation.
+
+#### B. GitHub Secrets (deploy workflow)
+
+The deploy workflow (`.github/workflows/deploy-production.yml`) also needs these values at build time.
+
+1. Go to your GitHub repo → **Settings** → **Secrets and variables** → **Actions**
+2. Click **New repository secret** for each variable:
+   - `RESEND_API_KEY` → paste the API key
+   - `EMAIL_FROM` → `noreply@tool-share.eu`
+   - `SEND_EMAIL_HOOK_SECRET` → paste the webhook secret (after Step 4)
+
+The app will **refuse to start** in production if `EMAIL_FROM` is missing or uses a `.local` domain.
+
+### Step 4: Configure the Supabase Auth Send Email Hook
+
+This tells Supabase to POST to your app whenever it needs to send an auth email, instead of using its built-in (rate-limited) mailer.
+
+1. Open the [Supabase dashboard](https://supabase.com/dashboard) and select your production project
+2. In the left sidebar, click **Authentication**
+3. Click the **Hooks** tab at the top
+4. Find **Send Email** and click **Enable Hook** (or **Add Hook**)
+5. Configure the hook:
+   - **Hook type:** HTTP Request
+   - **HTTP method:** POST
+   - **URL:** `https://tool-share.eu/api/auth/send-email`
+6. Under **Signing secret**, Supabase generates a secret in `whsec_...` format
+   - **Copy this secret** — you need it for `SEND_EMAIL_HOOK_SECRET`
+7. Click **Save**
+
+Now go back and set `SEND_EMAIL_HOOK_SECRET` in both **Vercel** and **GitHub Secrets** (Step 3) using the `whsec_...` value you just copied.
+
+> **How it works:** When a user signs up, Supabase sends a POST request to your URL with the user's email and a confirmation token. The app's webhook handler (`/api/auth/send-email`) verifies the signature using `SEND_EMAIL_HOOK_SECRET`, renders the email template, and sends it via Resend. Supabase includes three headers for signature verification: `webhook-id`, `webhook-timestamp`, and `webhook-signature`.
+
+### Step 5: Deploy and verify
+
+1. Push your changes and trigger a production deploy (via GitHub Release or workflow_dispatch)
+2. Once deployed, sign up with a **new email** — use a Gmail `+` alias to avoid creating a real account:
+   ```
+   plpeterkiel+test2@gmail.com
+   ```
+3. You should be redirected to the "Confirm your email" page
+4. Check your Gmail inbox for a confirmation email from `noreply@tool-share.eu`
+5. Click the **Confirm** button in the email — you should be redirected to the app and logged in
+
+### Troubleshooting
+
+| Symptom                      | Likely cause                                                                  | How to check                                                                                                   |
+| ---------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| No email arrives at all      | Supabase Send Email Hook not configured or URL is wrong                       | Check Supabase Auth → Hooks → is the hook enabled and pointing to `https://tool-share.eu/api/auth/send-email`? |
+| 401 error in logs            | `SEND_EMAIL_HOOK_SECRET` doesn't match the Supabase hook secret               | Compare the `whsec_...` value in Vercel env vars with the one in Supabase Auth → Hooks                         |
+| 500 error in logs            | `RESEND_API_KEY` is invalid, or `EMAIL_FROM` domain is not verified in Resend | Check Vercel function logs for `Resend error (signup): ...` — the error message tells you exactly what's wrong |
+| Email arrives but link fails | Callback route issue or `NEXT_PUBLIC_SITE_URL` wrong                          | Ensure `NEXT_PUBLIC_SITE_URL` is set to `https://tool-share.eu` in both Vercel and GitHub Secrets              |
+| Email lands in spam          | SPF/DKIM DNS records missing or incorrect                                     | Go to Resend → Domains → check that all DNS records show "Verified"                                            |
+| App won't start              | `EMAIL_FROM` is missing or set to a `.local` domain                           | Check Vercel build logs for `EMAIL_FROM is set to "..." which uses an unverifiable domain`                     |
 
 ## Health Check
 
