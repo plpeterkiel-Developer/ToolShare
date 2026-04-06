@@ -39,7 +39,8 @@ export function SignUpForm() {
 
     const result = await signup(formData)
     if (result?.error) {
-      setError(result.error)
+      const translated = tErrors.has(result.error) ? tErrors(result.error) : result.error
+      setError(translated)
       setLoading(false)
     }
   }
