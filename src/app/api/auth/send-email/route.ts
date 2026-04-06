@@ -113,30 +113,39 @@ export async function POST(request: NextRequest) {
     switch (email_data.email_action_type) {
       case 'signup':
       case 'invite': {
-        await resend.emails.send({
+        const { error: sendError } = await resend.emails.send({
           from: EMAIL_FROM,
           to: user.email,
           subject: 'Confirm your email – ToolShare',
           react: AuthConfirmSignupEmail({ confirmUrl: actionUrl }),
         })
+        if (sendError) {
+          throw new Error(`Resend error (${email_data.email_action_type}): ${sendError.message}`)
+        }
         break
       }
       case 'magiclink': {
-        await resend.emails.send({
+        const { error: sendError } = await resend.emails.send({
           from: EMAIL_FROM,
           to: user.email,
           subject: 'Your login link – ToolShare',
           react: AuthMagicLinkEmail({ magicLinkUrl: actionUrl }),
         })
+        if (sendError) {
+          throw new Error(`Resend error (magiclink): ${sendError.message}`)
+        }
         break
       }
       case 'recovery': {
-        await resend.emails.send({
+        const { error: sendError } = await resend.emails.send({
           from: EMAIL_FROM,
           to: user.email,
           subject: 'Reset your password – ToolShare',
           react: AuthResetPasswordEmail({ resetUrl: actionUrl }),
         })
+        if (sendError) {
+          throw new Error(`Resend error (recovery): ${sendError.message}`)
+        }
         break
       }
       default: {
