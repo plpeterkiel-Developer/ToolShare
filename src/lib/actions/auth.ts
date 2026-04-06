@@ -30,7 +30,7 @@ export async function signup(formData: FormData) {
   const displayName = formData.get('displayName') as string
   const locale = (formData.get('locale') as string) || DEFAULT_LOCALE
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -40,6 +40,12 @@ export async function signup(formData: FormData) {
 
   if (error) {
     return { error: error.message }
+  }
+
+  // Supabase returns a fake success with empty identities for duplicate emails
+  // (to prevent user enumeration when email confirmation is enabled)
+  if (data.user && (!data.user.identities || data.user.identities.length === 0)) {
+    return { error: 'emailAlreadyRegistered' }
   }
 
   redirect(`/${locale}/auth/confirm`)
