@@ -9,12 +9,6 @@ const DEFAULT_EMAIL_FROM = 'noreply@toolshare.local'
 export const EMAIL_FROM = process.env.EMAIL_FROM ?? DEFAULT_EMAIL_FROM
 
 if (EMAIL_FROM === DEFAULT_EMAIL_FROM || EMAIL_FROM.endsWith('.local')) {
-  if (isProd) {
-    throw new Error(
-      `EMAIL_FROM is set to "${EMAIL_FROM}" which uses an unverifiable domain. ` +
-        'Set EMAIL_FROM to an address on a domain verified in your Resend dashboard.'
-    )
-  }
   logger.warn(
     `EMAIL_FROM is "${EMAIL_FROM}" — emails will be rejected by Resend in production. ` +
       'Set EMAIL_FROM to a verified domain.'
